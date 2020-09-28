@@ -111,20 +111,15 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   private fun streamGalleryImages(@NonNull result: Result, limit: Int=0, offset: Int=0) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getGalleryImages"))
     mainScope.launch {
-      val res = streamImages(appContext, limit=limit, offset=offset)
+      if (galleryImageCursor == null) {
+        startImageStream(appContext)
+      }
+      val res = resumeImageStream(limit=limit, offset=offset)
       result.success(res)
     }
   }
 
-  private suspend fun streamImages(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
-    return if (galleryImageCursor == null) {
-      startImageStream(appContext, limit=limit, offset=offset)
-    } else {
-      resumeImageStream(appContext, limit=limit, offset=offset)
-    }
-  }
-
-  private suspend fun resumeImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
+  private suspend fun resumeImageStream(limit: Int=0, offset: Int=0) : List<String> {
     ///FIXME - implement this bugger
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
@@ -175,8 +170,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     return res
   }
 
-  private suspend fun startImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
-    var res: List<String>
+  private suspend fun startImageStream(appContext: Context) {
     withContext(Dispatchers.IO) {
       val projection = arrayOf(
               MediaStore.Images.Media._ID,
@@ -198,9 +192,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
       if (cursor != null) {
         galleryImageCursor = ImageCursorContainer(cursor)
       }
-      res = resumeImageStream(appContext, limit=limit, offset=offset)
     }
-    return res;
   }
 
   /** Other Methods */
