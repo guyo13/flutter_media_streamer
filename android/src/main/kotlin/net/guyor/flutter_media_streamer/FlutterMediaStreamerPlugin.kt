@@ -70,6 +70,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val ERR_CONTEXT_MSG = "Application context is not available while calling method %s"
     @JvmStatic
     val ERR_VERSION = "ANDROID_VER_TOO_LOW"
+    @JvmStatic
+    val INVALID_URI = "INVALID_URI"
     private const val TAG = "FlutterMediaStreamer"
   }
 
@@ -218,19 +220,20 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getThumbnail"))
     var res : ByteArray
     val uri: Uri = Uri.parse(uriString)
-    Log.d(TAG, "uriString $uriString is ${if (URLUtil.isValidUrl(uriString)) "valid" else "invalid"}")
-    mainScope.launch {
-      withContext(Dispatchers.IO) {
-        var thumbnail : Bitmap = appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
-        val stream = ByteArrayOutputStream()
-        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream)
-//        val buffer = ByteBuffer.allocate(thumbnail.allocationByteCount)
-//        thumbnail.copyPixelsToBuffer(buffer)
-//        res = if (buffer.hasArray()) buffer.array() else ByteArray(0)
-        res = stream.toByteArray()
-        thumbnail.recycle()
+//    Log.d(TAG, "uriString $uriString is ${if (URLUtil.isValidUrl(uriString)) "valid" else "invalid"}")
+    if (URLUtil.isValidUrl(uriString)) {
+      mainScope.launch {
+        withContext(Dispatchers.IO) {
+          var thumbnail : Bitmap = appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
+          val stream = ByteArrayOutputStream()
+          thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream)
+          res = stream.toByteArray()
+          thumbnail.recycle()
+        }
+        result.success(res)
       }
-      result.success(res)
+    } else {
+      result.error(INVALID_URI, "Invalid URI $uriString", null)
     }
   }
   /** Other Methods */
