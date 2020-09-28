@@ -15,14 +15,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  String _response = "Nothing yet";
+  List<String> _response;
   Future<bool> _permissionsGranted;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    _permissionsGranted = FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
+    _permissionsGranted =
+        FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -47,44 +48,69 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Text('Running on: $_platformVersion\n'),
-              Container(
-                child: FutureBuilder(initialData: false,
-                  future: _permissionsGranted,
-                  builder: (context, snapshot) {
-                    switch(snapshot.connectionState) {
-                      case ConnectionState.done:
-                        return snapshot.data ?
-                        FlatButton(child: Text("Get image"), onPressed: () async {
-                          final res = await FlutterMediaStreamer.getGalleryImages;
-                          setState(() {
-                            _response = res;
-                          });
-                        },) :
-                        FlatButton(child: Text("Grant Storage Permissions"), onPressed: () async {
-                          setState(() {
-                           _permissionsGranted = FlutterMediaStreamer.requestStoragePermissions();
-                           _permissionsGranted.then((value) => setState((){}));
-                          });
-                        },);
-                      default:
-                        return CircularProgressIndicator();
-                    }
-                  },
+      home: Builder(
+        builder: (context) {
+          final size = MediaQuery.of(context).size;
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Plugin example app'),
+            ),
+            body: Stack(
+              children: [
+                PositionedDirectional(child: Text('Running on: $_platformVersion\n'),
+                  top: 16.0,
                 ),
-              ),
-              Text(_response),
-            ],
-          ),
-        ),
+                PositionedDirectional(
+                  top: 32.0,
+                  child: Container(
+                    child: FutureBuilder(
+                      initialData: false,
+                      future: _permissionsGranted,
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.done:
+                            return snapshot.data
+                                ? FlatButton(
+                              child: Text("Get image"),
+                              onPressed: () async {
+                                final res = await FlutterMediaStreamer
+                                    .streamGalleryImages(limit: 1).toList();
+                                setState(() {
+                                  _response = res;
+                                });
+                              },
+                            )
+                                : FlatButton(
+                              child: Text("Grant Storage Permissions"),
+                              onPressed: () async {
+                                setState(() {
+                                  _permissionsGranted = FlutterMediaStreamer
+                                      .requestStoragePermissions();
+                                  _permissionsGranted
+                                      .then((value) => setState(() {}));
+                                });
+                              },
+                            );
+                          default:
+                            return CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                if (_response != null)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    child: ListView(
+                      children: [for (var r in _response) Text(r)],
+                    ),
+                  )
+              ],
+            ),
+          );
+        },
       ),
     );
   }

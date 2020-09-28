@@ -11,18 +11,20 @@ class FlutterMediaStreamer {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
-  static Stream<List<String>> streamGalleryImages({int limit=10, int offset=0}) async* {
+  static Stream<String> streamGalleryImages({int limit=10, int offset=0}) async* {
     if (await haveStoragePermission) {
       List<String> results;
       limit = limit ?? 10;
       offset = offset ?? 0;
       do {
-          results = await _channel.invokeMethod('streamGalleryImages', <String, dynamic> {
+          results = await _channel.invokeListMethod('streamGalleryImages', <String, dynamic> {
           'limit':  limit,
           'offset': offset,
         });
           offset += results.length;
-          yield results;
+          for (var item in results) {
+            yield item;
+          }
       } while (results != null && results.isNotEmpty);
     }
   }

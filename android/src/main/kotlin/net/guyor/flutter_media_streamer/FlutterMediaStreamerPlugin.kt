@@ -67,7 +67,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "getGalleryImages" -> getGalleryImages(
+      "streamGalleryImages" -> streamGalleryImages(
               result,
               limit = call.argument<Int>("limit") as Int,
               offset = call.argument<Int>("offset") as Int,
@@ -108,7 +108,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
   /** Main Functionality */
 
-  private fun getGalleryImages(@NonNull result: Result, limit: Int=0, offset: Int=0) {
+  private fun streamGalleryImages(@NonNull result: Result, limit: Int=0, offset: Int=0) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getGalleryImages"))
     mainScope.launch {
       val res = streamImages(appContext, limit=limit, offset=offset)
@@ -117,21 +117,64 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
 
   private suspend fun streamImages(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
-    if (galleryImageCursor == null) {
-      return startImageStream(appContext, limit=limit, offset=offset)
+    return if (galleryImageCursor == null) {
+      startImageStream(appContext, limit=limit, offset=offset)
     } else {
-      return resumeImageStream(appContext, limit=limit, offset=offset)
+      resumeImageStream(appContext, limit=limit, offset=offset)
     }
   }
 
   private suspend fun resumeImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
     ///FIXME - implement this bugger
     val res = mutableListOf<String>()
+    galleryImageCursor?.let { cursor: Cursor ->
+      val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+      val dateModifiedColumn =
+              cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+      val displayNameColumn =
+              cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+
+      var hasNext = cursor.moveToNext()
+      while (hasNext && res.size < limit) {
+
+        // Here we'll use the column indexs that we found above.
+        val id = cursor.getLong(idColumn)
+        val dateModified = cursor.getLong(dateModifiedColumn)
+        val displayName = cursor.getString(displayNameColumn)
+
+
+        /**
+         * This is one of the trickiest parts:
+         *
+         * Since we're accessing images (using
+         * [MediaStore.Images.Media.EXTERNAL_CONTENT_URI], we'll use that
+         * as the base URI and append the ID of the image to it.
+         *
+         * This is the exact same way to do it when working with [MediaStore.Video] and
+         * [MediaStore.Audio] as well. Whatever `Media.EXTERNAL_CONTENT_URI` you
+         * query to get the items is the base, and the ID is the document to
+         * request there.
+         */
+        val contentUri = ContentUris.withAppendedId(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                id
+        ).toString()
+        val image = ImageMediaData(id, displayName, dateModified, contentUri)
+        //images += image
+        //TODO
+        Log.v(TAG, "Added image: $image")
+        res.add( serializer.toJson(image))
+      }
+      if (!hasNext) {
+        galleryImageCursor?.close()
+        galleryImageCursor = null
+      }
+    }
     return res
   }
 
   private suspend fun startImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
-    val res = mutableListOf<String>()
+    var res: List<String>
     withContext(Dispatchers.IO) {
       val projection = arrayOf(
               MediaStore.Images.Media._ID,
@@ -149,46 +192,9 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
               selectionArgs,
               sortOrder
       )
-      cursor?.use { cursor ->
-        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        val dateModifiedColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
-        val displayNameColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-
-        Log.i(TAG, "Found ${cursor.count} images")
-        while (cursor.moveToNext()) {
-
-          // Here we'll use the column indexs that we found above.
-          val id = cursor.getLong(idColumn)
-          val dateModified = cursor.getLong(dateModifiedColumn)
-          val displayName = cursor.getString(displayNameColumn)
-
-
-          /**
-           * This is one of the trickiest parts:
-           *
-           * Since we're accessing images (using
-           * [MediaStore.Images.Media.EXTERNAL_CONTENT_URI], we'll use that
-           * as the base URI and append the ID of the image to it.
-           *
-           * This is the exact same way to do it when working with [MediaStore.Video] and
-           * [MediaStore.Audio] as well. Whatever `Media.EXTERNAL_CONTENT_URI` you
-           * query to get the items is the base, and the ID is the document to
-           * request there.
-           */
-          val contentUri = ContentUris.withAppendedId(
-                  MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                  id
-          ).toString()
-          val image = ImageMediaData(id, displayName, dateModified, contentUri)
-          //images += image
-          //TODO
-          Log.v(TAG, "Added image: $image")
-          res.add( serializer.toJson(image))
-          return@use
-        }
-      }
+      Log.i(TAG, "Found ${cursor?.count} images")
+      galleryImageCursor = cursor
+      res = resumeImageStream(appContext, limit=limit, offset=offset)
     }
     return res;
   }
