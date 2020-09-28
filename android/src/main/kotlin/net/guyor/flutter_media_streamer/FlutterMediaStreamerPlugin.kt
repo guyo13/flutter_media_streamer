@@ -31,6 +31,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
+  private var galleryImageCursor: Cursor? = null
   private var binding : FlutterPlugin.FlutterPluginBinding? = null
   private var activity : Activity? = null
   private val mainScope = CoroutineScope(Dispatchers.Main)
@@ -66,10 +67,17 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
-      "getGalleryImages" -> getGalleryImages(result)
+      "getGalleryImages" -> getGalleryImages(
+              result,
+              limit = call.argument<Int>("limit") as Int,
+              offset = call.argument<Int>("offset") as Int,
+      )
+      "requestStoragePermissions" -> requestStoragePermissions(
+              result,
+              timeout = call.argument<Int?>("timeout") as Int?
+      )
       "haveStoragePermission" -> result.success(haveStoragePermission())
-      "requestStoragePermissions" -> requestStoragePermissions(result, timeout = call.argument<Int?>("timeout") as Int?)
+      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
   }
@@ -77,85 +85,53 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     this.binding = null
     channel.setMethodCallHandler(null)
-    print("FlutterMediaStreamerPlugin onDetachedFromEngine")
+    Log.d(TAG, "FlutterMediaStreamerPlugin onDetachedFromEngine")
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    print("FlutterMediaStreamerPlugin onAttachedToActivity")
+    Log.d(TAG, "FlutterMediaStreamerPlugin onAttachedToActivity")
     activity = binding.activity
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    print("FlutterMediaStreamerPlugin onDetachedFromActivityForConfigChanges")
+    Log.d(TAG, "FlutterMediaStreamerPlugin onDetachedFromActivityForConfigChanges")
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-    print("FlutterMediaStreamerPlugin onReattachedToActivityForConfigChanges")
+    Log.d(TAG, "FlutterMediaStreamerPlugin onReattachedToActivityForConfigChanges")
     activity = binding.activity
   }
 
   override fun onDetachedFromActivity() {
-    print("FlutterMediaStreamerPlugin onDetachedFromActivity")
+    Log.d(TAG, "FlutterMediaStreamerPlugin onDetachedFromActivity")
     activity = null
   }
+  /** Main Functionality */
 
-  private fun requestStoragePermissions(@NonNull result: Result, timeout: Int? = 10) {
-    if (haveStoragePermission()) {
-      result.success(true)
-      return
-    } else {
-      requestPermission()
-    }
-    var granted = false
-    mainScope.launch {
-    if (timeout != null && timeout > 0) {
-        val timeoutMillis = timeout * 1000
-        var count = 0
-        withContext(Dispatchers.Default) {
-          while (!granted && count < timeoutMillis) {
-            Log.d(TAG,"Checking permissions... ($count)")
-            count += 1000
-            granted = haveStoragePermission()
-            delay(1000)
-          }
-        }
-      }
-      Log.d(TAG, "Read Storage permissions granted ? $granted")
-      result.success(granted)
-    }
-  }
-
-  private fun getGalleryImages(@NonNull result: Result) {
+  private fun getGalleryImages(@NonNull result: Result, limit: Int=0, offset: Int=0) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getGalleryImages"))
-    requestPermission()
     mainScope.launch {
-      val res = queryImages(appContext)
+      val res = streamImages(appContext, limit=limit, offset=offset)
       result.success(res)
     }
   }
-  private fun onError(@NonNull result: Result, errorCode: String, errorMessage: String? = null, errorDetails: String? = null) {
-    result.error(errorCode, errorMessage, errorDetails)
-    return
-  }
 
-  private fun haveStoragePermission() =
-          ContextCompat.checkSelfPermission(
-                  binding?.applicationContext!!,
-                  Manifest.permission.READ_EXTERNAL_STORAGE
-          ) == PackageManager.PERMISSION_GRANTED
-
-  private fun requestPermission() {
-    if (!haveStoragePermission()) {
-      val permissions = arrayOf(
-              Manifest.permission.READ_EXTERNAL_STORAGE,
-//              Manifest.permission.WRITE_EXTERNAL_STORAGE
-      )
-      ActivityCompat.requestPermissions(activity!!, permissions, READ_EXTERNAL_STORAGE_REQUEST)
+  private suspend fun streamImages(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
+    if (galleryImageCursor == null) {
+      return startImageStream(appContext, limit=limit, offset=offset)
+    } else {
+      return resumeImageStream(appContext, limit=limit, offset=offset)
     }
   }
 
-  private suspend fun queryImages(appContext: Context) : String {
-    var res : String = ""
+  private suspend fun resumeImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
+    ///FIXME - implement this bugger
+    val res = mutableListOf<String>()
+    return res
+  }
+
+  private suspend fun startImageStream(appContext: Context, limit: Int=0, offset: Int=0) : List<String> {
+    val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
       val projection = arrayOf(
               MediaStore.Images.Media._ID,
@@ -209,12 +185,61 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           //images += image
           //TODO
           Log.v(TAG, "Added image: $image")
-          res = serializer.toJson(image)
+          res.add( serializer.toJson(image))
           return@use
         }
-     }
+      }
     }
-    return res
+    return res;
   }
 
+  /** Other Methods */
+
+  private fun requestStoragePermissions(@NonNull result: Result, timeout: Int? = 10) {
+    if (haveStoragePermission()) {
+      result.success(true)
+      return
+    } else {
+      requestPermission()
+    }
+    //FIXME - use {@link ActivityPluginBinding#addRequestPermissionsResultListener}
+    var granted = false
+    mainScope.launch {
+      if (timeout != null && timeout > 0) {
+        val timeoutMillis = timeout * 1000
+        var count = 0
+        withContext(Dispatchers.Default) {
+          while (!granted && count < timeoutMillis) {
+            Log.d(TAG,"Checking permissions... ($count)")
+            count += 1000
+            granted = haveStoragePermission()
+            delay(1000)
+          }
+        }
+      }
+      Log.d(TAG, "Read Storage permissions granted ? $granted")
+      result.success(granted)
+    }
+  }
+
+  private fun onError(@NonNull result: Result, errorCode: String, errorMessage: String? = null, errorDetails: String? = null) {
+    result.error(errorCode, errorMessage, errorDetails)
+    return
+  }
+
+  private fun haveStoragePermission() =
+          ContextCompat.checkSelfPermission(
+                  binding?.applicationContext!!,
+                  Manifest.permission.READ_EXTERNAL_STORAGE
+          ) == PackageManager.PERMISSION_GRANTED
+
+  private fun requestPermission() {
+    if (!haveStoragePermission()) {
+      val permissions = arrayOf(
+              Manifest.permission.READ_EXTERNAL_STORAGE,
+//              Manifest.permission.WRITE_EXTERNAL_STORAGE
+      )
+      ActivityCompat.requestPermissions(activity!!, permissions, READ_EXTERNAL_STORAGE_REQUEST)
+    }
+  }
 }

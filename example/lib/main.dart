@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
                       case ConnectionState.done:
                         return snapshot.data ?
                         FlatButton(child: Text("Get image"), onPressed: () async {
-                          final res = await FlutterMediaStreamer.galleryImages;
+                          final res = await FlutterMediaStreamer.getGalleryImages;
                           setState(() {
                             _response = res;
                           });
