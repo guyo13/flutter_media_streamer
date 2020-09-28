@@ -157,9 +157,9 @@ class ThumbGridItem extends StatelessWidget {
                 height: height,
               ));
             }
-            return CircularProgressIndicator();
+            return Container(child: Center(child: CircularProgressIndicator()));
           default:
-            return CircularProgressIndicator();
+            return Container(child: Center(child: CircularProgressIndicator()));
         }
       },
     );
