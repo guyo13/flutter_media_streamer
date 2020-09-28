@@ -16,11 +16,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   String _response = "Nothing yet";
+  Future<bool> _permissionsGranted;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    _permissionsGranted = FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -54,12 +56,31 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: [
               Text('Running on: $_platformVersion\n'),
-              FlatButton(child: Text("Get image"), onPressed: () async {
-                final res = await FlutterMediaStreamer.galleryImages;
-                setState(() {
-                  _response = res;
-                });
-              },),
+              Container(
+                child: FutureBuilder(initialData: false,
+                  future: _permissionsGranted,
+                  builder: (context, snapshot) {
+                    switch(snapshot.connectionState) {
+                      case ConnectionState.done:
+                        return snapshot.data ?
+                        FlatButton(child: Text("Get image"), onPressed: () async {
+                          final res = await FlutterMediaStreamer.galleryImages;
+                          setState(() {
+                            _response = res;
+                          });
+                        },) :
+                        FlatButton(child: Text("Grant Storage Permissions"), onPressed: () async {
+                          setState(() {
+                           _permissionsGranted = FlutterMediaStreamer.requestStoragePermissions();
+                           _permissionsGranted.then((value) => setState((){}));
+                          });
+                        },);
+                      default:
+                        return CircularProgressIndicator();
+                    }
+                  },
+                ),
+              ),
               Text(_response),
             ],
           ),

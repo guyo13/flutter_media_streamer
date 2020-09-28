@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -33,6 +34,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   private var binding : FlutterPlugin.FlutterPluginBinding? = null
   private var activity : Activity? = null
   private val mainScope = CoroutineScope(Dispatchers.Main)
+  private val serializer = Gson()
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_media_streamer")
@@ -66,6 +68,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     when (call.method) {
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       "getGalleryImages" -> getGalleryImages(result)
+      "haveStoragePermission" -> result.success(haveStoragePermission())
+      "requestStoragePermissions" -> requestStoragePermissions(result, timeout = call.argument<Int?>("timeout") as Int?)
       else -> result.notImplemented()
     }
   }
@@ -93,6 +97,32 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   override fun onDetachedFromActivity() {
     print("FlutterMediaStreamerPlugin onDetachedFromActivity")
     activity = null
+  }
+
+  private fun requestStoragePermissions(@NonNull result: Result, timeout: Int? = 10) {
+    if (haveStoragePermission()) {
+      result.success(true)
+      return
+    } else {
+      requestPermission()
+    }
+    var granted = false
+    mainScope.launch {
+    if (timeout != null && timeout > 0) {
+        val timeoutMillis = timeout * 1000
+        var count = 0
+        withContext(Dispatchers.Default) {
+          while (!granted && count < timeoutMillis) {
+            Log.d(TAG,"Checking permissions... ($count)")
+            count += 1000
+            granted = haveStoragePermission()
+            delay(1000)
+          }
+        }
+      }
+      Log.d(TAG, "Read Storage permissions granted ? $granted")
+      result.success(granted)
+    }
   }
 
   private fun getGalleryImages(@NonNull result: Result) {
@@ -179,7 +209,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           //images += image
           //TODO
           Log.v(TAG, "Added image: $image")
-          res = image.toString()
+          res = serializer.toJson(image)
           return@use
         }
      }

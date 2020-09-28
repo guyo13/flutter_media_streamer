@@ -12,7 +12,25 @@ class FlutterMediaStreamer {
     return version;
   }
   static Future<String> get galleryImages async {
-    final String result = await _channel.invokeMethod('getGalleryImages');
-    return result;
+    if (await haveStoragePermission) {
+      final String result = await _channel.invokeMethod('getGalleryImages');
+      return result;
+    }
+    return null;
+  }
+
+  static Future<bool> get haveStoragePermission async {
+    return await _channel.invokeMethod('haveStoragePermission');
+  }
+
+  /// Request permissions, on Android for reading external storage
+  /// TODO on iOS
+  /// Returns a boolean value indicating if permissions were granted or not
+  /// [timeout] - Timeout is seconds to wait for permissions. Default 10
+  /// if 0 or null then returns false
+  static Future<bool> requestStoragePermissions({int timeout = 10}) async {
+    return await _channel.invokeMethod('requestStoragePermissions', <String, dynamic> {
+      'timeout': timeout
+    } );
   }
 }
