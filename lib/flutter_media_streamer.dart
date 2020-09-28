@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
@@ -14,6 +15,14 @@ class FlutterMediaStreamer {
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
+  }
+
+  Future<Uint8List> getThumbnail(String contentUri, {int width=640, int height=400}) async {
+    return await _channel.invokeMethod('getThumbnail', <String, dynamic> {
+      'contentUriString': contentUri ?? '',
+      'width':  width ?? 640,
+      'height': height ?? 400,
+    });
   }
 
   //TODO - make sure that this lock is abuse-proof

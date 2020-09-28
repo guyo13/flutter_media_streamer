@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -48,7 +51,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       home: Builder(
         builder: (context) {
@@ -59,7 +61,8 @@ class _MyAppState extends State<MyApp> {
             ),
             body: Stack(
               children: [
-                PositionedDirectional(child: Text('Running on: $_platformVersion\n'),
+                PositionedDirectional(
+                  child: Text('Running on: $_platformVersion\n'),
                   top: 16.0,
                 ),
                 PositionedDirectional(
@@ -73,26 +76,29 @@ class _MyAppState extends State<MyApp> {
                           case ConnectionState.done:
                             return snapshot.data
                                 ? FlatButton(
-                              child: Text("Get image"),
-                              onPressed: () async {
-                                final res = await FlutterMediaStreamer.instance
-                                    .streamGalleryImages(limit: 1).toList();
-                                setState(() {
-                                  _response = res;
-                                });
-                              },
-                            )
+                                    child: Text("Get image"),
+                                    onPressed: () async {
+                                      final res = await FlutterMediaStreamer
+                                          .instance
+                                          .streamGalleryImages(limit: 1)
+                                          .toList();
+                                      setState(() {
+                                        _response = res;
+                                      });
+                                    },
+                                  )
                                 : FlatButton(
-                              child: Text("Grant Storage Permissions"),
-                              onPressed: () async {
-                                setState(() {
-                                  _permissionsGranted = FlutterMediaStreamer
-                                      .requestStoragePermissions();
-                                  _permissionsGranted
-                                      .then((value) => setState(() {}));
-                                });
-                              },
-                            );
+                                    child: Text("Grant Storage Permissions"),
+                                    onPressed: () async {
+                                      setState(() {
+                                        _permissionsGranted =
+                                            FlutterMediaStreamer
+                                                .requestStoragePermissions();
+                                        _permissionsGranted
+                                            .then((value) => setState(() {}));
+                                      });
+                                    },
+                                  );
                           default:
                             return CircularProgressIndicator();
                         }
@@ -103,8 +109,18 @@ class _MyAppState extends State<MyApp> {
                 if (_response != null)
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                    child: ListView(
-                      children: [for (var r in _response) Text(r)],
+                    child: GridView(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
+                      children: [
+                        for (var r in _response)
+                          ThumbGridItem(
+                            height: 200,
+                            future: FlutterMediaStreamer.instance.getThumbnail(
+                                (jsonDecode(r)
+                                    as Map<String, dynamic>)['contentUri']),
+                          )
+                      ],
                     ),
                   )
               ],
@@ -112,6 +128,40 @@ class _MyAppState extends State<MyApp> {
           );
         },
       ),
+    );
+  }
+}
+
+class ThumbGridItem extends StatelessWidget {
+  final Future<Uint8List> future;
+  final double height;
+  final double width;
+
+  const ThumbGridItem({Key key, @required this.future, this.height, this.width})
+      : assert(future != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: this.future,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            if (snapshot.data != null) {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Image.memory(
+                snapshot.data,
+                width: width,
+                height: height,
+              ));
+            }
+            return CircularProgressIndicator();
+          default:
+            return CircularProgressIndicator();
+        }
+      },
     );
   }
 }

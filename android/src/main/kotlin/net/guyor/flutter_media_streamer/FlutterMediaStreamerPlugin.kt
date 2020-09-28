@@ -6,13 +6,18 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import androidx.annotation.NonNull;
+import android.util.Size
+import android.webkit.URLUtil
+import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -22,6 +27,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import kotlinx.coroutines.*
+import java.io.ByteArrayOutputStream
 
 private const val READ_EXTERNAL_STORAGE_REQUEST = 0x1045
 /** FlutterMediaStreamerPlugin */
@@ -62,6 +68,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val ERR_CONTEXT = "CONTEXT_NOT_AVAIL"
     @JvmStatic
     val ERR_CONTEXT_MSG = "Application context is not available while calling method %s"
+    @JvmStatic
+    val ERR_VERSION = "ANDROID_VER_TOO_LOW"
     private const val TAG = "FlutterMediaStreamer"
   }
 
@@ -76,6 +84,15 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
               result,
               timeout = call.argument<Int?>("timeout") as Int?
       )
+      "getThumbnail" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getThumbnail(
+              result,
+              call.argument<String?>("contentUriString") ?: "",
+              width = call.argument<Int?>("width") ?: 640,
+              height = call.argument<Int?>("height") ?: 400)
+      else result.error(ERR_VERSION,
+              "getThumbnail only available on android SDK 10+",
+              "Current SDK version ${Build.VERSION.SDK_INT}")
+
       "haveStoragePermission" -> result.success(haveStoragePermission())
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
@@ -108,18 +125,18 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
   /** Main Functionality */
 
-  private fun streamGalleryImages(@NonNull result: Result, limit: Int=0, offset: Int=0) {
-    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getGalleryImages"))
+  private fun streamGalleryImages(@NonNull result: Result, limit: Int = 0, offset: Int = 0) {
+    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamGalleryImages"))
     mainScope.launch {
       if (galleryImageCursor == null) {
         startImageStream(appContext)
       }
-      val res = resumeImageStream(limit=limit, offset=offset)
+      val res = resumeImageStream(limit = limit, offset = offset)
       result.success(res)
     }
   }
 
-  private suspend fun resumeImageStream(limit: Int=0, offset: Int=0) : List<String> {
+  private suspend fun resumeImageStream(limit: Int = 0, offset: Int = 0) : List<String> {
     ///FIXME - implement this bugger
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
@@ -159,7 +176,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           //images += image
           //TODO
           Log.v(TAG, "Added image: $image")
-          res.add( serializer.toJson(image))
+          res.add(serializer.toJson(image))
         }
         if (!hasNext) {
           galleryImageCursor?.cursor?.close()
@@ -195,6 +212,27 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     }
   }
 
+
+  @RequiresApi(Build.VERSION_CODES.Q)
+  private fun getThumbnail(@NonNull result: Result, @NonNull uriString: String, width: Int = 640, height: Int = 480) {
+    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getThumbnail"))
+    var res : ByteArray
+    val uri: Uri = Uri.parse(uriString)
+    Log.d(TAG, "uriString $uriString is ${if (URLUtil.isValidUrl(uriString)) "valid" else "invalid"}")
+    mainScope.launch {
+      withContext(Dispatchers.IO) {
+        var thumbnail : Bitmap = appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
+        val stream = ByteArrayOutputStream()
+        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//        val buffer = ByteBuffer.allocate(thumbnail.allocationByteCount)
+//        thumbnail.copyPixelsToBuffer(buffer)
+//        res = if (buffer.hasArray()) buffer.array() else ByteArray(0)
+        res = stream.toByteArray()
+        thumbnail.recycle()
+      }
+      result.success(res)
+    }
+  }
   /** Other Methods */
 
   private fun requestStoragePermissions(@NonNull result: Result, timeout: Int? = 10) {
@@ -212,7 +250,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
         var count = 0
         withContext(Dispatchers.Default) {
           while (!granted && count < timeoutMillis) {
-            Log.d(TAG,"Checking permissions... ($count)")
+            Log.d(TAG, "Checking permissions... ($count)")
             count += 1000
             granted = haveStoragePermission()
             delay(1000)
