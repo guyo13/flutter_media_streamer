@@ -1,9 +1,13 @@
-
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 
 class FlutterMediaStreamer {
+  static FlutterMediaStreamer _instance = FlutterMediaStreamer._();
+  static FlutterMediaStreamer get instance => _instance;
+  bool _galleryImageStreamLocked = false;
+  FlutterMediaStreamer._();
+
   static const MethodChannel _channel =
       const MethodChannel('flutter_media_streamer');
 
@@ -11,21 +15,36 @@ class FlutterMediaStreamer {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
-  static Stream<String> streamGalleryImages({int limit=10, int offset=0}) async* {
-    if (await haveStoragePermission) {
-      List<String> results;
-      limit = limit ?? 10;
-      offset = offset ?? 0;
-      do {
+
+  //TODO - make sure that this lock is abuse-proof
+  Stream<String> streamGalleryImages({int limit=10, int offset=0}) async* {
+    int millis = 400;
+    while (_galleryImageStreamLocked) {
+      millis += 100;
+      await Future.delayed(Duration(milliseconds: millis));
+    }
+    yield* _streamGalleryImages(limit: limit, offset: offset);
+  }
+
+  Stream<String> _streamGalleryImages({int limit=10, int offset=0}) async* {
+    if (!_galleryImageStreamLocked) {
+      _galleryImageStreamLocked = true;
+      if (await haveStoragePermission) {
+        List<String> results;
+        limit = limit ?? 10;
+        offset = offset ?? 0;
+        do {
           results = await _channel.invokeListMethod('streamGalleryImages', <String, dynamic> {
-          'limit':  limit,
-          'offset': offset,
-        });
+            'limit':  limit,
+            'offset': offset,
+          });
           offset += results.length;
           for (var item in results) {
             yield item;
           }
-      } while (results != null && results.isNotEmpty);
+        } while (results != null && results.isNotEmpty);
+      }
+      _galleryImageStreamLocked = false;
     }
   }
 

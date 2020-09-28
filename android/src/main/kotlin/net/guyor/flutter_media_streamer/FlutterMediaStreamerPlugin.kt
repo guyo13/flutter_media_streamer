@@ -31,7 +31,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
-  private var galleryImageCursor: Cursor? = null
+  private var galleryImageCursor: ImageCursorContainer? = null
   private var binding : FlutterPlugin.FlutterPluginBinding? = null
   private var activity : Activity? = null
   private val mainScope = CoroutineScope(Dispatchers.Main)
@@ -128,7 +128,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     ///FIXME - implement this bugger
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
-      galleryImageCursor?.let { cursor: Cursor ->
+      galleryImageCursor?.cursor?.let { cursor: Cursor ->
         val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val dateModifiedColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
@@ -167,7 +167,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           res.add( serializer.toJson(image))
         }
         if (!hasNext) {
-          galleryImageCursor?.close()
+          galleryImageCursor?.cursor?.close()
           galleryImageCursor = null
         }
       }
@@ -195,7 +195,9 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
               sortOrder
       )
       Log.i(TAG, "Found ${cursor?.count} images")
-      galleryImageCursor = cursor
+      if (cursor != null) {
+        galleryImageCursor = ImageCursorContainer(cursor)
+      }
       res = resumeImageStream(appContext, limit=limit, offset=offset)
     }
     return res;
