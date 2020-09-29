@@ -13,6 +13,9 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
+  built_value_generator: ^7.1.0
+  build_runner: ^1.10.1
+  built_value: ^7.1.0
   flutter_test:
     sdk: flutter
 
