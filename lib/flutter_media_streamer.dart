@@ -25,7 +25,6 @@ class FlutterMediaStreamer {
     });
   }
 
-  //FIXME - Still buggy
   Future<Uint8List> getImage(String contentUri, {int width, int height}) async {
     return await _channel.invokeMethod('getImage', <String, dynamic> {
       'contentUriString': contentUri ?? '',
@@ -38,7 +37,7 @@ class FlutterMediaStreamer {
   Stream<String> streamGalleryImages({int limit=10, int offset=0}) async* {
     int millis = 400;
     while (_galleryImageStreamLocked) {
-      millis += 100;
+      millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
     yield* _streamGalleryImages(limit: limit, offset: offset);
