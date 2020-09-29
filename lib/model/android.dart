@@ -195,6 +195,61 @@ class AndroidPlaylistColumn extends EnumClass {
   static AndroidPlaylistColumn valueOf(String name) => _$apcValueOf(name);
 }
 
+class AndroidDownloadColumn extends EnumClass {
+  static Serializer<AndroidDownloadColumn> get serializer =>
+      _$androidDownloadColumnSerializer;
+
+  /// DownloadColumns constants as defined in MediaStore class
+
+  static const AndroidDownloadColumn download_uri = _$download_uri;
+  static const AndroidDownloadColumn referer_uri = _$referer_uri;
+
+  const AndroidDownloadColumn._(String name) : super(name);
+  static BuiltSet<AndroidDownloadColumn> get values => _$adcValues;
+  static AndroidDownloadColumn valueOf(String name) => _$adcValueOf(name);
+}
+
+class AndroidFileColumn extends EnumClass {
+  static Serializer<AndroidFileColumn> get serializer =>
+      _$androidFileColumnSerializer;
+
+  /// FileColumns constants as defined in MediaStore class
+
+  static const AndroidFileColumn media_type = _$fileMediaType;
+  static const AndroidFileColumn mime_type = _$fileMimeType;
+  static const AndroidFileColumn parent = _$fileParent;
+
+  const AndroidFileColumn._(String name) : super(name);
+  static BuiltSet<AndroidFileColumn> get values => _$afcValues;
+  static AndroidFileColumn valueOf(String name) => _$afcValueOf(name);
+}
+enum FileMediaTypes {
+  MEDIA_TYPE_NONE, MEDIA_TYPE_IMAGE, MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO,
+  MEDIA_TYPE_PLAYLIST, MEDIA_TYPE_SUBTITLE, MEDIA_TYPE_DOCUMENT
+}
+
+class AndroidVideoColumn extends EnumClass {
+  static Serializer<AndroidVideoColumn> get serializer =>
+      _$androidVideoColumnSerializer;
+
+  /// VideoColumns constants as defined in MediaStore class
+  /// Not including deprecated fields (latitude, longitude, mini_thumb_magic)
+
+  static const AndroidVideoColumn bookmark = _$videoBookmark;
+  static const AndroidVideoColumn category = _$category;
+  static const AndroidVideoColumn color_range = _$color_range;
+  static const AndroidVideoColumn color_standard = _$color_standard;
+  static const AndroidVideoColumn color_transfer = _$color_transfer;
+  static const AndroidVideoColumn description = _$videoDescription;
+  static const AndroidVideoColumn isprivate = _$videoIsPrivate;
+  static const AndroidVideoColumn mini_thumb_magic = _$videoMiniThumbMagic;
+  static const AndroidVideoColumn tags = _$videoTags;
+
+  const AndroidVideoColumn._(String name) : super(name);
+  static BuiltSet<AndroidVideoColumn> get values => _$avcValues;
+  static AndroidVideoColumn valueOf(String name) => _$avcValueOf(name);
+}
+
 @SerializersFor([
   AndroidBaseColumn,
   AndroidMediaColumn,
@@ -204,6 +259,9 @@ class AndroidPlaylistColumn extends EnumClass {
   AndroidAlbumColumn,
   AndroidGenreColumn,
   AndroidPlaylistColumn,
+  AndroidDownloadColumn,
+  AndroidFileColumn,
+  AndroidVideoColumn
 ])
 final Serializers androidSerializers = (_$androidSerializers.toBuilder()
       ..add(Iso8601DateTimeSerializer())

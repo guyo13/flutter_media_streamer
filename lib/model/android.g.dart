@@ -464,15 +464,120 @@ final BuiltSet<AndroidPlaylistColumn> _$apcValues =
   _$playlisyDateModified,
 ]);
 
+const AndroidDownloadColumn _$download_uri =
+    const AndroidDownloadColumn._('download_uri');
+const AndroidDownloadColumn _$referer_uri =
+    const AndroidDownloadColumn._('referer_uri');
+
+AndroidDownloadColumn _$adcValueOf(String name) {
+  switch (name) {
+    case 'download_uri':
+      return _$download_uri;
+    case 'referer_uri':
+      return _$referer_uri;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidDownloadColumn> _$adcValues =
+    new BuiltSet<AndroidDownloadColumn>(const <AndroidDownloadColumn>[
+  _$download_uri,
+  _$referer_uri,
+]);
+
+const AndroidFileColumn _$fileMediaType =
+    const AndroidFileColumn._('media_type');
+const AndroidFileColumn _$fileMimeType = const AndroidFileColumn._('mime_type');
+const AndroidFileColumn _$fileParent = const AndroidFileColumn._('parent');
+
+AndroidFileColumn _$afcValueOf(String name) {
+  switch (name) {
+    case 'media_type':
+      return _$fileMediaType;
+    case 'mime_type':
+      return _$fileMimeType;
+    case 'parent':
+      return _$fileParent;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidFileColumn> _$afcValues =
+    new BuiltSet<AndroidFileColumn>(const <AndroidFileColumn>[
+  _$fileMediaType,
+  _$fileMimeType,
+  _$fileParent,
+]);
+
+const AndroidVideoColumn _$videoBookmark =
+    const AndroidVideoColumn._('bookmark');
+const AndroidVideoColumn _$category = const AndroidVideoColumn._('category');
+const AndroidVideoColumn _$color_range =
+    const AndroidVideoColumn._('color_range');
+const AndroidVideoColumn _$color_standard =
+    const AndroidVideoColumn._('color_standard');
+const AndroidVideoColumn _$color_transfer =
+    const AndroidVideoColumn._('color_transfer');
+const AndroidVideoColumn _$videoDescription =
+    const AndroidVideoColumn._('description');
+const AndroidVideoColumn _$videoIsPrivate =
+    const AndroidVideoColumn._('isprivate');
+const AndroidVideoColumn _$videoMiniThumbMagic =
+    const AndroidVideoColumn._('mini_thumb_magic');
+const AndroidVideoColumn _$videoTags = const AndroidVideoColumn._('tags');
+
+AndroidVideoColumn _$avcValueOf(String name) {
+  switch (name) {
+    case 'bookmark':
+      return _$videoBookmark;
+    case 'category':
+      return _$category;
+    case 'color_range':
+      return _$color_range;
+    case 'color_standard':
+      return _$color_standard;
+    case 'color_transfer':
+      return _$color_transfer;
+    case 'description':
+      return _$videoDescription;
+    case 'isprivate':
+      return _$videoIsPrivate;
+    case 'mini_thumb_magic':
+      return _$videoMiniThumbMagic;
+    case 'tags':
+      return _$videoTags;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidVideoColumn> _$avcValues =
+    new BuiltSet<AndroidVideoColumn>(const <AndroidVideoColumn>[
+  _$videoBookmark,
+  _$category,
+  _$color_range,
+  _$color_standard,
+  _$color_transfer,
+  _$videoDescription,
+  _$videoIsPrivate,
+  _$videoMiniThumbMagic,
+  _$videoTags,
+]);
+
 Serializers _$androidSerializers = (new Serializers().toBuilder()
       ..add(AndroidAlbumColumn.serializer)
       ..add(AndroidArtistColumn.serializer)
       ..add(AndroidAudioColumn.serializer)
       ..add(AndroidBaseColumn.serializer)
+      ..add(AndroidDownloadColumn.serializer)
+      ..add(AndroidFileColumn.serializer)
       ..add(AndroidGenreColumn.serializer)
       ..add(AndroidImageColumn.serializer)
       ..add(AndroidMediaColumn.serializer)
-      ..add(AndroidPlaylistColumn.serializer))
+      ..add(AndroidPlaylistColumn.serializer)
+      ..add(AndroidVideoColumn.serializer))
     .build();
 Serializer<AndroidBaseColumn> _$androidBaseColumnSerializer =
     new _$AndroidBaseColumnSerializer();
@@ -490,6 +595,12 @@ Serializer<AndroidGenreColumn> _$androidGenreColumnSerializer =
     new _$AndroidGenreColumnSerializer();
 Serializer<AndroidPlaylistColumn> _$androidPlaylistColumnSerializer =
     new _$AndroidPlaylistColumnSerializer();
+Serializer<AndroidDownloadColumn> _$androidDownloadColumnSerializer =
+    new _$AndroidDownloadColumnSerializer();
+Serializer<AndroidFileColumn> _$androidFileColumnSerializer =
+    new _$AndroidFileColumnSerializer();
+Serializer<AndroidVideoColumn> _$androidVideoColumnSerializer =
+    new _$AndroidVideoColumnSerializer();
 
 class _$AndroidBaseColumnSerializer
     implements PrimitiveSerializer<AndroidBaseColumn> {
@@ -666,6 +777,60 @@ class _$AndroidPlaylistColumnSerializer
           {FullType specifiedType = FullType.unspecified}) =>
       AndroidPlaylistColumn.valueOf(
           _fromWire[serialized] ?? serialized as String);
+}
+
+class _$AndroidDownloadColumnSerializer
+    implements PrimitiveSerializer<AndroidDownloadColumn> {
+  @override
+  final Iterable<Type> types = const <Type>[AndroidDownloadColumn];
+  @override
+  final String wireName = 'AndroidDownloadColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidDownloadColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  AndroidDownloadColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidDownloadColumn.valueOf(serialized as String);
+}
+
+class _$AndroidFileColumnSerializer
+    implements PrimitiveSerializer<AndroidFileColumn> {
+  @override
+  final Iterable<Type> types = const <Type>[AndroidFileColumn];
+  @override
+  final String wireName = 'AndroidFileColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidFileColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  AndroidFileColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidFileColumn.valueOf(serialized as String);
+}
+
+class _$AndroidVideoColumnSerializer
+    implements PrimitiveSerializer<AndroidVideoColumn> {
+  @override
+  final Iterable<Type> types = const <Type>[AndroidVideoColumn];
+  @override
+  final String wireName = 'AndroidVideoColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidVideoColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  AndroidVideoColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidVideoColumn.valueOf(serialized as String);
 }
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
