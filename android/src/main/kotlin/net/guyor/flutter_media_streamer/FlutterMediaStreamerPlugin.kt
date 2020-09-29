@@ -141,7 +141,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
   /** Main Functionality */
 
-  private fun streamGalleryImages(@NonNull result: Result, columns: List<String>, limit: Int = 0, offset: Int = 0) {
+  private fun streamGalleryImages(@NonNull result: Result, columns: List<String>, limit: Int = 10, offset: Int = 0) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamGalleryImages"))
     mainScope.launch {
       if (galleryImageCursor == null) {
@@ -156,17 +156,24 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     }
   }
 
-  private suspend fun resumeImageStream(limit: Int = 0, offset: Int = 0) : List<String> {
-    //TODO - implement offset
+  private suspend fun resumeImageStream(limit: Int = 10, offset: Int = 0) : List<String> {
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
         /** Based on https://github.com/android/storage-samples/tree/master/MediaStore */
       galleryImageCursor?.cursor?.let { cursor: Cursor ->
-        var hasNext = cursor.moveToNext()
+        val cursorPos = cursor.position
+        var hasNext = false
+        if (cursorPos != offset  && cursor.count > offset) {
+          Log.d(TAG, "Moving cursor at pos $cursorPos to pos $offset")
+          cursor.moveToPosition(offset)
+          hasNext = true
+        } else if (cursorPos == offset)
+            hasNext = offset < cursor.count
         while (hasNext && res.size < limit) {
           val image = galleryImageCursor!!.getImageMediaData()
           Log.v(TAG, "Adding image to result set: id - ${image.id}")
           res.add(serializer.toJson(image))
+          hasNext = cursor.moveToNext()
         }
         if (!hasNext) {
           galleryImageCursor?.cursor?.close()
