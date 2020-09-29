@@ -94,16 +94,18 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
               call.argument<String?>("contentUriString") ?: "",
               width = call.argument<Int?>("width") ?: 640,
               height = call.argument<Int?>("height") ?: 400)
-      else result.error(ERR_VERSION,
-              "getThumbnail only available on android SDK 10+",
-              "Current SDK version ${Build.VERSION.SDK_INT}")
+      else getImage(
+              result,
+              call.argument<String?>("contentUriString") ?: "",
+              width = call.argument<Int?>("width") ?: 640,
+              height = call.argument<Int?>("height") ?: 400)
       "getImage" -> getImage(
               result,
               call.argument<String?>("contentUriString") ?: "",
               width = call.argument<Int?>("width"),
               height = call.argument<Int?>("height"))
       "haveStoragePermission" -> result.success(haveStoragePermission())
-      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+      "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
   }
