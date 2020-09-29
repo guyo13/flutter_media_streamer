@@ -77,6 +77,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val ERR_URI_OPEN = "ERR_OPEN_URI"
     @JvmStatic
     val ERR_MISSING_ARG = "ERR_MISSING_ARG"
+    @JvmStatic
+    val ERR_NULL_CURSOR = "ERR_NULL_CURSOR"
     private const val TAG = "FlutterMediaStreamer"
   }
 
@@ -143,57 +145,27 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamGalleryImages"))
     mainScope.launch {
       if (galleryImageCursor == null) {
-        startImageStream(appContext, columns)
-//        Log.d(TAG, "Cursor Loaded")
-//        Log.v(TAG, ImageCursorContainer.ColumnIndex.imageColumnNames.toString())
+        galleryImageCursor = getGalleryImageCursor(appContext, columns)
       }
-      val res = resumeImageStream(limit = limit, offset = offset)
-      result.success(res)
+      if (galleryImageCursor == null) {
+        onError(result, ERR_NULL_CURSOR, "Received null cursor from android")
+      } else {
+        val res = resumeImageStream(limit = limit, offset = offset)
+        result.success(res)
+      }
     }
   }
 
   private suspend fun resumeImageStream(limit: Int = 0, offset: Int = 0) : List<String> {
+    //TODO - implement offset
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
         /** Based on https://github.com/android/storage-samples/tree/master/MediaStore */
       galleryImageCursor?.cursor?.let { cursor: Cursor ->
-        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        val dateModifiedColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
-        val displayNameColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val mimTypeCol = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
-
         var hasNext = cursor.moveToNext()
         while (hasNext && res.size < limit) {
-
-          // Here we'll use the column indexs that we found above.
-          val id = cursor.getLong(idColumn)
-          val dateModified = cursor.getLong(dateModifiedColumn)
-          val displayName = cursor.getString(displayNameColumn)
-          val mimeType = cursor.getString(mimTypeCol)
-
-
-          /**
-           * This is one of the trickiest parts:
-           *
-           * Since we're accessing images (using
-           * [MediaStore.Images.Media.EXTERNAL_CONTENT_URI], we'll use that
-           * as the base URI and append the ID of the image to it.
-           *
-           * This is the exact same way to do it when working with [MediaStore.Video] and
-           * [MediaStore.Audio] as well. Whatever `Media.EXTERNAL_CONTENT_URI` you
-           * query to get the items is the base, and the ID is the document to
-           * request there.
-           */
-          val contentUri = ContentUris.withAppendedId(
-                  MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                  id
-          ).toString()
-          val image = ImageMediaData(contentUri, id, displayName = displayName, dateModified = dateModified, mimeType = mimeType)
-          //images += image
-          //TODO
-          Log.v(TAG, "Added image: $image")
+          val image = galleryImageCursor!!.getImageMediaData()
+          Log.v(TAG, "Adding image to result set: id - ${image.id}")
           res.add(serializer.toJson(image))
         }
         if (!hasNext) {
@@ -205,30 +177,30 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     return res
   }
 
-  private suspend fun startImageStream(appContext: Context, @NonNull columns: List<String>) {
+  private suspend fun getGalleryImageCursor(appContext: Context, @NonNull columns: List<String>) : ImageCursorContainer? {
+    var cursorContainer: ImageCursorContainer? = null
     withContext(Dispatchers.IO) {
-      val projection = arrayOf(
-              MediaStore.Images.Media._ID,
-              MediaStore.Images.Media.DISPLAY_NAME,
-              MediaStore.Images.Media.DATE_ADDED,
-              MediaStore.Images.Media.MIME_TYPE,
-      )
+      val projection = ImageCursorContainer.getValidProjection(columns)
+      //TODO - take from method call
       val selection = "${MediaStore.Images.Media.DATE_ADDED} >= ?"
       val selectionArgs = arrayOf("1577881609")
       val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
       val cursor: Cursor? = appContext.contentResolver.query(
               MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-              projection,
+              projection.toTypedArray(),
               selection,
               selectionArgs,
               sortOrder
       )
-      Log.i(TAG, "Found ${cursor?.count} images")
       if (cursor != null) {
-        galleryImageCursor = ImageCursorContainer(cursor)
+        Log.v(TAG, "Found ${cursor.count} images")
+        cursorContainer = ImageCursorContainer(cursor)
+        /** Get indices for the same columns as we are projecting */
+        cursorContainer!!.addColumns(projection)
       }
     }
+    return cursorContainer
   }
 
 

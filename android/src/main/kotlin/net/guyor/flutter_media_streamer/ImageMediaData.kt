@@ -1,5 +1,6 @@
 package net.guyor.flutter_media_streamer
 
+// TODO - change all logical boolean values from int to boolean
 data class ImageMediaData constructor (
         val contentUri: String,
         /** BaseColumns */
