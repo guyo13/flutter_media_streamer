@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:built_value/serializer.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_media_streamer/utils/utils.dart';
 
 import 'model/android.dart';
 
-const _empty = <String> [];
+const _empty = <String>[];
 
 class FlutterMediaStreamer {
   static FlutterMediaStreamer _instance = FlutterMediaStreamer._();
@@ -38,8 +40,33 @@ class FlutterMediaStreamer {
     });
   }
 
+  Stream<AndroidImageMediaData> streamAndroidGalleryImages({
+    int limit = 10,
+    int offset = 0,
+    Iterable<AndroidBaseColumn> baseColumns = const [idColumn],
+    Iterable<AndroidMediaColumn> mediaColumns = const [
+      AndroidMediaColumn.mime_type,
+      AndroidMediaColumn.height,
+      AndroidMediaColumn.width
+    ],
+    Iterable<AndroidImageColumn> imageColumns = const [
+      AndroidImageColumn.description
+    ],
+    JsonCallback jsonDecodeFn = defaultJsonDecode,
+  }) async* {
+    await for (var item in streamRawAndroidGalleryImages(
+        limit: limit,
+        offset: offset,
+        baseColumns: baseColumns,
+        mediaColumns: mediaColumns,
+        imageColumns: imageColumns)) {
+      final json = await jsonDecodeFn(item);
+      yield androidSerializers.deserialize(json, specifiedType: const FullType(AndroidImageMediaData));
+    }
+  }
+
   //TODO - make sure that this lock is abuse-proof
-  Stream<String> streamGalleryImages(
+  Stream<String> streamRawAndroidGalleryImages(
       {int limit = 10,
       int offset = 0,
       Iterable<AndroidBaseColumn> baseColumns = const [idColumn],
@@ -56,7 +83,7 @@ class FlutterMediaStreamer {
       millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
-    yield* _streamGalleryImages(
+    yield* _streamRawAndroidGalleryImages(
         limit: limit,
         offset: offset,
         baseColumns: baseColumns,
@@ -64,7 +91,7 @@ class FlutterMediaStreamer {
         imageColumns: imageColumns);
   }
 
-  Stream<String> _streamGalleryImages(
+  Stream<String> _streamRawAndroidGalleryImages(
       {int limit = 10,
       int offset = 0,
       Iterable<AndroidBaseColumn> baseColumns = const [idColumn],

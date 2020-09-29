@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_media_streamer/flutter_media_streamer.dart';
+import 'package:flutter_media_streamer/model/android.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  List<String> _response;
+  List<AndroidImageMediaData> _response;
   Future<bool> _permissionsGranted;
 
   @override
@@ -63,8 +64,14 @@ class _MyAppState extends State<MyApp> {
       builder: (context) {
         return ListView(
           children: [
-            ListTile(title: Text("Get Thumbnail example"), onTap: () => moveTo('/', context),),
-            ListTile(title: Text("Get Image example"), onTap: () => moveTo('/getImage', context),),
+            ListTile(
+              title: Text("Get Thumbnail example"),
+              onTap: () => moveTo('/', context),
+            ),
+            ListTile(
+              title: Text("Get Image example"),
+              onTap: () => moveTo('/getImage', context),
+            ),
           ],
         );
       },
@@ -78,6 +85,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (BuildContext context) {
           return Scaffold(
+            key: ValueKey("GetThumbnailDemo"),
             drawer: drawer,
             appBar: AppBar(
               title: const Text('Media Streamer thumbnail example'),
@@ -108,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                                         onPressed: () async {
                                           final res = await FlutterMediaStreamer
                                               .instance
-                                              .streamGalleryImages(limit: 1)
+                                              .streamAndroidGalleryImages(limit: 3)
                                               .toList();
                                           setState(() {
                                             _response = res;
@@ -116,14 +124,15 @@ class _MyAppState extends State<MyApp> {
                                         },
                                       )
                                     : FlatButton(
-                                        child: Text("Grant Storage Permissions"),
+                                        child:
+                                            Text("Grant Storage Permissions"),
                                         onPressed: () async {
                                           setState(() {
                                             _permissionsGranted =
                                                 FlutterMediaStreamer
                                                     .requestStoragePermissions();
-                                            _permissionsGranted
-                                                .then((value) => setState(() {}));
+                                            _permissionsGranted.then(
+                                                (value) => setState(() {}));
                                           });
                                         },
                                       );
@@ -146,9 +155,7 @@ class _MyAppState extends State<MyApp> {
                         for (var r in _response)
                           ThumbGridItem(
                             height: 200,
-                            future: FlutterMediaStreamer.instance.getThumbnail(
-                                (jsonDecode(r)
-                                    as Map<String, dynamic>)['contentUri']),
+                            future: FlutterMediaStreamer.instance.getThumbnail(r.contentUri),
                           )
                       ],
                     ),
@@ -159,64 +166,66 @@ class _MyAppState extends State<MyApp> {
         },
         '/getImage': (BuildContext context) {
           return Scaffold(
+            key: ValueKey("GetImageDemo"),
             drawer: drawer,
             appBar: AppBar(
               title: const Text('Media Streamer getImage'),
             ),
             body: Stack(
               children: [
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   children: [
-                     Text('Running on: $_platformVersion\n'),
-                   ],
-                 ),
-                   Container(
-                     padding: EdgeInsets.symmetric(vertical: 16.0),
-                     child: Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                         Container(
-                          child: FutureBuilder(
-                            initialData: false,
-                            future: _permissionsGranted,
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.done:
-                                  return snapshot.data
-                                      ? FlatButton(
-                                          child: Text("Get images"),
-                                          onPressed: () async {
-                                            final res = await FlutterMediaStreamer
-                                                .instance
-                                                .streamGalleryImages(limit: 1)
-                                                .toList();
-                                            setState(() {
-                                              _response = res;
-                                            });
-                                          },
-                                        )
-                                      : FlatButton(
-                                          child: Text("Grant Storage Permissions"),
-                                          onPressed: () async {
-                                            setState(() {
-                                              _permissionsGranted =
-                                                  FlutterMediaStreamer
-                                                      .requestStoragePermissions();
-                                              _permissionsGranted
-                                                  .then((value) => setState(() {}));
-                                            });
-                                          },
-                                        );
-                                default:
-                                  return CircularProgressIndicator();
-                              }
-                            },
-                          ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Running on: $_platformVersion\n'),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: FutureBuilder(
+                          initialData: false,
+                          future: _permissionsGranted,
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.done:
+                                return snapshot.data
+                                    ? FlatButton(
+                                        child: Text("Get images"),
+                                        onPressed: () async {
+                                          final res = await FlutterMediaStreamer
+                                              .instance
+                                              .streamAndroidGalleryImages(limit: 1)
+                                              .toList();
+                                          setState(() {
+                                            _response = res;
+                                          });
+                                        },
+                                      )
+                                    : FlatButton(
+                                        child:
+                                            Text("Grant Storage Permissions"),
+                                        onPressed: () async {
+                                          setState(() {
+                                            _permissionsGranted =
+                                                FlutterMediaStreamer
+                                                    .requestStoragePermissions();
+                                            _permissionsGranted.then(
+                                                (value) => setState(() {}));
+                                          });
+                                        },
+                                      );
+                              default:
+                                return CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                       ],
-                     ),
-                   ),
+                ),
                 if (_response != null)
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
@@ -226,10 +235,8 @@ class _MyAppState extends State<MyApp> {
                       children: [
                         for (var r in _response)
                           ThumbGridItem(
-                            // height: 200,
                             future: FlutterMediaStreamer.instance.getImage(
-                                (jsonDecode(r)
-                                    as Map<String, dynamic>)['contentUri'],
+                                r.contentUri,
                                 height: 200,
                                 width: 320),
                           )
