@@ -26,10 +26,10 @@ final BuiltSet<AndroidBaseColumn> _$abcValues =
   _$COUNT,
 ]);
 
-const AndroidMediaColumn _$album = const AndroidMediaColumn._('album');
+const AndroidMediaColumn _$mediaAlbum = const AndroidMediaColumn._('album');
 const AndroidMediaColumn _$album_artist =
     const AndroidMediaColumn._('album_artist');
-const AndroidMediaColumn _$artist = const AndroidMediaColumn._('artist');
+const AndroidMediaColumn _$mediaArtist = const AndroidMediaColumn._('artist');
 const AndroidMediaColumn _$author = const AndroidMediaColumn._('author');
 const AndroidMediaColumn _$bitrate = const AndroidMediaColumn._('bitrate');
 const AndroidMediaColumn _$bucket_display_name =
@@ -42,11 +42,11 @@ const AndroidMediaColumn _$cd_track_number =
 const AndroidMediaColumn _$compilation =
     const AndroidMediaColumn._('compilation');
 const AndroidMediaColumn _$composer = const AndroidMediaColumn._('composer');
-const AndroidMediaColumn _$date_added =
+const AndroidMediaColumn _$mediaDateAdded =
     const AndroidMediaColumn._('date_added');
-const AndroidMediaColumn _$date_expires =
+const AndroidMediaColumn _$mediaDateExpires =
     const AndroidMediaColumn._('date_expires');
-const AndroidMediaColumn _$date_modified =
+const AndroidMediaColumn _$mediaDateModified =
     const AndroidMediaColumn._('date_modified');
 const AndroidMediaColumn _$datetaken = const AndroidMediaColumn._('datetaken');
 const AndroidMediaColumn _$disc_number =
@@ -98,11 +98,11 @@ const AndroidMediaColumn _$mediaYear = const AndroidMediaColumn._('year');
 AndroidMediaColumn _$amcValueOf(String name) {
   switch (name) {
     case 'album':
-      return _$album;
+      return _$mediaAlbum;
     case 'album_artist':
       return _$album_artist;
     case 'artist':
-      return _$artist;
+      return _$mediaArtist;
     case 'author':
       return _$author;
     case 'bitrate':
@@ -120,11 +120,11 @@ AndroidMediaColumn _$amcValueOf(String name) {
     case 'composer':
       return _$composer;
     case 'date_added':
-      return _$date_added;
+      return _$mediaDateAdded;
     case 'date_expires':
-      return _$date_expires;
+      return _$mediaDateExpires;
     case 'date_modified':
-      return _$date_modified;
+      return _$mediaDateModified;
     case 'datetaken':
       return _$datetaken;
     case 'disc_number':
@@ -190,9 +190,9 @@ AndroidMediaColumn _$amcValueOf(String name) {
 
 final BuiltSet<AndroidMediaColumn> _$amcValues =
     new BuiltSet<AndroidMediaColumn>(const <AndroidMediaColumn>[
-  _$album,
+  _$mediaAlbum,
   _$album_artist,
-  _$artist,
+  _$mediaArtist,
   _$author,
   _$bitrate,
   _$bucket_display_name,
@@ -201,9 +201,9 @@ final BuiltSet<AndroidMediaColumn> _$amcValues =
   _$cd_track_number,
   _$compilation,
   _$composer,
-  _$date_added,
-  _$date_expires,
-  _$date_modified,
+  _$mediaDateAdded,
+  _$mediaDateExpires,
+  _$mediaDateModified,
   _$datetaken,
   _$disc_number,
   _$display_name,
@@ -274,7 +274,8 @@ final BuiltSet<AndroidImageColumn> _$aicValues =
   _$scene_capture_type,
 ]);
 
-const AndroidAudioColumn _$album_id = const AndroidAudioColumn._('album_id');
+const AndroidAudioColumn _$audioAlbumId =
+    const AndroidAudioColumn._('album_id');
 const AndroidAudioColumn _$artist_id = const AndroidAudioColumn._('artist_id');
 const AndroidAudioColumn _$bookmark = const AndroidAudioColumn._('bookmark');
 const AndroidAudioColumn _$audioGenre = const AndroidAudioColumn._('genre');
@@ -297,7 +298,7 @@ const AndroidAudioColumn _$audioYear = const AndroidAudioColumn._('year');
 AndroidAudioColumn _$aacValueOf(String name) {
   switch (name) {
     case 'album_id':
-      return _$album_id;
+      return _$audioAlbumId;
     case 'artist_id':
       return _$artist_id;
     case 'bookmark':
@@ -331,7 +332,7 @@ AndroidAudioColumn _$aacValueOf(String name) {
 
 final BuiltSet<AndroidAudioColumn> _$aacValues =
     new BuiltSet<AndroidAudioColumn>(const <AndroidAudioColumn>[
-  _$album_id,
+  _$audioAlbumId,
   _$artist_id,
   _$bookmark,
   _$audioGenre,
@@ -347,11 +348,131 @@ final BuiltSet<AndroidAudioColumn> _$aacValues =
   _$audioYear,
 ]);
 
+const AndroidArtistColumn _$artist = const AndroidArtistColumn._('artist');
+const AndroidArtistColumn _$number_of_albums =
+    const AndroidArtistColumn._('number_of_albums');
+const AndroidArtistColumn _$number_of_tracks =
+    const AndroidArtistColumn._('number_of_tracks');
+
+AndroidArtistColumn _$aarcValueOf(String name) {
+  switch (name) {
+    case 'artist':
+      return _$artist;
+    case 'number_of_albums':
+      return _$number_of_albums;
+    case 'number_of_tracks':
+      return _$number_of_tracks;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidArtistColumn> _$aarcValues =
+    new BuiltSet<AndroidArtistColumn>(const <AndroidArtistColumn>[
+  _$artist,
+  _$number_of_albums,
+  _$number_of_tracks,
+]);
+
+const AndroidAlbumColumn _$album = const AndroidAlbumColumn._('album');
+const AndroidAlbumColumn _$album_id = const AndroidAlbumColumn._('album_id');
+const AndroidAlbumColumn _$albumArtist = const AndroidAlbumColumn._('artist');
+const AndroidAlbumColumn _$albumArtistId =
+    const AndroidAlbumColumn._('artist_id');
+const AndroidAlbumColumn _$albumMinYear = const AndroidAlbumColumn._('minyear');
+const AndroidAlbumColumn _$albumMaxYear = const AndroidAlbumColumn._('maxyear');
+const AndroidAlbumColumn _$albumNumsongs =
+    const AndroidAlbumColumn._('numsongs');
+const AndroidAlbumColumn _$albumNumSongsByArtist =
+    const AndroidAlbumColumn._('numsongs_by_artist');
+
+AndroidAlbumColumn _$aalcValueOf(String name) {
+  switch (name) {
+    case 'album':
+      return _$album;
+    case 'album_id':
+      return _$album_id;
+    case 'artist':
+      return _$albumArtist;
+    case 'artist_id':
+      return _$albumArtistId;
+    case 'minyear':
+      return _$albumMinYear;
+    case 'maxyear':
+      return _$albumMaxYear;
+    case 'numsongs':
+      return _$albumNumsongs;
+    case 'numsongs_by_artist':
+      return _$albumNumSongsByArtist;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidAlbumColumn> _$aalcValues =
+    new BuiltSet<AndroidAlbumColumn>(const <AndroidAlbumColumn>[
+  _$album,
+  _$album_id,
+  _$albumArtist,
+  _$albumArtistId,
+  _$albumMinYear,
+  _$albumMaxYear,
+  _$albumNumsongs,
+  _$albumNumSongsByArtist,
+]);
+
+const AndroidGenreColumn _$genreName = const AndroidGenreColumn._('genreName');
+
+AndroidGenreColumn _$agcValueOf(String name) {
+  switch (name) {
+    case 'genreName':
+      return _$genreName;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidGenreColumn> _$agcValues =
+    new BuiltSet<AndroidGenreColumn>(const <AndroidGenreColumn>[
+  _$genreName,
+]);
+
+const AndroidPlaylistColumn _$playlistName =
+    const AndroidPlaylistColumn._('playlistName');
+const AndroidPlaylistColumn _$playlistDateAdded =
+    const AndroidPlaylistColumn._('date_added');
+const AndroidPlaylistColumn _$playlisyDateModified =
+    const AndroidPlaylistColumn._('date_modified');
+
+AndroidPlaylistColumn _$apcValueOf(String name) {
+  switch (name) {
+    case 'playlistName':
+      return _$playlistName;
+    case 'date_added':
+      return _$playlistDateAdded;
+    case 'date_modified':
+      return _$playlisyDateModified;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<AndroidPlaylistColumn> _$apcValues =
+    new BuiltSet<AndroidPlaylistColumn>(const <AndroidPlaylistColumn>[
+  _$playlistName,
+  _$playlistDateAdded,
+  _$playlisyDateModified,
+]);
+
 Serializers _$androidSerializers = (new Serializers().toBuilder()
+      ..add(AndroidAlbumColumn.serializer)
+      ..add(AndroidArtistColumn.serializer)
       ..add(AndroidAudioColumn.serializer)
       ..add(AndroidBaseColumn.serializer)
+      ..add(AndroidGenreColumn.serializer)
       ..add(AndroidImageColumn.serializer)
-      ..add(AndroidMediaColumn.serializer))
+      ..add(AndroidMediaColumn.serializer)
+      ..add(AndroidPlaylistColumn.serializer))
     .build();
 Serializer<AndroidBaseColumn> _$androidBaseColumnSerializer =
     new _$AndroidBaseColumnSerializer();
@@ -361,6 +482,14 @@ Serializer<AndroidImageColumn> _$androidImageColumnSerializer =
     new _$AndroidImageColumnSerializer();
 Serializer<AndroidAudioColumn> _$androidAudioColumnSerializer =
     new _$AndroidAudioColumnSerializer();
+Serializer<AndroidArtistColumn> _$androidArtistColumnSerializer =
+    new _$AndroidArtistColumnSerializer();
+Serializer<AndroidAlbumColumn> _$androidAlbumColumnSerializer =
+    new _$AndroidAlbumColumnSerializer();
+Serializer<AndroidGenreColumn> _$androidGenreColumnSerializer =
+    new _$AndroidGenreColumnSerializer();
+Serializer<AndroidPlaylistColumn> _$androidPlaylistColumnSerializer =
+    new _$AndroidPlaylistColumnSerializer();
 
 class _$AndroidBaseColumnSerializer
     implements PrimitiveSerializer<AndroidBaseColumn> {
@@ -450,6 +579,93 @@ class _$AndroidAudioColumnSerializer
   AndroidAudioColumn deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
       AndroidAudioColumn.valueOf(serialized as String);
+}
+
+class _$AndroidArtistColumnSerializer
+    implements PrimitiveSerializer<AndroidArtistColumn> {
+  @override
+  final Iterable<Type> types = const <Type>[AndroidArtistColumn];
+  @override
+  final String wireName = 'AndroidArtistColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidArtistColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  AndroidArtistColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidArtistColumn.valueOf(serialized as String);
+}
+
+class _$AndroidAlbumColumnSerializer
+    implements PrimitiveSerializer<AndroidAlbumColumn> {
+  @override
+  final Iterable<Type> types = const <Type>[AndroidAlbumColumn];
+  @override
+  final String wireName = 'AndroidAlbumColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidAlbumColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  AndroidAlbumColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidAlbumColumn.valueOf(serialized as String);
+}
+
+class _$AndroidGenreColumnSerializer
+    implements PrimitiveSerializer<AndroidGenreColumn> {
+  static const Map<String, Object> _toWire = const <String, Object>{
+    'genreName': 'name',
+  };
+  static const Map<Object, String> _fromWire = const <Object, String>{
+    'name': 'genreName',
+  };
+
+  @override
+  final Iterable<Type> types = const <Type>[AndroidGenreColumn];
+  @override
+  final String wireName = 'AndroidGenreColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidGenreColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      _toWire[object.name] ?? object.name;
+
+  @override
+  AndroidGenreColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidGenreColumn.valueOf(_fromWire[serialized] ?? serialized as String);
+}
+
+class _$AndroidPlaylistColumnSerializer
+    implements PrimitiveSerializer<AndroidPlaylistColumn> {
+  static const Map<String, Object> _toWire = const <String, Object>{
+    'playlistName': 'name',
+  };
+  static const Map<Object, String> _fromWire = const <Object, String>{
+    'name': 'playlistName',
+  };
+
+  @override
+  final Iterable<Type> types = const <Type>[AndroidPlaylistColumn];
+  @override
+  final String wireName = 'AndroidPlaylistColumn';
+
+  @override
+  Object serialize(Serializers serializers, AndroidPlaylistColumn object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      _toWire[object.name] ?? object.name;
+
+  @override
+  AndroidPlaylistColumn deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      AndroidPlaylistColumn.valueOf(
+          _fromWire[serialized] ?? serialized as String);
 }
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

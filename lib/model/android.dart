@@ -8,7 +8,8 @@ part 'android.g.dart';
 
 /// Enums
 class AndroidBaseColumn extends EnumClass {
-  static Serializer<AndroidBaseColumn> get serializer => _$androidBaseColumnSerializer;
+  static Serializer<AndroidBaseColumn> get serializer =>
+      _$androidBaseColumnSerializer;
 
   /// BaseColumns constants as defined in BaseColumns class
 
@@ -19,18 +20,19 @@ class AndroidBaseColumn extends EnumClass {
 
   const AndroidBaseColumn._(String name) : super(name);
   static BuiltSet<AndroidBaseColumn> get values => _$abcValues;
-  static AndroidBaseColumn valueOf(String name)  => _$abcValueOf(name);
+  static AndroidBaseColumn valueOf(String name) => _$abcValueOf(name);
 }
 
 class AndroidMediaColumn extends EnumClass {
-  static Serializer<AndroidMediaColumn> get serializer => _$androidMediaColumnSerializer;
+  static Serializer<AndroidMediaColumn> get serializer =>
+      _$androidMediaColumnSerializer;
 
   /// MediaColumns constants as defined in MediaStore class
   /// Not including deprecated fields (_data)
 
-  static const AndroidMediaColumn album = _$album;
+  static const AndroidMediaColumn album = _$mediaAlbum;
   static const AndroidMediaColumn album_artist = _$album_artist;
-  static const AndroidMediaColumn artist = _$artist;
+  static const AndroidMediaColumn artist = _$mediaArtist;
   static const AndroidMediaColumn author = _$author;
   static const AndroidMediaColumn bitrate = _$bitrate;
   static const AndroidMediaColumn bucket_display_name = _$bucket_display_name;
@@ -39,9 +41,9 @@ class AndroidMediaColumn extends EnumClass {
   static const AndroidMediaColumn cd_track_number = _$cd_track_number;
   static const AndroidMediaColumn compilation = _$compilation;
   static const AndroidMediaColumn composer = _$composer;
-  static const AndroidMediaColumn date_added = _$date_added;
-  static const AndroidMediaColumn date_expires = _$date_expires;
-  static const AndroidMediaColumn date_modified = _$date_modified;
+  static const AndroidMediaColumn date_added = _$mediaDateAdded;
+  static const AndroidMediaColumn date_expires = _$mediaDateExpires;
+  static const AndroidMediaColumn date_modified = _$mediaDateModified;
   static const AndroidMediaColumn datetaken = _$datetaken;
   static const AndroidMediaColumn disc_number = _$disc_number;
   @BuiltValueEnumConst(wireName: '_display_name')
@@ -76,11 +78,12 @@ class AndroidMediaColumn extends EnumClass {
 
   const AndroidMediaColumn._(String name) : super(name);
   static BuiltSet<AndroidMediaColumn> get values => _$amcValues;
-  static AndroidMediaColumn valueOf(String name)  => _$amcValueOf(name);
+  static AndroidMediaColumn valueOf(String name) => _$amcValueOf(name);
 }
 
 class AndroidImageColumn extends EnumClass {
-  static Serializer<AndroidImageColumn> get serializer => _$androidImageColumnSerializer;
+  static Serializer<AndroidImageColumn> get serializer =>
+      _$androidImageColumnSerializer;
 
   /// ImageColumns constants as defined in MediaStore class
   /// Not including deprecated fields (latitude, longitude, mini_thumb_magic, picasa_id)
@@ -92,19 +95,19 @@ class AndroidImageColumn extends EnumClass {
   static const AndroidImageColumn isprivate = _$isprivate;
   static const AndroidImageColumn scene_capture_type = _$scene_capture_type;
 
-
   const AndroidImageColumn._(String name) : super(name);
   static BuiltSet<AndroidImageColumn> get values => _$aicValues;
-  static AndroidImageColumn valueOf(String name)  => _$aicValueOf(name);
+  static AndroidImageColumn valueOf(String name) => _$aicValueOf(name);
 }
 
 class AndroidAudioColumn extends EnumClass {
-  static Serializer<AndroidAudioColumn> get serializer => _$androidAudioColumnSerializer;
+  static Serializer<AndroidAudioColumn> get serializer =>
+      _$androidAudioColumnSerializer;
 
   /// AudioColumns constants as defined in MediaStore class
   /// Not including deprecated fields (album_key, artist_key, genre_key, title_key)
 
-  static const AndroidAudioColumn album_id = _$album_id;
+  static const AndroidAudioColumn album_id = _$audioAlbumId;
   static const AndroidAudioColumn artist_id = _$artist_id;
   static const AndroidAudioColumn bookmark = _$bookmark;
   static const AndroidAudioColumn genre = _$audioGenre;
@@ -121,11 +124,88 @@ class AndroidAudioColumn extends EnumClass {
 
   const AndroidAudioColumn._(String name) : super(name);
   static BuiltSet<AndroidAudioColumn> get values => _$aacValues;
-  static AndroidAudioColumn valueOf(String name)  => _$aacValueOf(name);
+  static AndroidAudioColumn valueOf(String name) => _$aacValueOf(name);
 }
 
-@SerializersFor([AndroidBaseColumn, AndroidMediaColumn, AndroidImageColumn, AndroidAudioColumn])
+class AndroidArtistColumn extends EnumClass {
+  static Serializer<AndroidArtistColumn> get serializer =>
+      _$androidArtistColumnSerializer;
+
+  /// ArtistColumns constants as defined in MediaStore class
+  /// Not including deprecated fields (artist_key)
+
+  static const AndroidArtistColumn artist = _$artist;
+  static const AndroidArtistColumn number_of_albums = _$number_of_albums;
+  static const AndroidArtistColumn number_of_tracks = _$number_of_tracks;
+
+  const AndroidArtistColumn._(String name) : super(name);
+  static BuiltSet<AndroidArtistColumn> get values => _$aarcValues;
+  static AndroidArtistColumn valueOf(String name) => _$aarcValueOf(name);
+}
+
+class AndroidAlbumColumn extends EnumClass {
+  static Serializer<AndroidAlbumColumn> get serializer =>
+      _$androidAlbumColumnSerializer;
+
+  /// AlbumColumns constants as defined in MediaStore class
+  /// Not including deprecated fields (album_art, album_key, artist_key)
+
+  static const AndroidAlbumColumn album = _$album;
+  static const AndroidAlbumColumn album_id = _$album_id;
+  static const AndroidAlbumColumn artist = _$albumArtist;
+  static const AndroidAlbumColumn artist_id = _$albumArtistId;
+  static const AndroidAlbumColumn minyear = _$albumMinYear;
+  static const AndroidAlbumColumn maxyear = _$albumMaxYear;
+  static const AndroidAlbumColumn numsongs = _$albumNumsongs;
+  static const AndroidAlbumColumn numsongs_by_artist = _$albumNumSongsByArtist;
+
+  const AndroidAlbumColumn._(String name) : super(name);
+  static BuiltSet<AndroidAlbumColumn> get values => _$aalcValues;
+  static AndroidAlbumColumn valueOf(String name) => _$aalcValueOf(name);
+}
+
+class AndroidGenreColumn extends EnumClass {
+  static Serializer<AndroidGenreColumn> get serializer =>
+      _$androidGenreColumnSerializer;
+
+  /// GenreColumns constants as defined in MediaStore class
+
+  @BuiltValueEnumConst(wireName: 'name')
+  static const AndroidGenreColumn genreName = _$genreName;
+
+  const AndroidGenreColumn._(String name) : super(name);
+  static BuiltSet<AndroidGenreColumn> get values => _$agcValues;
+  static AndroidGenreColumn valueOf(String name) => _$agcValueOf(name);
+}
+
+class AndroidPlaylistColumn extends EnumClass {
+  static Serializer<AndroidPlaylistColumn> get serializer =>
+      _$androidPlaylistColumnSerializer;
+
+  /// PlaylistsColumns constants as defined in MediaStore class
+  /// Not including deprecated fields (_data)
+
+  @BuiltValueEnumConst(wireName: 'name')
+  static const AndroidPlaylistColumn playlistName = _$playlistName;
+  static const AndroidPlaylistColumn date_added = _$playlistDateAdded;
+  static const AndroidPlaylistColumn date_modified = _$playlisyDateModified;
+
+  const AndroidPlaylistColumn._(String name) : super(name);
+  static BuiltSet<AndroidPlaylistColumn> get values => _$apcValues;
+  static AndroidPlaylistColumn valueOf(String name) => _$apcValueOf(name);
+}
+
+@SerializersFor([
+  AndroidBaseColumn,
+  AndroidMediaColumn,
+  AndroidImageColumn,
+  AndroidAudioColumn,
+  AndroidArtistColumn,
+  AndroidAlbumColumn,
+  AndroidGenreColumn,
+  AndroidPlaylistColumn,
+])
 final Serializers androidSerializers = (_$androidSerializers.toBuilder()
-  ..add(Iso8601DateTimeSerializer())
-  ..addPlugin(StandardJsonPlugin()))
+      ..add(Iso8601DateTimeSerializer())
+      ..addPlugin(StandardJsonPlugin()))
     .build();
