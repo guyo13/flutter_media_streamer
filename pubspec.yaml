@@ -1,7 +1,7 @@
 name: flutter_media_streamer
 description: A Flutter plugin for reading the Gallery on iOS and Android
 version: 0.0.1
-author:
+author: Guy Or
 homepage:
 
 environment:

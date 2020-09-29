@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -72,6 +73,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val ERR_VERSION = "ANDROID_VER_TOO_LOW"
     @JvmStatic
     val INVALID_URI = "INVALID_URI"
+    @JvmStatic
+    val ERR_URI_OPEN = "ERR_OPEN_URI"
     private const val TAG = "FlutterMediaStreamer"
   }
 
@@ -94,7 +97,11 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
       else result.error(ERR_VERSION,
               "getThumbnail only available on android SDK 10+",
               "Current SDK version ${Build.VERSION.SDK_INT}")
-
+      "getImage" -> getImage(
+              result,
+              call.argument<String?>("contentUriString") ?: "",
+              width = call.argument<Int?>("width"),
+              height = call.argument<Int?>("height"))
       "haveStoragePermission" -> result.success(haveStoragePermission())
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
@@ -231,6 +238,40 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           thumbnail.recycle()
         }
         result.success(res)
+      }
+    } else {
+      result.error(INVALID_URI, "Invalid URI $uriString", null)
+    }
+  }
+
+  //TODO - see if speed and memory usage can be further improved
+  private fun getImage(@NonNull result: Result, @NonNull uriString: String, width: Int?, height: Int?) {
+    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getImage"))
+    var res : ByteArray? = null
+    val uri: Uri = Uri.parse(uriString)
+    if (URLUtil.isValidUrl(uriString)) {
+      mainScope.launch {
+        withContext(Dispatchers.IO) {
+          var bitmap : Bitmap?
+
+          val pfd = appContext.contentResolver.openFileDescriptor(uri, "r") ?: return@withContext
+          pfd.use { istream ->
+              if (width != null && width> 0 && height != null && height > 0) {
+                Log.d(TAG, "Getting image with size $width X $height")
+                bitmap = decodeSampledBitmapFromDescriptor(pfd.fileDescriptor, width, height)
+              } else {
+                bitmap = BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, null)
+              }
+              val stream = ByteArrayOutputStream()
+              bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+              res = stream.toByteArray()
+              bitmap?.recycle()
+          }
+        }
+        if (res != null)
+          result.success(res)
+        else
+          result.error(ERR_URI_OPEN, "Error opening URI $uriString", "Received null input stream")
       }
     } else {
       result.error(INVALID_URI, "Invalid URI $uriString", null)
