@@ -575,6 +575,7 @@ Serializers _$androidSerializers = (new Serializers().toBuilder()
       ..add(AndroidFileColumn.serializer)
       ..add(AndroidGenreColumn.serializer)
       ..add(AndroidImageColumn.serializer)
+      ..add(AndroidImageMediaData.serializer)
       ..add(AndroidMediaColumn.serializer)
       ..add(AndroidPlaylistColumn.serializer)
       ..add(AndroidVideoColumn.serializer))
@@ -601,6 +602,8 @@ Serializer<AndroidFileColumn> _$androidFileColumnSerializer =
     new _$AndroidFileColumnSerializer();
 Serializer<AndroidVideoColumn> _$androidVideoColumnSerializer =
     new _$AndroidVideoColumnSerializer();
+Serializer<AndroidImageMediaData> _$androidImageMediaDataSerializer =
+    new _$AndroidImageMediaDataSerializer();
 
 class _$AndroidBaseColumnSerializer
     implements PrimitiveSerializer<AndroidBaseColumn> {
@@ -831,6 +834,1210 @@ class _$AndroidVideoColumnSerializer
   AndroidVideoColumn deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
       AndroidVideoColumn.valueOf(serialized as String);
+}
+
+class _$AndroidImageMediaDataSerializer
+    implements StructuredSerializer<AndroidImageMediaData> {
+  @override
+  final Iterable<Type> types = const [
+    AndroidImageMediaData,
+    _$AndroidImageMediaData
+  ];
+  @override
+  final String wireName = 'AndroidImageMediaData';
+
+  @override
+  Iterable<Object> serialize(
+      Serializers serializers, AndroidImageMediaData object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'contentUri',
+      serializers.serialize(object.contentUri,
+          specifiedType: const FullType(String)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+    if (object.count != null) {
+      result
+        ..add('count')
+        ..add(serializers.serialize(object.count,
+            specifiedType: const FullType(int)));
+    }
+    if (object.description != null) {
+      result
+        ..add('description')
+        ..add(serializers.serialize(object.description,
+            specifiedType: const FullType(String)));
+    }
+    if (object.exposureTime != null) {
+      result
+        ..add('exposureTime')
+        ..add(serializers.serialize(object.exposureTime,
+            specifiedType: const FullType(String)));
+    }
+    if (object.fNumber != null) {
+      result
+        ..add('fNumber')
+        ..add(serializers.serialize(object.fNumber,
+            specifiedType: const FullType(String)));
+    }
+    if (object.iso != null) {
+      result
+        ..add('iso')
+        ..add(serializers.serialize(object.iso,
+            specifiedType: const FullType(int)));
+    }
+    if (object.isPrivate != null) {
+      result
+        ..add('isPrivate')
+        ..add(serializers.serialize(object.isPrivate,
+            specifiedType: const FullType(int)));
+    }
+    if (object.sceneCaptureType != null) {
+      result
+        ..add('sceneCaptureType')
+        ..add(serializers.serialize(object.sceneCaptureType,
+            specifiedType: const FullType(int)));
+    }
+    if (object.album != null) {
+      result
+        ..add('album')
+        ..add(serializers.serialize(object.album,
+            specifiedType: const FullType(String)));
+    }
+    if (object.albumArtist != null) {
+      result
+        ..add('albumArtist')
+        ..add(serializers.serialize(object.albumArtist,
+            specifiedType: const FullType(String)));
+    }
+    if (object.artist != null) {
+      result
+        ..add('artist')
+        ..add(serializers.serialize(object.artist,
+            specifiedType: const FullType(String)));
+    }
+    if (object.author != null) {
+      result
+        ..add('author')
+        ..add(serializers.serialize(object.author,
+            specifiedType: const FullType(String)));
+    }
+    if (object.bitrate != null) {
+      result
+        ..add('bitrate')
+        ..add(serializers.serialize(object.bitrate,
+            specifiedType: const FullType(int)));
+    }
+    if (object.bucketDisplayName != null) {
+      result
+        ..add('bucketDisplayName')
+        ..add(serializers.serialize(object.bucketDisplayName,
+            specifiedType: const FullType(String)));
+    }
+    if (object.bucketId != null) {
+      result
+        ..add('bucketId')
+        ..add(serializers.serialize(object.bucketId,
+            specifiedType: const FullType(int)));
+    }
+    if (object.captureFramerate != null) {
+      result
+        ..add('captureFramerate')
+        ..add(serializers.serialize(object.captureFramerate,
+            specifiedType: const FullType(double)));
+    }
+    if (object.cdTrackNumber != null) {
+      result
+        ..add('cdTrackNumber')
+        ..add(serializers.serialize(object.cdTrackNumber,
+            specifiedType: const FullType(String)));
+    }
+    if (object.compilation != null) {
+      result
+        ..add('compilation')
+        ..add(serializers.serialize(object.compilation,
+            specifiedType: const FullType(String)));
+    }
+    if (object.composer != null) {
+      result
+        ..add('composer')
+        ..add(serializers.serialize(object.composer,
+            specifiedType: const FullType(String)));
+    }
+    if (object.dateAdded != null) {
+      result
+        ..add('dateAdded')
+        ..add(serializers.serialize(object.dateAdded,
+            specifiedType: const FullType(int)));
+    }
+    if (object.dateExpires != null) {
+      result
+        ..add('dateExpires')
+        ..add(serializers.serialize(object.dateExpires,
+            specifiedType: const FullType(int)));
+    }
+    if (object.dateModified != null) {
+      result
+        ..add('dateModified')
+        ..add(serializers.serialize(object.dateModified,
+            specifiedType: const FullType(int)));
+    }
+    if (object.dateTaken != null) {
+      result
+        ..add('dateTaken')
+        ..add(serializers.serialize(object.dateTaken,
+            specifiedType: const FullType(int)));
+    }
+    if (object.discNumber != null) {
+      result
+        ..add('discNumber')
+        ..add(serializers.serialize(object.discNumber,
+            specifiedType: const FullType(String)));
+    }
+    if (object.displayName != null) {
+      result
+        ..add('displayName')
+        ..add(serializers.serialize(object.displayName,
+            specifiedType: const FullType(String)));
+    }
+    if (object.documentId != null) {
+      result
+        ..add('documentId')
+        ..add(serializers.serialize(object.documentId,
+            specifiedType: const FullType(String)));
+    }
+    if (object.duration != null) {
+      result
+        ..add('duration')
+        ..add(serializers.serialize(object.duration,
+            specifiedType: const FullType(int)));
+    }
+    if (object.generationAdded != null) {
+      result
+        ..add('generationAdded')
+        ..add(serializers.serialize(object.generationAdded,
+            specifiedType: const FullType(int)));
+    }
+    if (object.generationModified != null) {
+      result
+        ..add('generationModified')
+        ..add(serializers.serialize(object.generationModified,
+            specifiedType: const FullType(int)));
+    }
+    if (object.genre != null) {
+      result
+        ..add('genre')
+        ..add(serializers.serialize(object.genre,
+            specifiedType: const FullType(String)));
+    }
+    if (object.height != null) {
+      result
+        ..add('height')
+        ..add(serializers.serialize(object.height,
+            specifiedType: const FullType(int)));
+    }
+    if (object.instanceId != null) {
+      result
+        ..add('instanceId')
+        ..add(serializers.serialize(object.instanceId,
+            specifiedType: const FullType(String)));
+    }
+    if (object.isDownload != null) {
+      result
+        ..add('isDownload')
+        ..add(serializers.serialize(object.isDownload,
+            specifiedType: const FullType(int)));
+    }
+    if (object.isDrm != null) {
+      result
+        ..add('isDrm')
+        ..add(serializers.serialize(object.isDrm,
+            specifiedType: const FullType(int)));
+    }
+    if (object.isFavorite != null) {
+      result
+        ..add('isFavorite')
+        ..add(serializers.serialize(object.isFavorite,
+            specifiedType: const FullType(int)));
+    }
+    if (object.isPending != null) {
+      result
+        ..add('isPending')
+        ..add(serializers.serialize(object.isPending,
+            specifiedType: const FullType(int)));
+    }
+    if (object.isTrashed != null) {
+      result
+        ..add('isTrashed')
+        ..add(serializers.serialize(object.isTrashed,
+            specifiedType: const FullType(int)));
+    }
+    if (object.orientation != null) {
+      result
+        ..add('orientation')
+        ..add(serializers.serialize(object.orientation,
+            specifiedType: const FullType(int)));
+    }
+    if (object.originalDocumentId != null) {
+      result
+        ..add('originalDocumentId')
+        ..add(serializers.serialize(object.originalDocumentId,
+            specifiedType: const FullType(String)));
+    }
+    if (object.ownerPackageName != null) {
+      result
+        ..add('ownerPackageName')
+        ..add(serializers.serialize(object.ownerPackageName,
+            specifiedType: const FullType(String)));
+    }
+    if (object.relativePath != null) {
+      result
+        ..add('relativePath')
+        ..add(serializers.serialize(object.relativePath,
+            specifiedType: const FullType(String)));
+    }
+    if (object.resolution != null) {
+      result
+        ..add('resolution')
+        ..add(serializers.serialize(object.resolution,
+            specifiedType: const FullType(String)));
+    }
+    if (object.size != null) {
+      result
+        ..add('size')
+        ..add(serializers.serialize(object.size,
+            specifiedType: const FullType(int)));
+    }
+    if (object.title != null) {
+      result
+        ..add('title')
+        ..add(serializers.serialize(object.title,
+            specifiedType: const FullType(String)));
+    }
+    if (object.volumeName != null) {
+      result
+        ..add('volumeName')
+        ..add(serializers.serialize(object.volumeName,
+            specifiedType: const FullType(String)));
+    }
+    if (object.width != null) {
+      result
+        ..add('width')
+        ..add(serializers.serialize(object.width,
+            specifiedType: const FullType(int)));
+    }
+    if (object.writer != null) {
+      result
+        ..add('writer')
+        ..add(serializers.serialize(object.writer,
+            specifiedType: const FullType(String)));
+    }
+    if (object.xmpBase64 != null) {
+      result
+        ..add('xmpBase64')
+        ..add(serializers.serialize(object.xmpBase64,
+            specifiedType: const FullType(String)));
+    }
+    if (object.year != null) {
+      result
+        ..add('year')
+        ..add(serializers.serialize(object.year,
+            specifiedType: const FullType(int)));
+    }
+    return result;
+  }
+
+  @override
+  AndroidImageMediaData deserialize(
+      Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new AndroidImageMediaDataBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'contentUri':
+          result.contentUri = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'count':
+          result.count = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'description':
+          result.description = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'exposureTime':
+          result.exposureTime = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'fNumber':
+          result.fNumber = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'iso':
+          result.iso = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'isPrivate':
+          result.isPrivate = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'sceneCaptureType':
+          result.sceneCaptureType = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'album':
+          result.album = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'albumArtist':
+          result.albumArtist = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'artist':
+          result.artist = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'author':
+          result.author = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'bitrate':
+          result.bitrate = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'bucketDisplayName':
+          result.bucketDisplayName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'bucketId':
+          result.bucketId = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'captureFramerate':
+          result.captureFramerate = serializers.deserialize(value,
+              specifiedType: const FullType(double)) as double;
+          break;
+        case 'cdTrackNumber':
+          result.cdTrackNumber = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'compilation':
+          result.compilation = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'composer':
+          result.composer = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'dateAdded':
+          result.dateAdded = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'dateExpires':
+          result.dateExpires = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'dateModified':
+          result.dateModified = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'dateTaken':
+          result.dateTaken = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'discNumber':
+          result.discNumber = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'displayName':
+          result.displayName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'documentId':
+          result.documentId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'duration':
+          result.duration = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'generationAdded':
+          result.generationAdded = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'generationModified':
+          result.generationModified = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'genre':
+          result.genre = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'height':
+          result.height = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'instanceId':
+          result.instanceId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'isDownload':
+          result.isDownload = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'isDrm':
+          result.isDrm = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'isFavorite':
+          result.isFavorite = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'isPending':
+          result.isPending = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'isTrashed':
+          result.isTrashed = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'orientation':
+          result.orientation = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'originalDocumentId':
+          result.originalDocumentId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'ownerPackageName':
+          result.ownerPackageName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'relativePath':
+          result.relativePath = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'resolution':
+          result.resolution = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'size':
+          result.size = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'title':
+          result.title = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'volumeName':
+          result.volumeName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'width':
+          result.width = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'writer':
+          result.writer = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'xmpBase64':
+          result.xmpBase64 = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'year':
+          result.year = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$AndroidImageMediaData extends AndroidImageMediaData {
+  @override
+  final String contentUri;
+  @override
+  final int id;
+  @override
+  final int count;
+  @override
+  final String description;
+  @override
+  final String exposureTime;
+  @override
+  final String fNumber;
+  @override
+  final int iso;
+  @override
+  final int isPrivate;
+  @override
+  final int sceneCaptureType;
+  @override
+  final String album;
+  @override
+  final String albumArtist;
+  @override
+  final String artist;
+  @override
+  final String author;
+  @override
+  final int bitrate;
+  @override
+  final String bucketDisplayName;
+  @override
+  final int bucketId;
+  @override
+  final double captureFramerate;
+  @override
+  final String cdTrackNumber;
+  @override
+  final String compilation;
+  @override
+  final String composer;
+  @override
+  final int dateAdded;
+  @override
+  final int dateExpires;
+  @override
+  final int dateModified;
+  @override
+  final int dateTaken;
+  @override
+  final String discNumber;
+  @override
+  final String displayName;
+  @override
+  final String documentId;
+  @override
+  final int duration;
+  @override
+  final int generationAdded;
+  @override
+  final int generationModified;
+  @override
+  final String genre;
+  @override
+  final int height;
+  @override
+  final String instanceId;
+  @override
+  final int isDownload;
+  @override
+  final int isDrm;
+  @override
+  final int isFavorite;
+  @override
+  final int isPending;
+  @override
+  final int isTrashed;
+  @override
+  final int orientation;
+  @override
+  final String originalDocumentId;
+  @override
+  final String ownerPackageName;
+  @override
+  final String relativePath;
+  @override
+  final String resolution;
+  @override
+  final int size;
+  @override
+  final String title;
+  @override
+  final String volumeName;
+  @override
+  final int width;
+  @override
+  final String writer;
+  @override
+  final String xmpBase64;
+  @override
+  final int year;
+
+  factory _$AndroidImageMediaData(
+          [void Function(AndroidImageMediaDataBuilder) updates]) =>
+      (new AndroidImageMediaDataBuilder()..update(updates)).build();
+
+  _$AndroidImageMediaData._(
+      {this.contentUri,
+      this.id,
+      this.count,
+      this.description,
+      this.exposureTime,
+      this.fNumber,
+      this.iso,
+      this.isPrivate,
+      this.sceneCaptureType,
+      this.album,
+      this.albumArtist,
+      this.artist,
+      this.author,
+      this.bitrate,
+      this.bucketDisplayName,
+      this.bucketId,
+      this.captureFramerate,
+      this.cdTrackNumber,
+      this.compilation,
+      this.composer,
+      this.dateAdded,
+      this.dateExpires,
+      this.dateModified,
+      this.dateTaken,
+      this.discNumber,
+      this.displayName,
+      this.documentId,
+      this.duration,
+      this.generationAdded,
+      this.generationModified,
+      this.genre,
+      this.height,
+      this.instanceId,
+      this.isDownload,
+      this.isDrm,
+      this.isFavorite,
+      this.isPending,
+      this.isTrashed,
+      this.orientation,
+      this.originalDocumentId,
+      this.ownerPackageName,
+      this.relativePath,
+      this.resolution,
+      this.size,
+      this.title,
+      this.volumeName,
+      this.width,
+      this.writer,
+      this.xmpBase64,
+      this.year})
+      : super._() {
+    if (contentUri == null) {
+      throw new BuiltValueNullFieldError('AndroidImageMediaData', 'contentUri');
+    }
+    if (id == null) {
+      throw new BuiltValueNullFieldError('AndroidImageMediaData', 'id');
+    }
+  }
+
+  @override
+  AndroidImageMediaData rebuild(
+          void Function(AndroidImageMediaDataBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  AndroidImageMediaDataBuilder toBuilder() =>
+      new AndroidImageMediaDataBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is AndroidImageMediaData &&
+        contentUri == other.contentUri &&
+        id == other.id &&
+        count == other.count &&
+        description == other.description &&
+        exposureTime == other.exposureTime &&
+        fNumber == other.fNumber &&
+        iso == other.iso &&
+        isPrivate == other.isPrivate &&
+        sceneCaptureType == other.sceneCaptureType &&
+        album == other.album &&
+        albumArtist == other.albumArtist &&
+        artist == other.artist &&
+        author == other.author &&
+        bitrate == other.bitrate &&
+        bucketDisplayName == other.bucketDisplayName &&
+        bucketId == other.bucketId &&
+        captureFramerate == other.captureFramerate &&
+        cdTrackNumber == other.cdTrackNumber &&
+        compilation == other.compilation &&
+        composer == other.composer &&
+        dateAdded == other.dateAdded &&
+        dateExpires == other.dateExpires &&
+        dateModified == other.dateModified &&
+        dateTaken == other.dateTaken &&
+        discNumber == other.discNumber &&
+        displayName == other.displayName &&
+        documentId == other.documentId &&
+        duration == other.duration &&
+        generationAdded == other.generationAdded &&
+        generationModified == other.generationModified &&
+        genre == other.genre &&
+        height == other.height &&
+        instanceId == other.instanceId &&
+        isDownload == other.isDownload &&
+        isDrm == other.isDrm &&
+        isFavorite == other.isFavorite &&
+        isPending == other.isPending &&
+        isTrashed == other.isTrashed &&
+        orientation == other.orientation &&
+        originalDocumentId == other.originalDocumentId &&
+        ownerPackageName == other.ownerPackageName &&
+        relativePath == other.relativePath &&
+        resolution == other.resolution &&
+        size == other.size &&
+        title == other.title &&
+        volumeName == other.volumeName &&
+        width == other.width &&
+        writer == other.writer &&
+        xmpBase64 == other.xmpBase64 &&
+        year == other.year;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc(
+                                            $jc(
+                                                $jc(
+                                                    $jc(
+                                                        $jc(
+                                                            $jc(
+                                                                $jc(
+                                                                    $jc(
+                                                                        $jc(
+                                                                            $jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc($jc(0, contentUri.hashCode), id.hashCode), count.hashCode), description.hashCode), exposureTime.hashCode), fNumber.hashCode), iso.hashCode), isPrivate.hashCode), sceneCaptureType.hashCode), album.hashCode), albumArtist.hashCode), artist.hashCode), author.hashCode), bitrate.hashCode), bucketDisplayName.hashCode), bucketId.hashCode), captureFramerate.hashCode), cdTrackNumber.hashCode), compilation.hashCode), composer.hashCode), dateAdded.hashCode), dateExpires.hashCode), dateModified.hashCode), dateTaken.hashCode), discNumber.hashCode), displayName.hashCode), documentId.hashCode), duration.hashCode), generationAdded.hashCode), generationModified.hashCode), genre.hashCode),
+                                                                                height.hashCode),
+                                                                            instanceId.hashCode),
+                                                                        isDownload.hashCode),
+                                                                    isDrm.hashCode),
+                                                                isFavorite.hashCode),
+                                                            isPending.hashCode),
+                                                        isTrashed.hashCode),
+                                                    orientation.hashCode),
+                                                originalDocumentId.hashCode),
+                                            ownerPackageName.hashCode),
+                                        relativePath.hashCode),
+                                    resolution.hashCode),
+                                size.hashCode),
+                            title.hashCode),
+                        volumeName.hashCode),
+                    width.hashCode),
+                writer.hashCode),
+            xmpBase64.hashCode),
+        year.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('AndroidImageMediaData')
+          ..add('contentUri', contentUri)
+          ..add('id', id)
+          ..add('count', count)
+          ..add('description', description)
+          ..add('exposureTime', exposureTime)
+          ..add('fNumber', fNumber)
+          ..add('iso', iso)
+          ..add('isPrivate', isPrivate)
+          ..add('sceneCaptureType', sceneCaptureType)
+          ..add('album', album)
+          ..add('albumArtist', albumArtist)
+          ..add('artist', artist)
+          ..add('author', author)
+          ..add('bitrate', bitrate)
+          ..add('bucketDisplayName', bucketDisplayName)
+          ..add('bucketId', bucketId)
+          ..add('captureFramerate', captureFramerate)
+          ..add('cdTrackNumber', cdTrackNumber)
+          ..add('compilation', compilation)
+          ..add('composer', composer)
+          ..add('dateAdded', dateAdded)
+          ..add('dateExpires', dateExpires)
+          ..add('dateModified', dateModified)
+          ..add('dateTaken', dateTaken)
+          ..add('discNumber', discNumber)
+          ..add('displayName', displayName)
+          ..add('documentId', documentId)
+          ..add('duration', duration)
+          ..add('generationAdded', generationAdded)
+          ..add('generationModified', generationModified)
+          ..add('genre', genre)
+          ..add('height', height)
+          ..add('instanceId', instanceId)
+          ..add('isDownload', isDownload)
+          ..add('isDrm', isDrm)
+          ..add('isFavorite', isFavorite)
+          ..add('isPending', isPending)
+          ..add('isTrashed', isTrashed)
+          ..add('orientation', orientation)
+          ..add('originalDocumentId', originalDocumentId)
+          ..add('ownerPackageName', ownerPackageName)
+          ..add('relativePath', relativePath)
+          ..add('resolution', resolution)
+          ..add('size', size)
+          ..add('title', title)
+          ..add('volumeName', volumeName)
+          ..add('width', width)
+          ..add('writer', writer)
+          ..add('xmpBase64', xmpBase64)
+          ..add('year', year))
+        .toString();
+  }
+}
+
+class AndroidImageMediaDataBuilder
+    implements Builder<AndroidImageMediaData, AndroidImageMediaDataBuilder> {
+  _$AndroidImageMediaData _$v;
+
+  String _contentUri;
+  String get contentUri => _$this._contentUri;
+  set contentUri(String contentUri) => _$this._contentUri = contentUri;
+
+  int _id;
+  int get id => _$this._id;
+  set id(int id) => _$this._id = id;
+
+  int _count;
+  int get count => _$this._count;
+  set count(int count) => _$this._count = count;
+
+  String _description;
+  String get description => _$this._description;
+  set description(String description) => _$this._description = description;
+
+  String _exposureTime;
+  String get exposureTime => _$this._exposureTime;
+  set exposureTime(String exposureTime) => _$this._exposureTime = exposureTime;
+
+  String _fNumber;
+  String get fNumber => _$this._fNumber;
+  set fNumber(String fNumber) => _$this._fNumber = fNumber;
+
+  int _iso;
+  int get iso => _$this._iso;
+  set iso(int iso) => _$this._iso = iso;
+
+  int _isPrivate;
+  int get isPrivate => _$this._isPrivate;
+  set isPrivate(int isPrivate) => _$this._isPrivate = isPrivate;
+
+  int _sceneCaptureType;
+  int get sceneCaptureType => _$this._sceneCaptureType;
+  set sceneCaptureType(int sceneCaptureType) =>
+      _$this._sceneCaptureType = sceneCaptureType;
+
+  String _album;
+  String get album => _$this._album;
+  set album(String album) => _$this._album = album;
+
+  String _albumArtist;
+  String get albumArtist => _$this._albumArtist;
+  set albumArtist(String albumArtist) => _$this._albumArtist = albumArtist;
+
+  String _artist;
+  String get artist => _$this._artist;
+  set artist(String artist) => _$this._artist = artist;
+
+  String _author;
+  String get author => _$this._author;
+  set author(String author) => _$this._author = author;
+
+  int _bitrate;
+  int get bitrate => _$this._bitrate;
+  set bitrate(int bitrate) => _$this._bitrate = bitrate;
+
+  String _bucketDisplayName;
+  String get bucketDisplayName => _$this._bucketDisplayName;
+  set bucketDisplayName(String bucketDisplayName) =>
+      _$this._bucketDisplayName = bucketDisplayName;
+
+  int _bucketId;
+  int get bucketId => _$this._bucketId;
+  set bucketId(int bucketId) => _$this._bucketId = bucketId;
+
+  double _captureFramerate;
+  double get captureFramerate => _$this._captureFramerate;
+  set captureFramerate(double captureFramerate) =>
+      _$this._captureFramerate = captureFramerate;
+
+  String _cdTrackNumber;
+  String get cdTrackNumber => _$this._cdTrackNumber;
+  set cdTrackNumber(String cdTrackNumber) =>
+      _$this._cdTrackNumber = cdTrackNumber;
+
+  String _compilation;
+  String get compilation => _$this._compilation;
+  set compilation(String compilation) => _$this._compilation = compilation;
+
+  String _composer;
+  String get composer => _$this._composer;
+  set composer(String composer) => _$this._composer = composer;
+
+  int _dateAdded;
+  int get dateAdded => _$this._dateAdded;
+  set dateAdded(int dateAdded) => _$this._dateAdded = dateAdded;
+
+  int _dateExpires;
+  int get dateExpires => _$this._dateExpires;
+  set dateExpires(int dateExpires) => _$this._dateExpires = dateExpires;
+
+  int _dateModified;
+  int get dateModified => _$this._dateModified;
+  set dateModified(int dateModified) => _$this._dateModified = dateModified;
+
+  int _dateTaken;
+  int get dateTaken => _$this._dateTaken;
+  set dateTaken(int dateTaken) => _$this._dateTaken = dateTaken;
+
+  String _discNumber;
+  String get discNumber => _$this._discNumber;
+  set discNumber(String discNumber) => _$this._discNumber = discNumber;
+
+  String _displayName;
+  String get displayName => _$this._displayName;
+  set displayName(String displayName) => _$this._displayName = displayName;
+
+  String _documentId;
+  String get documentId => _$this._documentId;
+  set documentId(String documentId) => _$this._documentId = documentId;
+
+  int _duration;
+  int get duration => _$this._duration;
+  set duration(int duration) => _$this._duration = duration;
+
+  int _generationAdded;
+  int get generationAdded => _$this._generationAdded;
+  set generationAdded(int generationAdded) =>
+      _$this._generationAdded = generationAdded;
+
+  int _generationModified;
+  int get generationModified => _$this._generationModified;
+  set generationModified(int generationModified) =>
+      _$this._generationModified = generationModified;
+
+  String _genre;
+  String get genre => _$this._genre;
+  set genre(String genre) => _$this._genre = genre;
+
+  int _height;
+  int get height => _$this._height;
+  set height(int height) => _$this._height = height;
+
+  String _instanceId;
+  String get instanceId => _$this._instanceId;
+  set instanceId(String instanceId) => _$this._instanceId = instanceId;
+
+  int _isDownload;
+  int get isDownload => _$this._isDownload;
+  set isDownload(int isDownload) => _$this._isDownload = isDownload;
+
+  int _isDrm;
+  int get isDrm => _$this._isDrm;
+  set isDrm(int isDrm) => _$this._isDrm = isDrm;
+
+  int _isFavorite;
+  int get isFavorite => _$this._isFavorite;
+  set isFavorite(int isFavorite) => _$this._isFavorite = isFavorite;
+
+  int _isPending;
+  int get isPending => _$this._isPending;
+  set isPending(int isPending) => _$this._isPending = isPending;
+
+  int _isTrashed;
+  int get isTrashed => _$this._isTrashed;
+  set isTrashed(int isTrashed) => _$this._isTrashed = isTrashed;
+
+  int _orientation;
+  int get orientation => _$this._orientation;
+  set orientation(int orientation) => _$this._orientation = orientation;
+
+  String _originalDocumentId;
+  String get originalDocumentId => _$this._originalDocumentId;
+  set originalDocumentId(String originalDocumentId) =>
+      _$this._originalDocumentId = originalDocumentId;
+
+  String _ownerPackageName;
+  String get ownerPackageName => _$this._ownerPackageName;
+  set ownerPackageName(String ownerPackageName) =>
+      _$this._ownerPackageName = ownerPackageName;
+
+  String _relativePath;
+  String get relativePath => _$this._relativePath;
+  set relativePath(String relativePath) => _$this._relativePath = relativePath;
+
+  String _resolution;
+  String get resolution => _$this._resolution;
+  set resolution(String resolution) => _$this._resolution = resolution;
+
+  int _size;
+  int get size => _$this._size;
+  set size(int size) => _$this._size = size;
+
+  String _title;
+  String get title => _$this._title;
+  set title(String title) => _$this._title = title;
+
+  String _volumeName;
+  String get volumeName => _$this._volumeName;
+  set volumeName(String volumeName) => _$this._volumeName = volumeName;
+
+  int _width;
+  int get width => _$this._width;
+  set width(int width) => _$this._width = width;
+
+  String _writer;
+  String get writer => _$this._writer;
+  set writer(String writer) => _$this._writer = writer;
+
+  String _xmpBase64;
+  String get xmpBase64 => _$this._xmpBase64;
+  set xmpBase64(String xmpBase64) => _$this._xmpBase64 = xmpBase64;
+
+  int _year;
+  int get year => _$this._year;
+  set year(int year) => _$this._year = year;
+
+  AndroidImageMediaDataBuilder();
+
+  AndroidImageMediaDataBuilder get _$this {
+    if (_$v != null) {
+      _contentUri = _$v.contentUri;
+      _id = _$v.id;
+      _count = _$v.count;
+      _description = _$v.description;
+      _exposureTime = _$v.exposureTime;
+      _fNumber = _$v.fNumber;
+      _iso = _$v.iso;
+      _isPrivate = _$v.isPrivate;
+      _sceneCaptureType = _$v.sceneCaptureType;
+      _album = _$v.album;
+      _albumArtist = _$v.albumArtist;
+      _artist = _$v.artist;
+      _author = _$v.author;
+      _bitrate = _$v.bitrate;
+      _bucketDisplayName = _$v.bucketDisplayName;
+      _bucketId = _$v.bucketId;
+      _captureFramerate = _$v.captureFramerate;
+      _cdTrackNumber = _$v.cdTrackNumber;
+      _compilation = _$v.compilation;
+      _composer = _$v.composer;
+      _dateAdded = _$v.dateAdded;
+      _dateExpires = _$v.dateExpires;
+      _dateModified = _$v.dateModified;
+      _dateTaken = _$v.dateTaken;
+      _discNumber = _$v.discNumber;
+      _displayName = _$v.displayName;
+      _documentId = _$v.documentId;
+      _duration = _$v.duration;
+      _generationAdded = _$v.generationAdded;
+      _generationModified = _$v.generationModified;
+      _genre = _$v.genre;
+      _height = _$v.height;
+      _instanceId = _$v.instanceId;
+      _isDownload = _$v.isDownload;
+      _isDrm = _$v.isDrm;
+      _isFavorite = _$v.isFavorite;
+      _isPending = _$v.isPending;
+      _isTrashed = _$v.isTrashed;
+      _orientation = _$v.orientation;
+      _originalDocumentId = _$v.originalDocumentId;
+      _ownerPackageName = _$v.ownerPackageName;
+      _relativePath = _$v.relativePath;
+      _resolution = _$v.resolution;
+      _size = _$v.size;
+      _title = _$v.title;
+      _volumeName = _$v.volumeName;
+      _width = _$v.width;
+      _writer = _$v.writer;
+      _xmpBase64 = _$v.xmpBase64;
+      _year = _$v.year;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(AndroidImageMediaData other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$AndroidImageMediaData;
+  }
+
+  @override
+  void update(void Function(AndroidImageMediaDataBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$AndroidImageMediaData build() {
+    final _$result = _$v ??
+        new _$AndroidImageMediaData._(
+            contentUri: contentUri,
+            id: id,
+            count: count,
+            description: description,
+            exposureTime: exposureTime,
+            fNumber: fNumber,
+            iso: iso,
+            isPrivate: isPrivate,
+            sceneCaptureType: sceneCaptureType,
+            album: album,
+            albumArtist: albumArtist,
+            artist: artist,
+            author: author,
+            bitrate: bitrate,
+            bucketDisplayName: bucketDisplayName,
+            bucketId: bucketId,
+            captureFramerate: captureFramerate,
+            cdTrackNumber: cdTrackNumber,
+            compilation: compilation,
+            composer: composer,
+            dateAdded: dateAdded,
+            dateExpires: dateExpires,
+            dateModified: dateModified,
+            dateTaken: dateTaken,
+            discNumber: discNumber,
+            displayName: displayName,
+            documentId: documentId,
+            duration: duration,
+            generationAdded: generationAdded,
+            generationModified: generationModified,
+            genre: genre,
+            height: height,
+            instanceId: instanceId,
+            isDownload: isDownload,
+            isDrm: isDrm,
+            isFavorite: isFavorite,
+            isPending: isPending,
+            isTrashed: isTrashed,
+            orientation: orientation,
+            originalDocumentId: originalDocumentId,
+            ownerPackageName: ownerPackageName,
+            relativePath: relativePath,
+            resolution: resolution,
+            size: size,
+            title: title,
+            volumeName: volumeName,
+            width: width,
+            writer: writer,
+            xmpBase64: xmpBase64,
+            year: year);
+    replace(_$result);
+    return _$result;
+  }
 }
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

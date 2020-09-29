@@ -157,6 +157,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
         val displayNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+        val mimTypeCol = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
 
         var hasNext = cursor.moveToNext()
         while (hasNext && res.size < limit) {
@@ -165,6 +166,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           val id = cursor.getLong(idColumn)
           val dateModified = cursor.getLong(dateModifiedColumn)
           val displayName = cursor.getString(displayNameColumn)
+          val mimeType = cursor.getString(mimTypeCol)
 
 
           /**
@@ -183,7 +185,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
                   MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                   id
           ).toString()
-          val image = ImageMediaData(id, displayName, dateModified, contentUri)
+          val image = ImageMediaData(contentUri, id, displayName = displayName, dateModified = dateModified, mimeType = mimeType)
           //images += image
           //TODO
           Log.v(TAG, "Added image: $image")
@@ -203,7 +205,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
       val projection = arrayOf(
               MediaStore.Images.Media._ID,
               MediaStore.Images.Media.DISPLAY_NAME,
-              MediaStore.Images.Media.DATE_ADDED
+              MediaStore.Images.Media.DATE_ADDED,
+              MediaStore.Images.Media.MIME_TYPE,
       )
       val selection = "${MediaStore.Images.Media.DATE_ADDED} >= ?"
       val selectionArgs = arrayOf("1577881609")

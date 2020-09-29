@@ -223,9 +223,15 @@ class AndroidFileColumn extends EnumClass {
   static BuiltSet<AndroidFileColumn> get values => _$afcValues;
   static AndroidFileColumn valueOf(String name) => _$afcValueOf(name);
 }
+
 enum FileMediaTypes {
-  MEDIA_TYPE_NONE, MEDIA_TYPE_IMAGE, MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO,
-  MEDIA_TYPE_PLAYLIST, MEDIA_TYPE_SUBTITLE, MEDIA_TYPE_DOCUMENT
+  MEDIA_TYPE_NONE,
+  MEDIA_TYPE_IMAGE,
+  MEDIA_TYPE_AUDIO,
+  MEDIA_TYPE_VIDEO,
+  MEDIA_TYPE_PLAYLIST,
+  MEDIA_TYPE_SUBTITLE,
+  MEDIA_TYPE_DOCUMENT
 }
 
 class AndroidVideoColumn extends EnumClass {
@@ -250,6 +256,222 @@ class AndroidVideoColumn extends EnumClass {
   static AndroidVideoColumn valueOf(String name) => _$avcValueOf(name);
 }
 
+abstract class AndroidImageMediaData
+    implements Built<AndroidImageMediaData, AndroidImageMediaDataBuilder> {
+  static Serializer<AndroidImageMediaData> get serializer =>
+      _$androidImageMediaDataSerializer;
+
+  String get contentUri;
+
+  /// BaseColumns
+  int get id;
+  @nullable
+  int get count;
+
+  /// ImageColumns
+  @nullable
+  String get description;
+  @nullable
+  String get exposureTime;
+  @nullable
+  String get fNumber;
+  @nullable
+  int get iso;
+  @nullable
+  int get isPrivate;
+  @nullable
+  int get sceneCaptureType;
+
+  /// MediaColumns
+  @nullable
+  String get album;
+  @nullable
+  String get albumArtist;
+  @nullable
+  String get artist;
+  @nullable
+  String get author;
+  @nullable
+  int get bitrate;
+  @nullable
+  String get bucketDisplayName;
+  @nullable
+  int get bucketId;
+  @nullable
+  double get captureFramerate;
+  @nullable
+  String get cdTrackNumber;
+  @nullable
+  String get compilation;
+  @nullable
+  String get composer;
+  @nullable
+  int get dateAdded;
+  @nullable
+  int get dateExpires;
+  @nullable
+  int get dateModified;
+  @nullable
+  int get dateTaken;
+  @nullable
+  String get discNumber;
+  @nullable
+  String get displayName;
+  @nullable
+  String get documentId;
+  @nullable
+  int get duration;
+  @nullable
+  int get generationAdded;
+  @nullable
+  int get generationModified;
+  @nullable
+  String get genre;
+  @nullable
+  int get height;
+  @nullable
+  String get instanceId;
+  @nullable
+  int get isDownload;
+  @nullable
+  int get isDrm;
+  @nullable
+  int get isFavorite;
+  @nullable
+  int get isPending;
+  @nullable
+  int get isTrashed;
+  @nullable
+  int get orientation;
+  @nullable
+  String get originalDocumentId;
+  @nullable
+  String get ownerPackageName;
+  @nullable
+  String get relativePath;
+  @nullable
+  String get resolution;
+  @nullable
+  int get size;
+  @nullable
+  String get title;
+  @nullable
+  String get volumeName;
+  @nullable
+  int get width;
+  @nullable
+  String get writer;
+  @nullable
+  String get xmpBase64;
+  @nullable
+  int get year;
+
+  AndroidImageMediaData._();
+  factory AndroidImageMediaData({
+    String contentUri,
+    int id,
+    int count,
+    String description,
+    String exposureTime,
+    String fNumber,
+    int iso,
+    int isPrivate,
+    int sceneCaptureType,
+    String album,
+    String albumArtist,
+    String artist,
+    String author,
+    int bitrate,
+    String bucketDisplayName,
+    int bucketId,
+    double captureFramerate,
+    String cdTrackNumber,
+    String compilation,
+    String composer,
+    int dateAdded,
+    int dateExpires,
+    int dateModified,
+    int dateTaken,
+    String discNumber,
+    String displayName,
+    String documentId,
+    int duration,
+    int generationAdded,
+    int generationModified,
+    String genre,
+    int height,
+    String instanceId,
+    int isDownload,
+    int isDrm,
+    int isFavorite,
+    int isPending,
+    int isTrashed,
+    int orientation,
+    String originalDocumentId,
+    String ownerPackageName,
+    String relativePath,
+    String resolution,
+    int size,
+    String title,
+    String volumeName,
+    int width,
+    String writer,
+    String xmpBase64,
+    int year,
+  }) =>
+      _$AndroidImageMediaData._(
+        id: id,
+        count: count,
+        description: description,
+        exposureTime: exposureTime,
+        fNumber: fNumber,
+        iso: iso,
+        isPrivate: isPrivate,
+        sceneCaptureType: sceneCaptureType,
+        album: album,
+        albumArtist: albumArtist,
+        artist: artist,
+        author: author,
+        bitrate: bitrate,
+        bucketDisplayName: bucketDisplayName,
+        bucketId: bucketId,
+        captureFramerate: captureFramerate,
+        cdTrackNumber: cdTrackNumber,
+        compilation: compilation,
+        composer: composer,
+        dateAdded: dateAdded,
+        dateExpires: dateExpires,
+        dateModified: dateModified,
+        dateTaken: dateTaken,
+        discNumber: discNumber,
+        displayName: displayName,
+        documentId: documentId,
+        duration: duration,
+        generationAdded: generationAdded,
+        generationModified: generationModified,
+        genre: genre,
+        height: height,
+        instanceId: instanceId,
+        isDownload: isDownload,
+        isDrm: isDrm,
+        isFavorite: isFavorite,
+        isPending: isPending,
+        isTrashed: isTrashed,
+        orientation: orientation,
+        originalDocumentId: originalDocumentId,
+        ownerPackageName: ownerPackageName,
+        relativePath: relativePath,
+        resolution: resolution,
+        size: size,
+        title: title,
+        volumeName: volumeName,
+        width: width,
+        writer: writer,
+        xmpBase64: xmpBase64,
+        year: year,
+      );
+}
+
 @SerializersFor([
   AndroidBaseColumn,
   AndroidMediaColumn,
@@ -261,7 +483,8 @@ class AndroidVideoColumn extends EnumClass {
   AndroidPlaylistColumn,
   AndroidDownloadColumn,
   AndroidFileColumn,
-  AndroidVideoColumn
+  AndroidVideoColumn,
+  AndroidImageMediaData,
 ])
 final Serializers androidSerializers = (_$androidSerializers.toBuilder()
       ..add(Iso8601DateTimeSerializer())
