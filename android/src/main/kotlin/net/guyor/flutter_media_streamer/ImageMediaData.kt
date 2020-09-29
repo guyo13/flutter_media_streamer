@@ -1,6 +1,6 @@
 package net.guyor.flutter_media_streamer
 
-data class ImageMediaData @JvmOverloads constructor (
+data class ImageMediaData constructor (
         val contentUri: String,
         /** BaseColumns */
         val id: Long,

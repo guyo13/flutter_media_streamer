@@ -141,6 +141,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     mainScope.launch {
       if (galleryImageCursor == null) {
         startImageStream(appContext)
+//        Log.d(TAG, "Cursor Loaded")
+//        Log.v(TAG, ImageCursorContainer.ColumnIndex.imageColumnNames.toString())
       }
       val res = resumeImageStream(limit = limit, offset = offset)
       result.success(res)
@@ -148,9 +150,9 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
 
   private suspend fun resumeImageStream(limit: Int = 0, offset: Int = 0) : List<String> {
-    ///FIXME - implement this bugger
     val res = mutableListOf<String>()
     withContext(Dispatchers.IO) {
+        /** Based on https://github.com/android/storage-samples/tree/master/MediaStore */
       galleryImageCursor?.cursor?.let { cursor: Cursor ->
         val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val dateModifiedColumn =
