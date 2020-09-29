@@ -75,6 +75,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     val INVALID_URI = "INVALID_URI"
     @JvmStatic
     val ERR_URI_OPEN = "ERR_OPEN_URI"
+    @JvmStatic
+    val ERR_MISSING_ARG = "ERR_MISSING_ARG"
     private const val TAG = "FlutterMediaStreamer"
   }
 
@@ -82,6 +84,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     when (call.method) {
       "streamGalleryImages" -> streamGalleryImages(
               result,
+              call.argument<List<String>>("columns") as List<String>,
               limit = call.argument<Int>("limit") as Int,
               offset = call.argument<Int>("offset") as Int,
       )
@@ -136,11 +139,11 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   }
   /** Main Functionality */
 
-  private fun streamGalleryImages(@NonNull result: Result, limit: Int = 0, offset: Int = 0) {
+  private fun streamGalleryImages(@NonNull result: Result, columns: List<String>, limit: Int = 0, offset: Int = 0) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamGalleryImages"))
     mainScope.launch {
       if (galleryImageCursor == null) {
-        startImageStream(appContext)
+        startImageStream(appContext, columns)
 //        Log.d(TAG, "Cursor Loaded")
 //        Log.v(TAG, ImageCursorContainer.ColumnIndex.imageColumnNames.toString())
       }
@@ -202,7 +205,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     return res
   }
 
-  private suspend fun startImageStream(appContext: Context) {
+  private suspend fun startImageStream(appContext: Context, @NonNull columns: List<String>) {
     withContext(Dispatchers.IO) {
       val projection = arrayOf(
               MediaStore.Images.Media._ID,

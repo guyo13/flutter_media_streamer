@@ -12,16 +12,18 @@ class AndroidBaseColumn extends EnumClass {
       _$androidBaseColumnSerializer;
 
   /// BaseColumns constants as defined in BaseColumns class
-
-  @BuiltValueEnumConst(wireName: '_id')
-  static const AndroidBaseColumn ID = _$ID;
-  @BuiltValueEnumConst(wireName: '_count')
-  static const AndroidBaseColumn COUNT = _$COUNT;
+  static AndroidBaseColumn get id => _id;
+  static AndroidBaseColumn get count => _count;
+  static const AndroidBaseColumn _id = _$id;
+  static const AndroidBaseColumn _count = _$count;
 
   const AndroidBaseColumn._(String name) : super(name);
   static BuiltSet<AndroidBaseColumn> get values => _$abcValues;
   static AndroidBaseColumn valueOf(String name) => _$abcValueOf(name);
 }
+/// Hack to access variables with _
+const AndroidBaseColumn idColumn = AndroidBaseColumn._id;
+const AndroidBaseColumn countColumn = AndroidBaseColumn._count;
 
 class AndroidMediaColumn extends EnumClass {
   static Serializer<AndroidMediaColumn> get serializer =>
@@ -46,8 +48,8 @@ class AndroidMediaColumn extends EnumClass {
   static const AndroidMediaColumn date_modified = _$mediaDateModified;
   static const AndroidMediaColumn datetaken = _$datetaken;
   static const AndroidMediaColumn disc_number = _$disc_number;
-  @BuiltValueEnumConst(wireName: '_display_name')
-  static const AndroidMediaColumn display_name = _$display_name;
+  static AndroidMediaColumn get display_name => _display_name;
+  static const AndroidMediaColumn _display_name = _$display_name;
   static const AndroidMediaColumn document_id = _$document_id;
   static const AndroidMediaColumn duration = _$duration;
   static const AndroidMediaColumn generation_added = _$generation_added;
@@ -67,8 +69,8 @@ class AndroidMediaColumn extends EnumClass {
   static const AndroidMediaColumn owner_package_name = _$owner_package_name;
   static const AndroidMediaColumn relative_path = _$relative_path;
   static const AndroidMediaColumn resolution = _$resolution;
-  @BuiltValueEnumConst(wireName: '_size')
-  static const AndroidMediaColumn size = _$size;
+  static AndroidMediaColumn get size => _size;
+  static const AndroidMediaColumn _size = _$size;
   static const AndroidMediaColumn title = _$title;
   static const AndroidMediaColumn volume_name = _$volume_name;
   static const AndroidMediaColumn width = _$width;
@@ -185,6 +187,7 @@ class AndroidPlaylistColumn extends EnumClass {
   /// PlaylistsColumns constants as defined in MediaStore class
   /// Not including deprecated fields (_data)
 
+  //FIXME - find a workaround because this value will be serialized as 'playlistName'
   @BuiltValueEnumConst(wireName: 'name')
   static const AndroidPlaylistColumn playlistName = _$playlistName;
   static const AndroidPlaylistColumn date_added = _$playlistDateAdded;

@@ -86,7 +86,7 @@ packages:
     source: hosted
     version: "4.3.2"
   built_value:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: built_value
       url: "https://pub.dartlang.org"

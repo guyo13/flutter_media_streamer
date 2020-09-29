@@ -6,15 +6,15 @@ part of 'android.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-const AndroidBaseColumn _$ID = const AndroidBaseColumn._('ID');
-const AndroidBaseColumn _$COUNT = const AndroidBaseColumn._('COUNT');
+const AndroidBaseColumn _$id = const AndroidBaseColumn._('_id');
+const AndroidBaseColumn _$count = const AndroidBaseColumn._('_count');
 
 AndroidBaseColumn _$abcValueOf(String name) {
   switch (name) {
-    case 'ID':
-      return _$ID;
-    case 'COUNT':
-      return _$COUNT;
+    case '_id':
+      return _$id;
+    case '_count':
+      return _$count;
     default:
       throw new ArgumentError(name);
   }
@@ -22,8 +22,8 @@ AndroidBaseColumn _$abcValueOf(String name) {
 
 final BuiltSet<AndroidBaseColumn> _$abcValues =
     new BuiltSet<AndroidBaseColumn>(const <AndroidBaseColumn>[
-  _$ID,
-  _$COUNT,
+  _$id,
+  _$count,
 ]);
 
 const AndroidMediaColumn _$mediaAlbum = const AndroidMediaColumn._('album');
@@ -52,7 +52,7 @@ const AndroidMediaColumn _$datetaken = const AndroidMediaColumn._('datetaken');
 const AndroidMediaColumn _$disc_number =
     const AndroidMediaColumn._('disc_number');
 const AndroidMediaColumn _$display_name =
-    const AndroidMediaColumn._('display_name');
+    const AndroidMediaColumn._('_display_name');
 const AndroidMediaColumn _$document_id =
     const AndroidMediaColumn._('document_id');
 const AndroidMediaColumn _$duration = const AndroidMediaColumn._('duration');
@@ -86,7 +86,7 @@ const AndroidMediaColumn _$relative_path =
     const AndroidMediaColumn._('relative_path');
 const AndroidMediaColumn _$resolution =
     const AndroidMediaColumn._('resolution');
-const AndroidMediaColumn _$size = const AndroidMediaColumn._('size');
+const AndroidMediaColumn _$size = const AndroidMediaColumn._('_size');
 const AndroidMediaColumn _$title = const AndroidMediaColumn._('title');
 const AndroidMediaColumn _$volume_name =
     const AndroidMediaColumn._('volume_name');
@@ -129,7 +129,7 @@ AndroidMediaColumn _$amcValueOf(String name) {
       return _$datetaken;
     case 'disc_number':
       return _$disc_number;
-    case 'display_name':
+    case '_display_name':
       return _$display_name;
     case 'document_id':
       return _$document_id;
@@ -169,7 +169,7 @@ AndroidMediaColumn _$amcValueOf(String name) {
       return _$relative_path;
     case 'resolution':
       return _$resolution;
-    case 'size':
+    case '_size':
       return _$size;
     case 'title':
       return _$title;
@@ -607,15 +607,6 @@ Serializer<AndroidImageMediaData> _$androidImageMediaDataSerializer =
 
 class _$AndroidBaseColumnSerializer
     implements PrimitiveSerializer<AndroidBaseColumn> {
-  static const Map<String, Object> _toWire = const <String, Object>{
-    'ID': '_id',
-    'COUNT': '_count',
-  };
-  static const Map<Object, String> _fromWire = const <Object, String>{
-    '_id': 'ID',
-    '_count': 'COUNT',
-  };
-
   @override
   final Iterable<Type> types = const <Type>[AndroidBaseColumn];
   @override
@@ -624,25 +615,16 @@ class _$AndroidBaseColumnSerializer
   @override
   Object serialize(Serializers serializers, AndroidBaseColumn object,
           {FullType specifiedType = FullType.unspecified}) =>
-      _toWire[object.name] ?? object.name;
+      object.name;
 
   @override
   AndroidBaseColumn deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
-      AndroidBaseColumn.valueOf(_fromWire[serialized] ?? serialized as String);
+      AndroidBaseColumn.valueOf(serialized as String);
 }
 
 class _$AndroidMediaColumnSerializer
     implements PrimitiveSerializer<AndroidMediaColumn> {
-  static const Map<String, Object> _toWire = const <String, Object>{
-    'display_name': '_display_name',
-    'size': '_size',
-  };
-  static const Map<Object, String> _fromWire = const <Object, String>{
-    '_display_name': 'display_name',
-    '_size': 'size',
-  };
-
   @override
   final Iterable<Type> types = const <Type>[AndroidMediaColumn];
   @override
@@ -651,12 +633,12 @@ class _$AndroidMediaColumnSerializer
   @override
   Object serialize(Serializers serializers, AndroidMediaColumn object,
           {FullType specifiedType = FullType.unspecified}) =>
-      _toWire[object.name] ?? object.name;
+      object.name;
 
   @override
   AndroidMediaColumn deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
-      AndroidMediaColumn.valueOf(_fromWire[serialized] ?? serialized as String);
+      AndroidMediaColumn.valueOf(serialized as String);
 }
 
 class _$AndroidImageColumnSerializer
