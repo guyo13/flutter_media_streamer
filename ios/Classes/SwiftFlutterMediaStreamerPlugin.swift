@@ -86,15 +86,16 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
         } else {
             // Check permissions on userInitiated queue
             self.permissionsQueue.async {
+                weak var weakSelf: SwiftFlutterMediaStreamerPlugin? = self
                 if !self.havePermissions() {
                     // If no permissions granted, request and defer execution
                     // to when permissions are either granted or denied
                     self.requestPermissionsAndRegister { authStatus in
                         if (authStatus == PHAuthorizationStatus.authorized) {
                             // Execute query only if permissions were authorized
-                            self.queryQueue.async {
-                                self.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
-                                self.resumeImageCursor(result: result, cursor: self.imageFetchResult!, limit: limit, offset: offset)
+                            weakSelf?.queryQueue.async {
+                                weakSelf?.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
+                                weakSelf?.resumeImageCursor(result: result, cursor: (weakSelf?.imageFetchResult)!, limit: limit, offset: offset)
                             }
                         } else {
                             result(FlutterError(code: "ERR_PERMISSIONS",
@@ -103,9 +104,9 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
                     }
                 } else {
                     // Permissions available continue execution (on utility thread)
-                    self.queryQueue.async {
-                        self.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
-                        self.resumeImageCursor(result: result, cursor: self.imageFetchResult!, limit: limit, offset: offset)
+                    weakSelf?.queryQueue.async {
+                        weakSelf?.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
+                        weakSelf?.resumeImageCursor(result: result, cursor: (weakSelf?.imageFetchResult)!, limit: limit, offset: offset)
                     }
                 }
             }
@@ -121,7 +122,6 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
         DispatchQueue.main.sync {
             self.imageFetchResult = fetchResult
         }
-        
     }
     
     // Run only from worker thread
@@ -145,7 +145,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
                 print(error.localizedDescription)
             }
         }
-        print(res)
+//        print(res)
         result(res)
         
     }
