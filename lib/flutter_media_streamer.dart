@@ -131,6 +131,9 @@ class FlutterMediaStreamer {
     }
   }
 
+  /// On Android check if Read External Storage permissions granted
+  /// On iOS check if PHAuthorizationStatus is authorized
+  // FIXME - unify method channel method name or check platform and fire with the matching name
   static Future<bool> get haveStoragePermission async {
     return await _channel.invokeMethod('haveStoragePermission');
   }
