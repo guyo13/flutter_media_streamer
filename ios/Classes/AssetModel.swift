@@ -17,7 +17,7 @@ class EncodeableLocation: Codable {
     let verticalAccuracy: Double?
     let speedAccuracy: Double?
     let courseAccuracy: Double?
-    let timestamp: Date
+    let timestamp: Double
     let speed: Double?
     let course: Double?
     
@@ -41,7 +41,7 @@ class EncodeableLocation: Codable {
             // Fallback on earlier versions
             self.courseAccuracy = nil
         }
-        self.timestamp = location.timestamp
+        self.timestamp = location.timestamp.timeIntervalSince1970
         self.speed = location.speed
         self.course = location.course
     }
@@ -54,8 +54,8 @@ class EncodableAsset: Codable {
     let sourceType: String
     let pixelWidth: Int
     let pixelHeight: Int
-    let creationDate: Date?
-    let modificationDate: Date?
+    let creationDate: Double?
+    let modificationDate: Double?
     let location: EncodeableLocation?
     let duration: Double
     let isFavorite: Bool
@@ -73,8 +73,8 @@ class EncodableAsset: Codable {
         self.sourceType = EncodableAsset.getSourceType(source: asset.sourceType)
         self.pixelWidth = asset.pixelWidth
         self.pixelHeight = asset.pixelHeight
-        self.creationDate = asset.creationDate
-        self.modificationDate = asset.modificationDate
+        self.creationDate = asset.creationDate?.timeIntervalSince1970
+        self.modificationDate = asset.modificationDate?.timeIntervalSince1970
         self.duration = asset.duration
         self.isFavorite = asset.isFavorite
         self.isHidden = asset.isHidden

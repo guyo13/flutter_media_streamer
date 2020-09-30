@@ -126,28 +126,35 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     
     // Run only from worker thread
     private func resumeImageCursor(result: @escaping FlutterResult, cursor: PHFetchResult<PHAsset>, limit: Int = 10, offset: Int = 0) {
-        let start = offset
-        let desiredEnd = offset + limit - 1
-        let end = desiredEnd < cursor.count ? desiredEnd : (cursor.count - 1)
-        let indexSet = IndexSet(start...end)
-        let objects = cursor.objects(at: indexSet)
         var res = [String]()
-        for item in objects {
-            //TODO - serialize to json and add to res
-            do {
-                let data = try self.encoder.encode(EncodableAsset.init(with: item))
-                let jsonString = String(data: data, encoding: .utf8)
-                if (jsonString != nil) {
-                    res.append(jsonString!)
+        if offset < cursor.count {
+            let start = offset
+            let desiredEnd = offset + limit - 1
+            let end = desiredEnd < cursor.count ? desiredEnd : (cursor.count - 1)
+            let indexSet = IndexSet(start...end)
+            let objects = cursor.objects(at: indexSet)
+            for item in objects {
+                //TODO - serialize to json and add to res
+                do {
+                    let data = try self.encoder.encode(EncodableAsset.init(with: item))
+                    let jsonString = String(data: data, encoding: .utf8)
+                    if (jsonString != nil) {
+                        res.append(jsonString!)
+                    }
+                }
+                catch {
+                    print(error.localizedDescription)
                 }
             }
-            catch {
-                print(error.localizedDescription)
+        }
+        print("Sent \(res.count) items!")
+        result(res)
+        // When we reach to the end of the PHFetchResult set it to null
+        if res.count == 0 {
+            DispatchQueue.main.sync {
+                self.imageFetchResult = nil
             }
         }
-//        print(res)
-        result(res)
-        
     }
     
     private func havePermissions() -> Bool {

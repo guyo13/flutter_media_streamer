@@ -83,7 +83,7 @@ class FlutterMediaStreamer {
       millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
-    yield* _streamRawAndroidGalleryImages(
+    yield* streamRawGalleryImages(
         limit: limit,
         offset: offset,
         baseColumns: baseColumns,
@@ -91,7 +91,7 @@ class FlutterMediaStreamer {
         imageColumns: imageColumns);
   }
 
-  Stream<String> _streamRawAndroidGalleryImages(
+  Stream<String> streamRawGalleryImages(
       {int limit = 10,
       int offset = 0,
       Iterable<AndroidBaseColumn> baseColumns = const [idColumn],
