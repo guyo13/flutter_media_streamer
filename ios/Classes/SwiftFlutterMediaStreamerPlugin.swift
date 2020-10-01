@@ -16,7 +16,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     }
     init(channel: FlutterMethodChannel) {
         self.channel = channel
-        self.queryQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.cursor", qos: .userInitiated)
+        self.queryQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.cursor", qos: .utility)
         self.permissionsQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.permissions", qos: .userInitiated)
         self.imageFetchResult = nil
         self.encoder = JSONEncoder()
