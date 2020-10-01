@@ -84,32 +84,20 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
                 self.resumeImageCursor(result: result, cursor: self.imageFetchResult!, limit: limit, offset: offset)
             }
         } else {
-            // Check permissions on userInitiated queue
-            self.permissionsQueue.async {
-                weak var weakSelf: SwiftFlutterMediaStreamerPlugin? = self
-                if !self.havePermissions() {
-                    // If no permissions granted, request and defer execution
-                    // to when permissions are either granted or denied
-                    self.requestPermissionsAndRegister { authStatus in
-                        if (authStatus == PHAuthorizationStatus.authorized) {
-                            // Execute query only if permissions were authorized
-                            weakSelf?.queryQueue.async {
-                                weakSelf?.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
-                                weakSelf?.resumeImageCursor(result: result, cursor: (weakSelf?.imageFetchResult)!, limit: limit, offset: offset)
-                            }
-                        } else {
-                            result(FlutterError(code: "ERR_PERMISSIONS",
-                                                message: "Photo Gallery Permissions denied", details: nil))
-                        }
-                    }
-                } else {
-                    // Permissions available continue execution (on utility thread)
+            weak var weakSelf: SwiftFlutterMediaStreamerPlugin? = self
+            let handler = { (authStatus: PHAuthorizationStatus) in
+                if (authStatus == PHAuthorizationStatus.authorized) {
+                    // Execute query only if permissions were authorized
                     weakSelf?.queryQueue.async {
                         weakSelf?.getGalleryImageCursor(columns: columns, limit: limit, offset: offset)
                         weakSelf?.resumeImageCursor(result: result, cursor: (weakSelf?.imageFetchResult)!, limit: limit, offset: offset)
                     }
+                } else {
+                    result(FlutterError(code: "ERR_PERMISSIONS",
+                                        message: "Photo Gallery Permissions denied", details: nil))
                 }
             }
+            self.executeWithGalleryPermissions(handler: handler)
         }
     }
     
@@ -169,6 +157,20 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     
     private func requestPermissionsAndRegister(handler: @escaping (PHAuthorizationStatus) -> Void) {
         PHPhotoLibrary.requestAuthorization(handler)
+    }
+    
+    private func executeWithGalleryPermissions(handler: @escaping (PHAuthorizationStatus) -> Void) {
+        // Check permissions on userInitiated queue
+        self.permissionsQueue.async {
+            if !self.havePermissions() {
+                // If no permissions granted, request and defer execution
+                // to when permissions are either granted or denied
+                self.requestPermissionsAndRegister(handler: handler)
+            } else {
+                // Permissions available continue execution
+                handler(PHAuthorizationStatus.authorized)
+            }
+        }
     }
     
     public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
