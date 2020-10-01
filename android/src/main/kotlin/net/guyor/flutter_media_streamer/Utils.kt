@@ -35,13 +35,31 @@ fun decodeSampledBitmapFromDescriptor(
     return BitmapFactory.Options().run {
         inJustDecodeBounds = true
         BitmapFactory.decodeFileDescriptor(fd, null, this)
+        val w: Int = if (reqWidth > 0) reqWidth else outWidth
+        val h: Int = if (reqHeight > 0) reqHeight else outHeight
 
         // Calculate inSampleSize
-        inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
-
+        inSampleSize = calculateInSampleSize(this, w, h)
         // Decode bitmap with inSampleSize set
         inJustDecodeBounds = false
 
         BitmapFactory.decodeFileDescriptor(fd, null, this)
     }
+}
+
+fun createScaledBitmap(
+        fd: FileDescriptor,
+        reqWidth: Int,
+        reqHeight: Int
+): Bitmap {
+    val w: Int
+    val h: Int
+    BitmapFactory.Options().run {
+        inJustDecodeBounds = true
+        BitmapFactory.decodeFileDescriptor(fd, null, this)
+        w = if (reqWidth > 0) reqWidth else outWidth
+        h = if (reqHeight > 0) reqHeight else outHeight
+    }
+    //TODO - add argument to control this
+    return Bitmap.createScaledBitmap(BitmapFactory.decodeFileDescriptor(fd), w, h, true)
 }

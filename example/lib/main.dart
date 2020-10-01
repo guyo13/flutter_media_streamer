@@ -21,6 +21,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   List<AndroidImageMediaData> _response;
+  // TODO - refactor this once ready
+  List<String> _textResponse;
 
   @override
   void initState() {
@@ -107,14 +109,17 @@ class _MyAppState extends State<MyApp> {
                           onPressed: () async {
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
                               final res = await FlutterMediaStreamer.instance
-                                  .rawImageMetadata(limit: 3)
+                                  .rawImageMetadata(limit: 3).take(10)
                                   .toList();
                               print(
                                   "Got ${res.length} image metadata from iOS");
+                              setState(() {
+                                _textResponse = res;
+                              });
                               for (var i in res) print(jsonDecode(i));
                             } else {
                               final res = await FlutterMediaStreamer.instance
-                                  .androidImagesMetadata(limit: 3)
+                                  .androidImagesMetadata(limit: 3).take(10)
                                   .toList();
                               setState(() {
                                 _response = res;
@@ -126,6 +131,7 @@ class _MyAppState extends State<MyApp> {
                     ],
                   ),
                 ),
+                // FIXME - Android
                 if (_response != null)
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
@@ -141,7 +147,26 @@ class _MyAppState extends State<MyApp> {
                           )
                       ],
                     ),
-                  )
+                  ),
+                // FIXME - iOS
+                if (_textResponse != null)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    child: GridView(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
+                      children: [
+                        for (var r in _textResponse)
+                          ThumbGridItem(
+                            height: 200,
+                            future: FlutterMediaStreamer.instance
+                                .getThumbnail(
+                                (jsonDecode(r) as Map<String, dynamic>)["localIdentifier"]
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
               ],
             ),
           );
@@ -170,20 +195,33 @@ class _MyAppState extends State<MyApp> {
                         child: FlatButton(
                           child: Text("Get images"),
                           onPressed: () async {
-                            final res = await FlutterMediaStreamer
-                                .instance
-                                .androidImagesMetadata(
-                                limit: 1)
-                                .toList();
-                            setState(() {
-                              _response = res;
-                            });
+                            if (defaultTargetPlatform == TargetPlatform.iOS) {
+                              final res = await FlutterMediaStreamer.instance
+                                  .rawImageMetadata(limit: 3).take(10)
+                                  .toList();
+                              print(
+                                  "Got ${res.length} image metadata from iOS");
+                              setState(() {
+                                _textResponse = res;
+                              });
+                              for (var i in res) print(jsonDecode(i));
+                            } else {
+                              final res = await FlutterMediaStreamer
+                                  .instance
+                                  .androidImagesMetadata(
+                                  limit: 1).take(10)
+                                  .toList();
+                              setState(() {
+                                _response = res;
+                              });
+                            }
                           },
                         ),
                       ),
                     ],
                   ),
                 ),
+                //FIXME - Android
                 if (_response != null)
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
@@ -195,12 +233,30 @@ class _MyAppState extends State<MyApp> {
                           ThumbGridItem(
                             future: FlutterMediaStreamer.instance.getImage(
                                 r.contentUri,
-                                height: 200,
-                                width: 320),
+                                height: 400,
+                                width: 640),
                           )
                       ],
                     ),
-                  )
+                  ),
+                // FIXME - iOS
+                if (_textResponse != null)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    child: GridView(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1),
+                      children: [
+                        for (var r in _textResponse)
+                          ThumbGridItem(
+                            future: FlutterMediaStreamer.instance
+                                .getImage(
+                                (jsonDecode(r) as Map<String, dynamic>)["localIdentifier"]
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
               ],
             ),
           );

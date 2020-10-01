@@ -27,11 +27,11 @@ class FlutterMediaStreamer {
     });
   }
 
-  Future<Uint8List> getImage(String contentUri, {int width, int height}) async {
+  Future<Uint8List> getImage(String contentUri, {int width = -1, int height = -1}) async {
     return await _channel.invokeMethod('getImage', <String, dynamic>{
       'contentUriString': contentUri ?? '',
-      'width': width,
-      'height': height,
+      'width': width ?? -1,
+      'height': height ?? -1,
     });
   }
 

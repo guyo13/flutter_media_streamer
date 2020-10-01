@@ -93,8 +93,8 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       "getImage" -> getImage(
               result,
               call.argument<String?>("contentUriString") ?: "",
-              width = call.argument<Int?>("width"),
-              height = call.argument<Int?>("height"))
+              width = call.argument<Int?>("width") ?: -1,
+              height = call.argument<Int?>("height") ?: -1 )
       "havePermissions" -> result.success(havePermissions())
       "requestPermissions" -> requestPermissions(result)
       "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
@@ -214,6 +214,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   }
 
 
+  //TODO - Execute with permissions
   @RequiresApi(Build.VERSION_CODES.Q)
   private fun getThumbnail(@NonNull result: Result, @NonNull uriString: String, width: Int = 640, height: Int = 480) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getThumbnail"))
@@ -236,7 +237,9 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   }
 
   //TODO - see if speed and memory usage can be further improved
-  private fun getImage(@NonNull result: Result, @NonNull uriString: String, width: Int?, height: Int?) {
+  //TODO - Execute with permissions
+  //TODO - Choose either scaledBitmap algo or sampledBitmap
+  private fun getImage(@NonNull result: Result, @NonNull uriString: String, width: Int = -1, height: Int = -1) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getImage"))
     var res : ByteArray? = null
     val uri: Uri = Uri.parse(uriString)
@@ -247,16 +250,12 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
           val pfd = appContext.contentResolver.openFileDescriptor(uri, "r") ?: return@withContext
           pfd.use {
-            bitmap = if (width != null && width> 0 && height != null && height > 0) {
-                Log.d(TAG, "Getting image with size $width X $height")
-                decodeSampledBitmapFromDescriptor(pfd.fileDescriptor, width, height)
-              } else {
-                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, null)
-              }
-              val stream = ByteArrayOutputStream()
-              bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
-              res = stream.toByteArray()
-              bitmap?.recycle()
+            bitmap = createScaledBitmap(pfd.fileDescriptor, width, height)
+            Log.d(TAG, "Got image with size ${bitmap?.width} X ${bitmap?.height}")
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            res = stream.toByteArray()
+            bitmap?.recycle()
           }
         }
         if (res != null)
