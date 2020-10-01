@@ -152,7 +152,9 @@ class FlutterMediaStreamer {
   ///
   /// Private function that implements the platform method call
   /// Currently only one such stream can exist at the same time
-  /// and it is protected by locking and backoff
+  /// and it is protected by locking and backoff mechanism
+  /// so that additional streams opened with the public
+  /// functions are still valid
   Stream<String> _rawImageMetadata(
       {int limit = 10,
         int offset = 0,
