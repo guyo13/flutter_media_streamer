@@ -27,8 +27,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
-    _permissionsGranted =
-        FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
+    _permissionsGranted = Future.sync(() => true);
+        //FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -111,8 +111,8 @@ class _MyAppState extends State<MyApp> {
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
                               case ConnectionState.done:
-                                return snapshot.data
-                                    ? FlatButton(
+                                // return snapshot.data ?
+                                     return FlatButton(
                                         child: Text("Get images"),
                                         onPressed: () async {
                                           if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -133,20 +133,20 @@ class _MyAppState extends State<MyApp> {
                                             });
                                           }
                                         },
-                                      )
-                                    : FlatButton(
-                                        child:
-                                            Text("Grant Storage Permissions"),
-                                        onPressed: () async {
-                                          setState(() {
-                                            _permissionsGranted =
-                                                FlutterMediaStreamer
-                                                    .requestStoragePermissions();
-                                            _permissionsGranted.then(
-                                                (value) => setState(() {}));
-                                          });
-                                        },
                                       );
+                                    // : FlatButton(
+                                    //     child:
+                                    //         Text("Grant Storage Permissions"),
+                                    //     onPressed: () async {
+                                    //       setState(() {
+                                    //         _permissionsGranted =
+                                    //             FlutterMediaStreamer
+                                    //                 .requestStoragePermissions();
+                                    //         _permissionsGranted.then(
+                                    //             (value) => setState(() {}));
+                                    //       });
+                                    //     },
+                                    //   );
                               default:
                                 return CircularProgressIndicator();
                             }

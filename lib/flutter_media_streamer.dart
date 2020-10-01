@@ -105,7 +105,7 @@ class FlutterMediaStreamer {
       ]}) async* {
     if (!_galleryImageStreamLocked) {
       _galleryImageStreamLocked = true;
-      if (await haveStoragePermission) {
+      if (true || await haveStoragePermission) {
         List<String> columns = [];
         columns.addAll(baseColumns.map((e) => e.name) ?? _empty);
         columns.addAll(mediaColumns.map((e) => e.name) ?? _empty);
@@ -114,18 +114,23 @@ class FlutterMediaStreamer {
         List<String> results;
         limit = limit ?? 10;
         offset = offset ?? 0;
-        do {
-          results = await _channel
-              .invokeListMethod('streamGalleryImages', <String, dynamic>{
-            'columns': columns,
-            'limit': limit,
-            'offset': offset,
-          });
-          offset += results.length;
-          for (var item in results) {
-            yield item;
-          }
-        } while (results != null && results.isNotEmpty);
+        try {
+          do {
+            results = await _channel
+                .invokeListMethod('streamGalleryImages', <String, dynamic>{
+              'columns': columns,
+              'limit': limit,
+              'offset': offset,
+            });
+            offset += results.length;
+            for (var item in results) {
+              yield item;
+            }
+          } while (results != null && results.isNotEmpty);
+        } catch (e) {
+          print(e);
+        }
+        print('Stream over');
       }
       _galleryImageStreamLocked = false;
     }
