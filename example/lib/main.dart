@@ -21,14 +21,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   List<AndroidImageMediaData> _response;
-  Future<bool> _permissionsGranted;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    _permissionsGranted = Future.sync(() => true);
-        //FlutterMediaStreamer.requestStoragePermissions(timeout: 10);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -105,50 +102,23 @@ class _MyAppState extends State<MyApp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        child: FutureBuilder(
-                          initialData: false,
-                          future: _permissionsGranted,
-                          builder: (context, snapshot) {
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.done:
-                                // return snapshot.data ?
-                                     return FlatButton(
-                                        child: Text("Get images"),
-                                        onPressed: () async {
-                                          if (defaultTargetPlatform == TargetPlatform.iOS) {
-                                            final res = await FlutterMediaStreamer
-                                                .instance
-                                                .streamRawGalleryImages(limit: 3)
-                                                .toList();
-                                            print("Got ${res.length} image metadata from iOS");
-                                            for (var i in res)
-                                              print(jsonDecode(i));
-                                          } else {
-                                            final res = await FlutterMediaStreamer
-                                                .instance
-                                                .streamAndroidGalleryImages(limit: 3)
-                                                .toList();
-                                            setState(() {
-                                              _response = res;
-                                            });
-                                          }
-                                        },
-                                      );
-                                    // : FlatButton(
-                                    //     child:
-                                    //         Text("Grant Storage Permissions"),
-                                    //     onPressed: () async {
-                                    //       setState(() {
-                                    //         _permissionsGranted =
-                                    //             FlutterMediaStreamer
-                                    //                 .requestStoragePermissions();
-                                    //         _permissionsGranted.then(
-                                    //             (value) => setState(() {}));
-                                    //       });
-                                    //     },
-                                    //   );
-                              default:
-                                return CircularProgressIndicator();
+                        child: FlatButton(
+                          child: Text("Get images"),
+                          onPressed: () async {
+                            if (defaultTargetPlatform == TargetPlatform.iOS) {
+                              final res = await FlutterMediaStreamer.instance
+                                  .streamRawGalleryImages(limit: 3)
+                                  .toList();
+                              print(
+                                  "Got ${res.length} image metadata from iOS");
+                              for (var i in res) print(jsonDecode(i));
+                            } else {
+                              final res = await FlutterMediaStreamer.instance
+                                  .streamAndroidGalleryImages(limit: 3)
+                                  .toList();
+                              setState(() {
+                                _response = res;
+                              });
                             }
                           },
                         ),
@@ -166,7 +136,8 @@ class _MyAppState extends State<MyApp> {
                         for (var r in _response)
                           ThumbGridItem(
                             height: 200,
-                            future: FlutterMediaStreamer.instance.getThumbnail(r.contentUri),
+                            future: FlutterMediaStreamer.instance
+                                .getThumbnail(r.contentUri),
                           )
                       ],
                     ),
@@ -196,41 +167,17 @@ class _MyAppState extends State<MyApp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        child: FutureBuilder(
-                          initialData: false,
-                          future: _permissionsGranted,
-                          builder: (context, snapshot) {
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.done:
-                                return snapshot.data
-                                    ? FlatButton(
-                                        child: Text("Get images"),
-                                        onPressed: () async {
-                                          final res = await FlutterMediaStreamer
-                                              .instance
-                                              .streamAndroidGalleryImages(limit: 1)
-                                              .toList();
-                                          setState(() {
-                                            _response = res;
-                                          });
-                                        },
-                                      )
-                                    : FlatButton(
-                                        child:
-                                            Text("Grant Storage Permissions"),
-                                        onPressed: () async {
-                                          setState(() {
-                                            _permissionsGranted =
-                                                FlutterMediaStreamer
-                                                    .requestStoragePermissions();
-                                            _permissionsGranted.then(
-                                                (value) => setState(() {}));
-                                          });
-                                        },
-                                      );
-                              default:
-                                return CircularProgressIndicator();
-                            }
+                        child: FlatButton(
+                          child: Text("Get images"),
+                          onPressed: () async {
+                            final res = await FlutterMediaStreamer
+                                .instance
+                                .streamAndroidGalleryImages(
+                                limit: 1)
+                                .toList();
+                            setState(() {
+                              _response = res;
+                            });
                           },
                         ),
                       ),
