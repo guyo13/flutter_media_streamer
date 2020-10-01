@@ -16,7 +16,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     }
     init(channel: FlutterMethodChannel) {
         self.channel = channel
-        self.queryQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.cursor", qos: .utility)
+        self.queryQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.cursor", qos: .userInitiated)
         self.permissionsQueue = DispatchQueue(label: "net.guyor.flutter_media_streamer.permissions", qos: .userInitiated)
         self.imageFetchResult = nil
         self.encoder = JSONEncoder()
@@ -42,8 +42,8 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
             let args = call.arguments as! Dictionary<String, Any>
             let w: Int = (args["width"] as? NSNumber)?.intValue ?? -1
             let h: Int = (args["height"] as? NSNumber)?.intValue ?? -1
-            let contentUriString: String = args["contentUriString"] as! String
-            getImage(result: result, uriString: contentUriString, width: w, height: h)
+            let localIdentifier: String = args["imageIdentifier"] as! String
+            getImage(result: result, localIdentifier: localIdentifier, width: w, height: h)
         case "imageMetadataStream":
             if !checkDictionaryArgs(call: call) {
                 result(FlutterError(code: "Invalid_Arguments", message: nil, details: nil))
@@ -72,63 +72,62 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     
     //TODO - Use IOS API
     private func getThumbnail(result: @escaping FlutterResult, uriString: String, width:Int = 640, height:Int = 400) {
-      getImage(result: result, uriString: uriString, width: width, height: height)
+      getImage(result: result, localIdentifier: uriString, width: width, height: height)
     }
     
     // TODO - Execute with permissions
     // TODO - Support contentMode, imageRequestOptions
     // TODO - Add option to determine format of result
-    private func getImage(result: @escaping FlutterResult, uriString: String, width:Int = -1, height:Int = -1) {
+    private func getImage(result: @escaping FlutterResult, localIdentifier: String, width:Int = -1, height:Int = -1) {
         self.queryQueue.async {
             let fetchOptions = PHFetchOptions()
             let sources: PHAssetSourceType = [.typeUserLibrary, .typeCloudShared, .typeiTunesSynced]
             fetchOptions.includeAssetSourceTypes = sources
-            let assetResults = PHAsset.fetchAssets(withLocalIdentifiers: [uriString], options: fetchOptions)
+            let assetResults = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: fetchOptions)
             if assetResults.count > 0 {
                 let imageManager = PHImageManager.default()
                 let asset: PHAsset = assetResults.object(at: 0)
                 let w: Int = width <= 0 ? asset.pixelWidth : width
                 let h: Int = height <= 0 ? asset.pixelHeight : height
                 let targetSize = CGSize(width: w, height: h)
+                let options = PHImageRequestOptions()
+                //TODO - allow setting option
+                options.resizeMode = .exact
                 imageManager.requestImage(for: asset,
                                           targetSize: targetSize,
                                           contentMode: PHImageContentMode.default,
-                                          options: nil)
+                                          options: options)
                 { (image: UIImage?, info: [AnyHashable : Any]?) in
                  //TODO - send info back to platform? requires change of abstraction in Dart code
+//                    print("Got image, info:")
+//                    dump(info)
+//                    print("Size \(image?.size)")
                     var imageData: Data?
                     if image != nil {
                         imageData = image?.pngData()
                         if imageData == nil {
                             // Return error image bytes are null
-                            DispatchQueue.main.async {
-                                result(FlutterError(code: "NULL_IMAGE_DATA",
-                                                    message: "Got null image data from image with identifier \(uriString)",
-                                                    details: nil))
-                            }
+                            result(FlutterError(code: "NULL_IMAGE_DATA",
+                                                message: "Got null image data from image with identifier \(localIdentifier)",
+                                                details: nil))
                         } else {
                             // Return success
-                            let resData = FlutterStandardTypedData(bytes: (image?.pngData())!)
-                            DispatchQueue.main.async {
-                                result(resData)
-                            }
+//                            print("\(imageData?.count ?? 0) bytes")
+                            let resData = FlutterStandardTypedData(bytes: imageData!)
+                            result(resData)
                         }
                     } else {
                         // Return error image result was null
-                        DispatchQueue.main.async {
-                            result(FlutterError(code: "NULL_IMAGE",
-                                                message: "Got null image from image request with identifier \(uriString)",
-                                                details: nil))
-                        }
+                        result(FlutterError(code: "NULL_IMAGE",
+                                            message: "Got null image from image request with identifier \(localIdentifier)",
+                                            details: nil))
                     }
                 }
             } else {
                 // Return error asset not found
-                DispatchQueue.main.async {
-                    result(FlutterError(code: "NO_ASSET_WITH_ID",
-                                        message: "Couldn't find asset with localIdentifier \(uriString)",
-                                        details: "IOS returned empty result set"))
-                }
+                result(FlutterError(code: "NO_ASSET_WITH_ID",
+                                    message: "Couldn't find asset with localIdentifier \(localIdentifier)",
+                                    details: "IOS returned empty result set"))
             }
         }
     }

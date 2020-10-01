@@ -87,12 +87,12 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
               height = call.argument<Int?>("height") ?: 400)
       else getImage(
               result,
-              call.argument<String?>("contentUriString") ?: "",
+              call.argument<String?>("imageIdentifier") ?: "",
               width = call.argument<Int?>("width") ?: 640,
               height = call.argument<Int?>("height") ?: 400)
       "getImage" -> getImage(
               result,
-              call.argument<String?>("contentUriString") ?: "",
+              call.argument<String?>("imageIdentifier") ?: "",
               width = call.argument<Int?>("width") ?: -1,
               height = call.argument<Int?>("height") ?: -1 )
       "havePermissions" -> result.success(havePermissions())

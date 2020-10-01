@@ -20,19 +20,41 @@ class FlutterMediaStreamer {
 
   Future<Uint8List> getThumbnail(String contentUri,
       {int width = 640, int height = 400}) async {
-    return await _channel.invokeMethod('getThumbnail', <String, dynamic>{
-      'contentUriString': contentUri ?? '',
-      'width': width ?? 640,
-      'height': height ?? 400,
-    });
+    try {
+      return await _channel.invokeMethod('getThumbnail', <String, dynamic>{
+        'contentUriString': contentUri ?? '',
+        'width': width ?? 640,
+        'height': height ?? 400,
+      });
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
-  Future<Uint8List> getImage(String contentUri, {int width = -1, int height = -1}) async {
-    return await _channel.invokeMethod('getImage', <String, dynamic>{
-      'contentUriString': contentUri ?? '',
-      'width': width ?? -1,
-      'height': height ?? -1,
-    });
+  /// Returns image bytes of an image asset represented by [imageIdentifier]
+  /// Returned image data is in PNG format
+  /// [imageIdentifier] - The platform identifier used to load the image
+  /// on Android this is a Content URI, and on iOS this is a localIdentifier
+  ///
+  /// [width] - The requested width of the image.
+  /// [height] - The requested height of the image
+  /// In either [width] or [height], a value of -1 means the original
+  /// dimension. Be careful loading multiple images in full size as it is a
+  /// memory hog!
+  ///
+  /// TODO - format, quality, subsample, and ios features
+  Future<Uint8List> getImage(String imageIdentifier, {int width = -1, int height = -1}) async {
+    try {
+      return await _channel.invokeMethod('getImage', <String, dynamic>{
+        'imageIdentifier': imageIdentifier ?? '',
+        'width': width ?? -1,
+        'height': height ?? -1,
+      });
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   /// This stream consumes [rawImageMetadata] stream
