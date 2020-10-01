@@ -32,11 +32,8 @@ import java.io.ByteArrayOutputStream
 
 private const val READ_EXTERNAL_STORAGE_REQUEST_CODE = 0xF17357
 /** FlutterMediaStreamerPlugin */
-public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
+class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
+
   private lateinit var channel : MethodChannel
   private var galleryImageCursor: ImageCursorContainer? = null
   private var binding : FlutterPlugin.FlutterPluginBinding? = null
@@ -50,15 +47,6 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     channel.setMethodCallHandler(this)
   }
 
-  // This static function is optional and equivalent to onAttachedToEngine. It supports the old
-  // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
-  // plugin registration via this function while apps migrate to use the new Android APIs
-  // post-flutter-1.12 via https://flutter.dev/go/android-project-migration.
-  //
-  // It is encouraged to share logic between onAttachedToEngine and registerWith to keep
-  // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
-  // depending on the user's project. onAttachedToEngine or registerWith must both be defined
-  // in the same class.
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
@@ -70,13 +58,9 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     @JvmStatic
     val ERR_CONTEXT_MSG = "Application context is not available while calling method %s"
     @JvmStatic
-    val ERR_VERSION = "ANDROID_VER_TOO_LOW"
-    @JvmStatic
     val INVALID_URI = "INVALID_URI"
     @JvmStatic
     val ERR_URI_OPEN = "ERR_OPEN_URI"
-    @JvmStatic
-    val ERR_MISSING_ARG = "ERR_MISSING_ARG"
     @JvmStatic
     val ERR_NULL_CURSOR = "ERR_NULL_CURSOR"
     @JvmStatic
@@ -262,12 +246,12 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           var bitmap : Bitmap?
 
           val pfd = appContext.contentResolver.openFileDescriptor(uri, "r") ?: return@withContext
-          pfd.use { _ ->
-              if (width != null && width> 0 && height != null && height > 0) {
+          pfd.use {
+            bitmap = if (width != null && width> 0 && height != null && height > 0) {
                 Log.d(TAG, "Getting image with size $width X $height")
-                bitmap = decodeSampledBitmapFromDescriptor(pfd.fileDescriptor, width, height)
+                decodeSampledBitmapFromDescriptor(pfd.fileDescriptor, width, height)
               } else {
-                bitmap = BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, null)
+                BitmapFactory.decodeFileDescriptor(pfd.fileDescriptor, null, null)
               }
               val stream = ByteArrayOutputStream()
               bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
