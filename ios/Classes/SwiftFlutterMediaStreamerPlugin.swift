@@ -44,7 +44,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
             let h: Int? = (args["height"] as? NSNumber)?.intValue
             let contentUriString: String = args["height"] as! String
             getImage(result: result, uriString: contentUriString, width: w, height: h)
-        case "streamGalleryImages":
+        case "imageMetadataStream":
             if !checkDictionaryArgs(call: call) {
                 result(FlutterError(code: "Invalid_Arguments", message: nil, details: nil))
             }
@@ -52,7 +52,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
             let columns = args["columns"] as! [String]
             let limit = (args["limit"] as? NSNumber)?.intValue ?? 10
             let offset = (args["offset"] as? NSNumber)?.intValue ?? 0
-            streamGalleryImages(result: result, columns: columns, limit: limit, offset: offset)
+            streamImageMetadata(result: result, columns: columns, limit: limit, offset: offset)
         case "havePermissions":
             result(havePermissions())
         case "requestPermissions":
@@ -77,7 +77,7 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
         
     }
     
-    private func streamGalleryImages(result: @escaping FlutterResult, columns: [String], limit: Int = 10, offset: Int = 0) {
+    private func streamImageMetadata(result: @escaping FlutterResult, columns: [String], limit: Int = 10, offset: Int = 0) {
         //If cursor already available, continue serving results through it
         if self.imageFetchResult != nil {
             self.queryQueue.async {

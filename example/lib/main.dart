@@ -107,14 +107,14 @@ class _MyAppState extends State<MyApp> {
                           onPressed: () async {
                             if (defaultTargetPlatform == TargetPlatform.iOS) {
                               final res = await FlutterMediaStreamer.instance
-                                  .streamRawGalleryImages(limit: 3)
+                                  .rawImageMetadata(limit: 3)
                                   .toList();
                               print(
                                   "Got ${res.length} image metadata from iOS");
                               for (var i in res) print(jsonDecode(i));
                             } else {
                               final res = await FlutterMediaStreamer.instance
-                                  .streamAndroidGalleryImages(limit: 3)
+                                  .androidImagesMetadata(limit: 3)
                                   .toList();
                               setState(() {
                                 _response = res;
@@ -172,7 +172,7 @@ class _MyAppState extends State<MyApp> {
                           onPressed: () async {
                             final res = await FlutterMediaStreamer
                                 .instance
-                                .streamAndroidGalleryImages(
+                                .androidImagesMetadata(
                                 limit: 1)
                                 .toList();
                             setState(() {

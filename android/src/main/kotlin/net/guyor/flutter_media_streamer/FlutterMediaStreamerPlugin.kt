@@ -74,7 +74,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "streamGalleryImages" -> streamGalleryImages(
+      "imageMetadataStream" -> streamImageMetadata(
               result,
               call.argument<List<String>>("columns") as List<String>,
               limit = call.argument<Int>("limit") as Int,
@@ -128,8 +128,8 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   }
   /** Main Functionality */
 
-  private fun streamGalleryImages(@NonNull result: Result, columns: List<String>, limit: Int = 10, offset: Int = 0) {
-    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamGalleryImages"))
+  private fun streamImageMetadata(@NonNull result: Result, columns: List<String>, limit: Int = 10, offset: Int = 0) {
+    val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "streamImageMetadata"))
     mainScope.launch {
       //If cursor already available, continue serving results through it
       if (galleryImageCursor != null) {
