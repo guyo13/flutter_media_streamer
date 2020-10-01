@@ -18,11 +18,6 @@ class FlutterMediaStreamer {
   static const MethodChannel _channel =
       const MethodChannel('flutter_media_streamer');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   Future<Uint8List> getThumbnail(String contentUri,
       {int width = 640, int height = 400}) async {
     return await _channel.invokeMethod('getThumbnail', <String, dynamic>{
@@ -61,7 +56,8 @@ class FlutterMediaStreamer {
         mediaColumns: mediaColumns,
         imageColumns: imageColumns)) {
       final json = await jsonDecodeFn(item);
-      yield androidSerializers.deserialize(json, specifiedType: const FullType(AndroidImageMediaData));
+      yield androidSerializers.deserialize(json,
+          specifiedType: const FullType(AndroidImageMediaData));
     }
   }
 
@@ -105,51 +101,54 @@ class FlutterMediaStreamer {
       ]}) async* {
     if (!_galleryImageStreamLocked) {
       _galleryImageStreamLocked = true;
-      if (true || await haveStoragePermission) {
-        List<String> columns = [];
-        columns.addAll(baseColumns.map((e) => e.name) ?? _empty);
-        columns.addAll(mediaColumns.map((e) => e.name) ?? _empty);
-        columns.addAll(imageColumns.map((e) => e.name) ?? _empty);
+      List<String> columns = [];
+      columns.addAll(baseColumns.map((e) => e.name) ?? _empty);
+      columns.addAll(mediaColumns.map((e) => e.name) ?? _empty);
+      columns.addAll(imageColumns.map((e) => e.name) ?? _empty);
 
-        List<String> results;
-        limit = limit ?? 10;
-        offset = offset ?? 0;
-        try {
-          do {
-            results = await _channel
-                .invokeListMethod('streamGalleryImages', <String, dynamic>{
-              'columns': columns,
-              'limit': limit,
-              'offset': offset,
-            });
-            offset += results.length;
-            for (var item in results) {
-              yield item;
-            }
-          } while (results != null && results.isNotEmpty);
-        } catch (e) {
-          print(e);
-        }
-        print('Stream over');
+      List<String> results;
+      limit = limit ?? 10;
+      offset = offset ?? 0;
+      try {
+        do {
+          results = await _channel
+              .invokeListMethod('streamGalleryImages', <String, dynamic>{
+            'columns': columns,
+            'limit': limit,
+            'offset': offset,
+          });
+          offset += results.length;
+          for (var item in results) {
+            yield item;
+          }
+        } while (results != null && results.isNotEmpty);
+      } catch (e) {
+        print(e);
       }
+      print('Stream over');
+
       _galleryImageStreamLocked = false;
     }
   }
 
   /// On Android check if Read External Storage permissions granted
   /// On iOS check if PHAuthorizationStatus is authorized
-  // FIXME - unify method channel method name or check platform and fire with the matching name
-  static Future<bool> get haveStoragePermission async {
-    return await _channel.invokeMethod('haveStoragePermission');
+  static Future<bool> get havePermissions async {
+    return await _channel.invokeMethod('havePermissions');
   }
 
-  /// Request permissions, on Android for reading external storage
-  /// TODO on iOS
-  /// Returns a boolean value indicating if permissions were granted or not
+  /// Requests permissions and returns a boolean value
+  /// indicating if permissions were granted or not
+  /// on Android for reading external storage
+  /// on iOS for reading the user's Photo Library
   /// [timeout] - Timeout is seconds to wait for permissions. Default 10
   /// if 0 or null then returns false
-  static Future<bool> requestStoragePermissions({int timeout = 10}) async {
-    return await _channel.invokeMethod(
-        'requestStoragePermissions', <String, dynamic>{'timeout': timeout});
+  static Future<bool> requestPermissions() async {
+    return await _channel.invokeMethod('requestPermissions');
+  }
+
+  static Future<String> get platformVersion async {
+    final String version = await _channel.invokeMethod('getPlatformVersion');
+    return version;
   }
 }

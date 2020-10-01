@@ -111,8 +111,8 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
               call.argument<String?>("contentUriString") ?: "",
               width = call.argument<Int?>("width"),
               height = call.argument<Int?>("height"))
-      "haveStoragePermission" -> result.success(haveStoragePermission())
-      "requestStoragePermissions" -> requestStoragePermissions(result)
+      "havePermissions" -> result.success(havePermissions())
+      "requestPermissions" -> requestPermissions(result)
       "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -262,7 +262,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
           var bitmap : Bitmap?
 
           val pfd = appContext.contentResolver.openFileDescriptor(uri, "r") ?: return@withContext
-          pfd.use { istream ->
+          pfd.use { _ ->
               if (width != null && width> 0 && height != null && height > 0) {
                 Log.d(TAG, "Getting image with size $width X $height")
                 bitmap = decodeSampledBitmapFromDescriptor(pfd.fileDescriptor, width, height)
@@ -287,7 +287,7 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
   /** Other Methods */
 
   private fun executeWithPermissions(handler: (isAuthorized: Boolean) -> Unit) {
-    if (haveStoragePermission()) {
+    if (havePermissions()) {
       handler(true)
     } else {
       var permissionsHandler: PluginRegistry.RequestPermissionsResultListener? = null
@@ -305,13 +305,13 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
       }
 
       activityBinding?.addRequestPermissionsResultListener(permissionsHandler)
-      requestPermissions()
+      requestAndroidPermissions()
     }
   }
 
-  private fun requestStoragePermissions(@NonNull result: Result) {
+  private fun requestPermissions(@NonNull result: Result) {
     mainScope.launch {
-      if (haveStoragePermission()) {
+      if (havePermissions()) {
         result.success(true)
       } else {
         executeWithPermissions { isAuthorized: Boolean ->
@@ -326,13 +326,13 @@ public class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, Activ
     return
   }
 
-  private fun haveStoragePermission() =
+  private fun havePermissions() =
           ContextCompat.checkSelfPermission(
                   binding?.applicationContext!!,
                   Manifest.permission.READ_EXTERNAL_STORAGE
           ) == PackageManager.PERMISSION_GRANTED
 
-  private fun requestPermissions(requestCode: Int = READ_EXTERNAL_STORAGE_REQUEST_CODE, permissions: Array<String> = READ_PERMISSIONS) {
+  private fun requestAndroidPermissions(requestCode: Int = READ_EXTERNAL_STORAGE_REQUEST_CODE, permissions: Array<String> = READ_PERMISSIONS) {
     ActivityCompat.requestPermissions(activityBinding?.activity!!, permissions, requestCode)
   }
 }

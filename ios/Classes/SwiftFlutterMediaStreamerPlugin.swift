@@ -53,9 +53,9 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
             let limit = (args["limit"] as? NSNumber)?.intValue ?? 10
             let offset = (args["offset"] as? NSNumber)?.intValue ?? 0
             streamGalleryImages(result: result, columns: columns, limit: limit, offset: offset)
-        case "haveStoragePermission":
+        case "havePermissions":
             result(havePermissions())
-        case "requestStoragePermissions":
+        case "requestPermissions":
             requestPermissionsAndRegister(handler: {authResults in result(authResults == .authorized)})
         default:
             result(FlutterMethodNotImplemented)
