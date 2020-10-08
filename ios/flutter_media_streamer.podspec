@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_media_streamer'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'A Flutter plugin for streaming Media on iOS and Android'
   s.description      = <<-DESC
 A Flutter plugin for reading the Gallery on iOS and Android

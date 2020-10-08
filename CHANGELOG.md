@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Improve Readme file
+
 ## 1.0.1
 
 * Improve docstrings

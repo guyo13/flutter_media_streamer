@@ -10,7 +10,7 @@ A Flutter plugin for streaming Media on iOS and Android
 Add Flutter Media Streamer to your project's dependencies:
 ```yaml
 dependencies:
-  flutter_media_streamer: 1.0.1
+  flutter_media_streamer: ^1.0.2
 ```
 On iOS add usage description for the Gallery inside your `Runner/Info.plist` file:
 ```xml
