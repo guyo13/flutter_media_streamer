@@ -220,7 +220,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
     if (URLUtil.isValidUrl(uriString)) {
       mainScope.launch {
         withContext(Dispatchers.IO) {
-          var thumbnail : Bitmap? =
+          val thumbnail : Bitmap? =
                   when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                       appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
