@@ -6,3 +6,4 @@
 *.iml
 pubspec.lock
 build/
+doc/api/

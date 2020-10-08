@@ -12,7 +12,8 @@ import 'package:flutter_media_streamer/src/model/ios.dart';
 
 part 'abstraction.g.dart';
 
-/// Enums
+/// An [EnumClass] Representing an abstraction of the possible media types found
+/// on each platform
 class MediaStreamerType extends EnumClass {
   static Serializer<MediaStreamerType> get serializer =>
       _$mediaStreamerTypeSerializer;
@@ -37,26 +38,36 @@ class MediaStreamerType extends EnumClass {
     else return unknown;
   }
 }
-/// Data Classes
 
+/// A data class representing an abstraction of information shared by both iOS and Android
 abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMediaItemBuilder> {
   static Serializer<AbstractMediaItem> get serializer => _$abstractMediaItemSerializer;
 
+  /// The unique ID assigned by the platform to this media
+  /// Android - _ID column on the MediaStore API
+  /// iOS - The localIdentifier of this PHAsset
   String get id;
+  /// The identifier used to request the actual media from the underlying platform
+  /// On Android corresponds to the Content URI string and on iOS to PHAsset.localIdentifier
   String get mediaQueryIdentifier;
+  /// The type of this media
   MediaStreamerType get mediaType;
+  /// The width in Pixels of this media
   @nullable
   int get width;
+  /// The height in Pixels of this media
   @nullable
   int get height;
-  /// In Milliseconds
+  /// The date at which the media was modified in Milliseconds since Unix epoch
   @nullable
   int get dateModified;
+  /// The date at which the media was created in Milliseconds since Unix epoch
   @nullable
   int get dateTaken;
-  /// In Seconds
+  /// The duration in Seconds of this media (when this is a video)
   @nullable
   double get duration;
+  /// Whether the user marked this media as favorite
   @nullable
   bool get isFavorite;
 
@@ -83,6 +94,8 @@ abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMed
     duration: duration,
     isFavorite: isFavorite,
   );
+
+  /// Creates an [AbstractMediaItem] from an [IOSPHAsset]
   factory AbstractMediaItem.fromIOSPHAsset(IOSPHAsset asset) {
     return AbstractMediaItem(
       id: asset.localIdentifier,
@@ -97,6 +110,7 @@ abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMed
     );
   }
 
+  /// Creates an [AbstractMediaItem] from an [AndroidImageMediaData]
   factory AbstractMediaItem.fromAndroidImageMediaData(AndroidImageMediaData mediaData) {
    return AbstractMediaItem(
      id: mediaData.id.toString(),

@@ -10,12 +10,11 @@ import 'package:built_value/standard_json_plugin.dart';
 
 part 'android.g.dart';
 
-/// Enums
+/// An [EnumClass] representing possible values of Android MediaStore Base Columns
 class AndroidBaseColumn extends EnumClass {
   static Serializer<AndroidBaseColumn> get serializer =>
       _$androidBaseColumnSerializer;
 
-  /// BaseColumns constants as defined in BaseColumns class
   static AndroidBaseColumn get id => _id;
   static AndroidBaseColumn get count => _count;
   static const AndroidBaseColumn _id = _$id;
@@ -25,16 +24,17 @@ class AndroidBaseColumn extends EnumClass {
   static BuiltSet<AndroidBaseColumn> get values => _$abcValues;
   static AndroidBaseColumn valueOf(String name) => _$abcValueOf(name);
 }
-/// Hack to access variables with _
+
+/// A workaround for naming the enum value "_ID"
 const AndroidBaseColumn idColumn = AndroidBaseColumn._id;
+/// A workaround for naming the enum value "_COUNT"
 const AndroidBaseColumn countColumn = AndroidBaseColumn._count;
 
+/// An [EnumClass] representing possible values of Android MediaStore Media Columns
+/// Not including deprecated fields (_data)
 class AndroidMediaColumn extends EnumClass {
   static Serializer<AndroidMediaColumn> get serializer =>
       _$androidMediaColumnSerializer;
-
-  /// MediaColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (_data)
 
   static const AndroidMediaColumn album = _$mediaAlbum;
   static const AndroidMediaColumn album_artist = _$album_artist;
@@ -87,12 +87,11 @@ class AndroidMediaColumn extends EnumClass {
   static AndroidMediaColumn valueOf(String name) => _$amcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Image Columns
+/// Not including deprecated fields (latitude, longitude, mini_thumb_magic, picasa_id)
 class AndroidImageColumn extends EnumClass {
   static Serializer<AndroidImageColumn> get serializer =>
       _$androidImageColumnSerializer;
-
-  /// ImageColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (latitude, longitude, mini_thumb_magic, picasa_id)
 
   static const AndroidImageColumn description = _$description;
   static const AndroidImageColumn exposure_time = _$exposure_time;
@@ -106,12 +105,11 @@ class AndroidImageColumn extends EnumClass {
   static AndroidImageColumn valueOf(String name) => _$aicValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Audio Columns
+/// Not including deprecated fields (album_key, artist_key, genre_key, title_key)
 class AndroidAudioColumn extends EnumClass {
   static Serializer<AndroidAudioColumn> get serializer =>
       _$androidAudioColumnSerializer;
-
-  /// AudioColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (album_key, artist_key, genre_key, title_key)
 
   static const AndroidAudioColumn album_id = _$audioAlbumId;
   static const AndroidAudioColumn artist_id = _$artist_id;
@@ -133,12 +131,11 @@ class AndroidAudioColumn extends EnumClass {
   static AndroidAudioColumn valueOf(String name) => _$aacValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Artist Columns
+/// Not including deprecated fields (artist_key)
 class AndroidArtistColumn extends EnumClass {
   static Serializer<AndroidArtistColumn> get serializer =>
       _$androidArtistColumnSerializer;
-
-  /// ArtistColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (artist_key)
 
   static const AndroidArtistColumn artist = _$artist;
   static const AndroidArtistColumn number_of_albums = _$number_of_albums;
@@ -149,12 +146,11 @@ class AndroidArtistColumn extends EnumClass {
   static AndroidArtistColumn valueOf(String name) => _$aarcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Album Columns
+/// Not including deprecated fields (album_art, album_key, artist_key)
 class AndroidAlbumColumn extends EnumClass {
   static Serializer<AndroidAlbumColumn> get serializer =>
       _$androidAlbumColumnSerializer;
-
-  /// AlbumColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (album_art, album_key, artist_key)
 
   static const AndroidAlbumColumn album = _$album;
   static const AndroidAlbumColumn album_id = _$album_id;
@@ -170,11 +166,10 @@ class AndroidAlbumColumn extends EnumClass {
   static AndroidAlbumColumn valueOf(String name) => _$aalcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Genre Columns
 class AndroidGenreColumn extends EnumClass {
   static Serializer<AndroidGenreColumn> get serializer =>
       _$androidGenreColumnSerializer;
-
-  /// GenreColumns constants as defined in MediaStore class
 
   @BuiltValueEnumConst(wireName: 'name')
   static const AndroidGenreColumn genreName = _$genreName;
@@ -184,12 +179,11 @@ class AndroidGenreColumn extends EnumClass {
   static AndroidGenreColumn valueOf(String name) => _$agcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Playlist Columns
+/// Not including deprecated fields (_data)
 class AndroidPlaylistColumn extends EnumClass {
   static Serializer<AndroidPlaylistColumn> get serializer =>
       _$androidPlaylistColumnSerializer;
-
-  /// PlaylistsColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (_data)
 
   //FIXME - find a workaround because this value will be serialized as 'playlistName'
   @BuiltValueEnumConst(wireName: 'name')
@@ -202,11 +196,10 @@ class AndroidPlaylistColumn extends EnumClass {
   static AndroidPlaylistColumn valueOf(String name) => _$apcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Download Columns
 class AndroidDownloadColumn extends EnumClass {
   static Serializer<AndroidDownloadColumn> get serializer =>
       _$androidDownloadColumnSerializer;
-
-  /// DownloadColumns constants as defined in MediaStore class
 
   static const AndroidDownloadColumn download_uri = _$download_uri;
   static const AndroidDownloadColumn referer_uri = _$referer_uri;
@@ -216,11 +209,10 @@ class AndroidDownloadColumn extends EnumClass {
   static AndroidDownloadColumn valueOf(String name) => _$adcValueOf(name);
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore File Columns
 class AndroidFileColumn extends EnumClass {
   static Serializer<AndroidFileColumn> get serializer =>
       _$androidFileColumnSerializer;
-
-  /// FileColumns constants as defined in MediaStore class
 
   static const AndroidFileColumn media_type = _$fileMediaType;
   static const AndroidFileColumn mime_type = _$fileMimeType;
@@ -231,6 +223,7 @@ class AndroidFileColumn extends EnumClass {
   static AndroidFileColumn valueOf(String name) => _$afcValueOf(name);
 }
 
+/// Defines the possible File Media Types in Android MediaStore API
 enum FileMediaTypes {
   MEDIA_TYPE_NONE,
   MEDIA_TYPE_IMAGE,
@@ -241,12 +234,11 @@ enum FileMediaTypes {
   MEDIA_TYPE_DOCUMENT
 }
 
+/// An [EnumClass] representing possible values of Android MediaStore Video Columns
+/// Not including deprecated fields (latitude, longitude, mini_thumb_magic)
 class AndroidVideoColumn extends EnumClass {
   static Serializer<AndroidVideoColumn> get serializer =>
       _$androidVideoColumnSerializer;
-
-  /// VideoColumns constants as defined in MediaStore class
-  /// Not including deprecated fields (latitude, longitude, mini_thumb_magic)
 
   static const AndroidVideoColumn bookmark = _$videoBookmark;
   static const AndroidVideoColumn category = _$category;
@@ -263,6 +255,9 @@ class AndroidVideoColumn extends EnumClass {
   static AndroidVideoColumn valueOf(String name) => _$avcValueOf(name);
 }
 
+/// A data class which represents an Image Media as passed by FlutterMediaStreamer Android Plugin.
+/// It can contain values of any of the columns defined by [AndroidBaseColumn], [AndroidMediaColumn]
+/// and [AndroidImageColumn], depending on availability, the API level of the device and the requested columns
 abstract class AndroidImageMediaData
     implements Built<AndroidImageMediaData, AndroidImageMediaDataBuilder> {
   static Serializer<AndroidImageMediaData> get serializer =>
@@ -270,12 +265,11 @@ abstract class AndroidImageMediaData
 
   String get contentUri;
 
-  /// BaseColumns
+  /// The unique id assigned by MediaStore
   int get id;
   @nullable
   int get count;
 
-  /// ImageColumns
   @nullable
   String get description;
   @nullable
@@ -289,7 +283,6 @@ abstract class AndroidImageMediaData
   @nullable
   int get sceneCaptureType;
 
-  /// MediaColumns
   @nullable
   String get album;
   @nullable
@@ -312,14 +305,16 @@ abstract class AndroidImageMediaData
   String get compilation;
   @nullable
   String get composer;
-  /// In Milliseconds
+  /// The time at which the media was added by MediaStore in Milliseconds since Unix epoch
   @nullable
   int get dateAdded;
+  /// The time at which the media will expire in Milliseconds since Unix epoch
   @nullable
   int get dateExpires;
-  /// In Milliseconds
+  /// The time at which the media was last modified in Milliseconds since Unix epoch
   @nullable
   int get dateModified;
+  /// The time at which the media was taken (Exif) in Milliseconds since Unix epoch
   @nullable
   int get dateTaken;
   @nullable
@@ -328,7 +323,7 @@ abstract class AndroidImageMediaData
   String get displayName;
   @nullable
   String get documentId;
-  /// In Milliseconds
+  /// The duration of the media in Milliseconds
   @nullable
   int get duration;
   @nullable

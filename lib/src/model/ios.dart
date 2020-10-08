@@ -10,8 +10,7 @@ import 'package:built_value/standard_json_plugin.dart';
 
 part 'ios.g.dart';
 
-/// Enums
-
+/// An [EnumClass] representing the possible Media Types defined by iOS
 class IOSMediaType extends EnumClass {
   static Serializer<IOSMediaType> get serializer => _$iOSMediaTypeSerializer;
 
@@ -25,6 +24,7 @@ class IOSMediaType extends EnumClass {
   static IOSMediaType valueOf(String name) => _$iosmtValueOf(name);
 }
 
+/// An [EnumClass] representing the possible Media Subtypes defined by iOS
 class IOSMediaSubtype extends EnumClass {
   static Serializer<IOSMediaSubtype> get serializer =>
       _$iOSMediaSubtypeSerializer;
@@ -45,6 +45,7 @@ class IOSMediaSubtype extends EnumClass {
   static IOSMediaSubtype valueOf(String name) => _$iosmstValueOf(name);
 }
 
+/// An [EnumClass] representing the possible asset Source Types defined by iOS
 class IOSAssetSourceType extends EnumClass {
   static Serializer<IOSAssetSourceType> get serializer =>
       _$iOSAssetSourceTypeSerializer;
@@ -53,7 +54,8 @@ class IOSAssetSourceType extends EnumClass {
   static const IOSAssetSourceType userLibrary = _$assetSourceTypeUserLibrary;
   static const IOSAssetSourceType iTunesSynced = _$assetSourceTypeiTunesSynced;
 
-  /// Not a real type
+  //FIXME - remove this value
+  /// Not a real type - a default value returned by the plugin's Swift serializer
   static const IOSAssetSourceType unknown = _$assetSourceTypeUnknown;
 
   const IOSAssetSourceType._(String name) : super(name);
@@ -61,6 +63,7 @@ class IOSAssetSourceType extends EnumClass {
   static IOSAssetSourceType valueOf(String name) => _$iosastValueOf(name);
 }
 
+/// An [EnumClass] representing the possible Playback Styles defined by iOS
 class IOSPlaybackStyle extends EnumClass {
   static Serializer<IOSPlaybackStyle> get serializer =>
       _$iOSPlaybackStyleSerializer;
@@ -77,6 +80,7 @@ class IOSPlaybackStyle extends EnumClass {
   static IOSPlaybackStyle valueOf(String name) => _$iospsValueOf(name);
 }
 
+/// An [EnumClass] representing the possible Burst Selection Types defined by iOS
 class IOSBurstSelectionType extends EnumClass {
   static Serializer<IOSBurstSelectionType> get serializer =>
       _$iOSBurstSelectionTypeSerializer;
@@ -89,9 +93,7 @@ class IOSBurstSelectionType extends EnumClass {
   static IOSBurstSelectionType valueOf(String name) => _$iosbstValueOf(name);
 }
 
-/// Data classes
-
-/// Data class that represents an iOS CLLocation
+/// A data class representing an iOS CLLocation object
 abstract class IOSLocation implements Built<IOSLocation, IOSLocationBuilder> {
   static Serializer<IOSLocation> get serializer => _$iOSLocationSerializer;
 
@@ -144,32 +146,45 @@ abstract class IOSLocation implements Built<IOSLocation, IOSLocationBuilder> {
       );
 }
 
-/// Data class that represents an iOS PHAsset
+/// Data class representing an iOS PHAsset
 abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
   static Serializer<IOSPHAsset> get serializer => _$iOSPHAssetSerializer;
 
+  /// The PHObject's localIdentifier
   String get localIdentifier;
+  /// The PHAsset's Media Type
   IOSMediaType get mediaType;
+  /// A list of all Media Subtypes this asset is considered to be
   BuiltSet<IOSMediaSubtype> get mediaSubtypes;
+  /// The source of this asset
   IOSAssetSourceType get sourceType;
+  /// The width in Pixels of this media
   int get pixelWidth;
+  /// The height in Pixels of this media
   int get pixelHeight;
-  /// In Seconds, can be multiplied to get milliseconds
+  /// The date at which the media was created in seconds since Unix epoch, can be multiplied to get milliseconds
   @nullable
   double get creationDate;
+  /// The date at which the media was last modified in seconds since Unix epoch, can be multiplied to get milliseconds
   @nullable
   double get modificationDate;
+  /// The location information attached to this media
   @nullable
   IOSLocation get location;
-  /// In Seconds
+  /// The duration of this media in seconds (if video)
   double get duration;
+  /// Whether the user marked this media as favorite
   bool get isFavorite;
+  /// Whether the user marked this media as hidden
   bool get isHidden;
   @nullable
   IOSPlaybackStyle get playbackStyle;
+  /// Whether the this asset represents a collection of burst images
   bool get representsBurst;
+  /// The Burst Identifier of this asset if it is part of a burst
   @nullable
   String get burstIdentifier;
+  /// The Burst Selection type if this asset was selected from a collection of burst images
   @nullable
   BuiltSet<IOSBurstSelectionType> get burstSelectionTypes;
 
