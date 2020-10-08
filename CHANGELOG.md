@@ -1,3 +1,3 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+Full functionality of getting Image metadata, Thumbnails and resized images from Android and iOS
