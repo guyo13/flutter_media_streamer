@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:built_value/serializer.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_media_streamer/model/ios.dart';
 import 'package:flutter_media_streamer/utils/utils.dart';
 
 import 'model/android.dart';
@@ -56,6 +57,46 @@ class FlutterMediaStreamer {
       return null;
     }
   }
+
+  /// This stream consumes [rawImageMetadata] stream
+  /// and transforms the results into model objects
+  /// of type [IOSPHAsset]
+  /// [limit] - the max number of results per "page"
+  /// the platform will send back to flutter
+  ///
+  /// [offset] - The position from where to start fetching results
+  ///
+  /// [jsonDecodeFn] - A [JsonCallback] used to convert the String
+  /// representations into objects of [Map<String, dynamic>]. by default -
+  /// [defaultJsonDecode]
+  /// When working on real Flutter applications prefer to use
+  /// a method based on [compute] (https://api.flutter.dev/flutter/foundation/compute.html)
+  /// For example, define these functions at the global scope of your app:
+  ///
+  /// import 'dart:convert';
+  /// Map<String, dynamic> decode(String raw) {
+  ///   return jsonDecode(raw);
+  /// }
+  ///
+  /// Future<Map<String, dynamic>> computeJson(String raw) async {
+  ///   return await compute(decode, raw);
+  /// }
+  /// pass computeJson to [jsonDecodeFn]
+  Stream<IOSPHAsset> iOSImagesMetadata({
+    int limit = 10,
+    int offset = 0,
+    JsonCallback jsonDecodeFn = defaultJsonDecode,
+  }) async* {
+    await for (var item in rawImageMetadata(
+      limit: limit,
+      offset: offset,
+      columns: _empty,)) {
+      final json = await jsonDecodeFn(item);
+      yield iosSerializers.deserialize(json,
+          specifiedType: const FullType(IOSPHAsset));
+    }
+  }
+
 
   /// This stream consumes [rawImageMetadata] stream
   /// and transforms the results into model objects
@@ -123,7 +164,7 @@ class FlutterMediaStreamer {
   /// at a time, the data is returned as a JSON String
   /// representing the metadata
   /// on Android this corresponds to [AndroidImageMediaData]
-  /// on iOS TODO dart side model
+  /// on iOS it is an [IOSPHAsset]
   /// [limit] - the max number of results per "page"
   /// the platform will send back to flutter
   /// [offset] - The position from where to start fetching results

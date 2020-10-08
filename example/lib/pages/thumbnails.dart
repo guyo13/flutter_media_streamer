@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_streamer/flutter_media_streamer.dart';
 import 'package:flutter_media_streamer/model/android.dart';
+import 'package:flutter_media_streamer/model/ios.dart';
 
 import '../components.dart';
 
@@ -15,9 +16,8 @@ class ThumbnailsExample extends StatefulWidget {
 
 class _ThumbnailsExampleState extends State<ThumbnailsExample> {
   String _platformVersion = 'Unknown';
-  // TODO - refactor this once ready
-  List<String> _textResponse;
-  List<AndroidImageMediaData> _response;
+  List<IOSPHAsset> _iOSResponse;
+  List<AndroidImageMediaData> _androidResponse;
 
   @override
   void initState() {
@@ -80,20 +80,20 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .rawImageMetadata(limit: 3).take(10)
+                            .iOSImagesMetadata(limit: 3).take(10)
                             .toList();
                         print(
                             "Got ${res.length} image metadata from iOS");
                         setState(() {
-                          _textResponse = res;
+                          _iOSResponse = res;
                         });
-                        for (var i in res) print(jsonDecode(i));
+                        for (var i in res) print(i);
                       } else {
                         final res = await FlutterMediaStreamer.instance
                             .androidImagesMetadata(limit: 3).take(10)
                             .toList();
                         setState(() {
-                          _response = res;
+                          _androidResponse = res;
                         });
                       }
                     },
@@ -103,14 +103,14 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
             ),
           ),
           // FIXME - Android
-          if (_response != null)
+          if (_androidResponse != null)
             Container(
               padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
               child: GridView(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 children: [
-                  for (var r in _response)
+                  for (var r in _androidResponse)
                     ThumbGridItem(
                       height: 200,
                       future: FlutterMediaStreamer.instance
@@ -120,22 +120,20 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
               ),
             ),
           // FIXME - iOS
-          if (_textResponse != null)
+          if (_iOSResponse != null)
             Container(
               padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-              child: GridView.builder(
+              child: GridView(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  if (index >= _textResponse.length) return null;
-                  return ThumbGridItem(
-                    height: 200,
-                    future: FlutterMediaStreamer.instance
-                        .getThumbnail(
-                        (jsonDecode(_textResponse[index]) as Map<String, dynamic>)["localIdentifier"]
-                    ),
-                  );
-                },
+                children: [
+                  for (var r in _iOSResponse)
+                    ThumbGridItem(
+                      height: 200,
+                      future: FlutterMediaStreamer.instance
+                          .getThumbnail(r.localIdentifier),
+                    )
+                ],
               ),
             ),
         ],
