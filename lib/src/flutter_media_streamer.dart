@@ -457,6 +457,7 @@ class FlutterMediaStreamer {
     return await _channel.invokeMethod('requestPermissions');
   }
 
+  /// Requests the version string of the underlying platform
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
