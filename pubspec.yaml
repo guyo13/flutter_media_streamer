@@ -1,5 +1,7 @@
 name: flutter_media_streamer
-description: A Flutter plugin for streaming Media on iOS and Android
+description: A Flutter plugin for streaming Media on iOS and Android.
+Reads Images metadata from the Platform's Gallery as a dart Stream
+Resizes and gets the images you want or makes Thumbnails
 version: 1.0.0
 repository: https://github.com/guyo13/flutter_media_streamer
 issue_tracker: https://github.com/guyo13/flutter_media_streamer/issues
