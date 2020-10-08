@@ -71,7 +71,6 @@ class _GetImageExampleState extends State<GetImageExample> {
                         setState(() {
                           _iOSResponse = res;
                         });
-                        for (var i in res) print(i);
                       } else {
                         final res = await FlutterMediaStreamer.instance
                             .androidImagesMetadata(limit: 3)//.take(10)

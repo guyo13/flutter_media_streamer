@@ -87,7 +87,6 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                         setState(() {
                           _iOSResponse = res;
                         });
-                        for (var i in res) print(i);
                       } else {
                         final res = await FlutterMediaStreamer.instance
                             .androidImagesMetadata(limit: 3)//.take(10)
