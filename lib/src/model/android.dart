@@ -378,6 +378,8 @@ abstract class AndroidImageMediaData
   int get year;
 
   AndroidImageMediaData._();
+
+  /// Factory constructor that initializes the underlying [Built]
   factory AndroidImageMediaData({
     String contentUri,
     int id,
@@ -497,6 +499,8 @@ abstract class AndroidImageMediaData
   AndroidVideoColumn,
   AndroidImageMediaData,
 ])
+
+/// A collection of [Serializers] responsible of handling (de)serialization of the Android model classes
 final Serializers androidSerializers = (_$androidSerializers.toBuilder()
       ..add(Iso8601DateTimeSerializer())
       ..addPlugin(StandardJsonPlugin()))

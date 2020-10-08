@@ -83,6 +83,8 @@ abstract class AbstractMediaItem
   bool get isFavorite;
 
   AbstractMediaItem._();
+
+  /// Factory constructor that initializes the underlying [Built]
   factory AbstractMediaItem({
     String id,
     String mediaQueryIdentifier,
@@ -145,6 +147,8 @@ abstract class AbstractMediaItem
   MediaStreamerType,
   AbstractMediaItem,
 ])
+
+/// A collection of [Serializers] responsible of handling (de)serialization of the Abstraction model classes
 final Serializers abstractionSerializers = (_$abstractionSerializers.toBuilder()
       ..add(Iso8601DateTimeSerializer())
       ..addPlugin(StandardJsonPlugin()))

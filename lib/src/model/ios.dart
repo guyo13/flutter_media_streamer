@@ -97,23 +97,44 @@ class IOSBurstSelectionType extends EnumClass {
 abstract class IOSLocation implements Built<IOSLocation, IOSLocationBuilder> {
   static Serializer<IOSLocation> get serializer => _$iOSLocationSerializer;
 
+  /// Positive values indicate latitudes north of the equator. Negative values indicate latitudes south of the equator.
   double get latitude;
+
+  /// Measurements are relative to the zero meridian, with positive values extending east of the meridian and negative values extending west of the meridian.
   double get longitude;
+
+  /// The altitude, measured in meters.
   @nullable
   double get altitude;
+
+  /// The logical floor of the building in which the user is located.
   @nullable
   int get floor;
+
+  /// The radius of uncertainty for the location, measured in meters.
   @nullable
   double get horizontalAccuracy;
+
+  /// The accuracy of the altitude value, measured in meters.
   @nullable
   double get verticalAccuracy;
+
+  /// The accuracy of the speed value, measured in meters per second.
   @nullable
   double get speedAccuracy;
+
+  /// The accuracy of the course value, measured in degrees.
   @nullable
   double get courseAccuracy;
+
+  /// The time at which this location was determined. Seconds since Unix epoch
   double get timestamp;
+
+  /// The instantaneous speed of the device, measured in meters per second.
   @nullable
   double get speed;
+
+  /// The direction in which the device is traveling, measured in degrees and relative to due north.
   @nullable
   double get course;
 
@@ -156,10 +177,10 @@ abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
   /// The PHAsset's Media Type
   IOSMediaType get mediaType;
 
-  /// A list of all Media Subtypes this asset is considered to be
+  /// The subtypes of the asset, identifying special kinds of assets such as panoramic photo or high-framerate video.
   BuiltSet<IOSMediaSubtype> get mediaSubtypes;
 
-  /// The source of this asset
+  /// The means by which the asset entered the user’s Photos library.
   IOSAssetSourceType get sourceType;
 
   /// The width in Pixels of this media
@@ -191,18 +212,20 @@ abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
   @nullable
   IOSPlaybackStyle get playbackStyle;
 
-  /// Whether the this asset represents a collection of burst images
+  /// A Boolean value that indicates whether the asset is the representative photo from a burst photo sequence.
   bool get representsBurst;
 
-  /// The Burst Identifier of this asset if it is part of a burst
+  /// The unique identifier shared by photo assets from the same burst sequence.
   @nullable
   String get burstIdentifier;
 
-  /// The Burst Selection type if this asset was selected from a collection of burst images
+  /// The selection type of the asset in a burst photo sequence.
   @nullable
   BuiltSet<IOSBurstSelectionType> get burstSelectionTypes;
 
   IOSPHAsset._();
+
+  /// Factory constructor that initializes the underlying [Built]
   factory IOSPHAsset({
     String localIdentifier,
     IOSMediaType mediaType,
@@ -250,6 +273,8 @@ abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
   IOSLocation,
   IOSPHAsset,
 ])
+
+/// A collection of [Serializers] responsible of handling (de)serialization of the iOS model classes
 final Serializers iosSerializers = (_$iosSerializers.toBuilder()
       ..add(Iso8601DateTimeSerializer())
       ..addPlugin(StandardJsonPlugin()))

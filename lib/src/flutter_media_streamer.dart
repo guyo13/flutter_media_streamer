@@ -15,16 +15,25 @@ import 'package:flutter_media_streamer/src/utils/utils.dart';
 
 const _empty = <String>[];
 
+/// A singleton object used to communicate with the underlying platform via Flutter Method Channel interface
 class FlutterMediaStreamer {
+  /// The private instance reference of the singleton
   static FlutterMediaStreamer _instance = FlutterMediaStreamer._();
+
+  /// A getter for accessing the singleton
   static FlutterMediaStreamer get instance => _instance;
+
+  /// A lock placed on the Image metadata stream,
+  /// to prevent from two Stream to run at the same time.
+  /// In the future it may be allowed and the lock removed
   bool _galleryImageMetadataStreamLocked = false;
   FlutterMediaStreamer._();
 
+  /// The [MethodChannel] object used by the plugin
   static const MethodChannel _channel =
       const MethodChannel('flutter_media_streamer');
 
-  /// Static transformation methods
+  // Static transformation methods
 
   /// Converts an object represented by [raw] into object [T]
   /// using [objectSerializer] from [serializers]
@@ -282,19 +291,19 @@ class FlutterMediaStreamer {
       List<String> currentBatch = [];
       await for (var item in stream) {
         if (currentBatch.length == batchLimit) {
-          /// Batch limit reached - convert, yield results and clear current batch
+          // Batch limit reached - convert, yield results and clear current batch
           yield* convertBatch(
               currentBatch, iosSerializers, IOSPHAsset.serializer,
               batchJsonDecodeFn: batchJsonDecodeFn);
           currentBatch.clear();
         }
 
-        /// Accumulate into batch
+        // Accumulate into batch
         currentBatch.add(item);
       }
       if (currentBatch.isNotEmpty) {
-        /// Current batch is not empty because num results % batchLimit != 0
-        /// Convert and yield remaining items
+        // Current batch is not empty because num results % batchLimit != 0
+        // Convert and yield remaining items
         yield* convertBatch(currentBatch, iosSerializers, IOSPHAsset.serializer,
             batchJsonDecodeFn: batchJsonDecodeFn);
       }
@@ -373,19 +382,18 @@ class FlutterMediaStreamer {
       List<String> currentBatch = [];
       await for (var item in stream) {
         if (currentBatch.length == batchLimit) {
-          /// Batch limit reached - convert, yield results and clear current batch
+          // Batch limit reached - convert, yield results and clear current batch
           yield* convertBatch(currentBatch, androidSerializers,
               AndroidImageMediaData.serializer,
               batchJsonDecodeFn: batchJsonDecodeFn);
           currentBatch.clear();
         }
-
-        /// Accumulate into batch
+        // Accumulate into batch
         currentBatch.add(item);
       }
       if (currentBatch.isNotEmpty) {
-        /// Current batch is not empty because num results % batchLimit != 0
-        /// Convert and yield remaining items
+        // Current batch is not empty because num results % batchLimit != 0
+        // Convert and yield remaining items
         yield* convertBatch(
             currentBatch, androidSerializers, AndroidImageMediaData.serializer,
             batchJsonDecodeFn: batchJsonDecodeFn);
@@ -411,7 +419,7 @@ class FlutterMediaStreamer {
   /// requested columns on Android (see [AndroidMediaColumn],
   /// [AndroidImageColumn], [AndroidBaseColumn])
   /// on iOS all data columns available are returned
-  //TODO - design better mechanism for stream cancellation and support more than one open cursor
+  /// TODO - design better mechanism for stream cancellation and support more than one open cursor
   Stream<String> rawImageMetadata({
     int limit = 10,
     int offset = 0,
