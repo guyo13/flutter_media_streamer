@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_streamer/flutter_media_streamer.dart';
-import 'package:flutter_media_streamer/model/android.dart';
-import 'package:flutter_media_streamer/model/ios.dart';
 
 import '../components.dart';
 

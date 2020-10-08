@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_streamer/flutter_media_streamer.dart';
-import 'package:flutter_media_streamer/model/android.dart';
-import 'package:flutter_media_streamer/model/ios.dart';
 
 import '../components.dart';
 
@@ -88,7 +86,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3).take(100)
+                            .iOSImagesMetadata(limit: 3).take(10)
                             .toList();
                         print(
                             "Got ${res.length} image metadata from iOS");
@@ -97,7 +95,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                         });
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3).take(100)
+                            .androidImagesMetadata(limit: 3).take(10)
                             .toList();
                         setState(() {
                           _androidResponse = res;

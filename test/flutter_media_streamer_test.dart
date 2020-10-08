@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_media_streamer/flutter_media_streamer.dart';
+import 'package:flutter_media_streamer/src/flutter_media_streamer.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_media_streamer');
