@@ -150,12 +150,14 @@ abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
   IOSAssetSourceType get sourceType;
   int get pixelWidth;
   int get pixelHeight;
+  /// In Seconds, can be multiplied to get milliseconds
   @nullable
   double get creationDate;
   @nullable
   double get modificationDate;
   @nullable
   IOSLocation get location;
+  /// In Seconds
   double get duration;
   bool get isFavorite;
   bool get isHidden;

@@ -308,10 +308,12 @@ abstract class AndroidImageMediaData
   String get compilation;
   @nullable
   String get composer;
+  /// In Milliseconds
   @nullable
   int get dateAdded;
   @nullable
   int get dateExpires;
+  /// In Milliseconds
   @nullable
   int get dateModified;
   @nullable
@@ -322,6 +324,7 @@ abstract class AndroidImageMediaData
   String get displayName;
   @nullable
   String get documentId;
+  /// In Milliseconds
   @nullable
   int get duration;
   @nullable
