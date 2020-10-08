@@ -82,7 +82,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       )
       "getThumbnail" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getThumbnail(
               result,
-              call.argument<String?>("contentUriString") ?: "",
+              call.argument<String?>("imageIdentifier") ?: "",
               width = call.argument<Int?>("width") ?: 640,
               height = call.argument<Int?>("height") ?: 400)
       else getImage(

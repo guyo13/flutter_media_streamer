@@ -33,8 +33,8 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
             let args = call.arguments as! Dictionary<String, Any>
             let w: Int = (args["width"] as? NSNumber)?.intValue ?? 640
             let h: Int = (args["height"] as? NSNumber)?.intValue ?? 400
-            let contentUriString: String = args["contentUriString"] as! String
-            getThumbnail(result: result, uriString: contentUriString, width: w, height: h)
+            let localIdentifier: String = args["imageIdentifier"] as! String
+            getThumbnail(result: result, localIdentifier: localIdentifier, width: w, height: h)
         case "getImage":
             if !checkDictionaryArgs(call: call) {
                 result(FlutterError(code: "Invalid_Arguments", message: nil, details: nil))
@@ -71,8 +71,8 @@ public class SwiftFlutterMediaStreamerPlugin: NSObject, FlutterPlugin, FlutterAp
     }
     
     //TODO - Use IOS API
-    private func getThumbnail(result: @escaping FlutterResult, uriString: String, width:Int = 640, height:Int = 400) {
-      getImage(result: result, localIdentifier: uriString, width: width, height: height)
+    private func getThumbnail(result: @escaping FlutterResult, localIdentifier: String, width:Int = 640, height:Int = 400) {
+      getImage(result: result, localIdentifier: localIdentifier, width: width, height: height)
     }
     
     // TODO - Execute with permissions

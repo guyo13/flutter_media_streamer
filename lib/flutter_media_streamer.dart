@@ -18,11 +18,11 @@ class FlutterMediaStreamer {
   static const MethodChannel _channel =
       const MethodChannel('flutter_media_streamer');
 
-  Future<Uint8List> getThumbnail(String contentUri,
+  Future<Uint8List> getThumbnail(String imageIdentifier,
       {int width = 640, int height = 400}) async {
     try {
       return await _channel.invokeMethod('getThumbnail', <String, dynamic>{
-        'contentUriString': contentUri ?? '',
+        'imageIdentifier': imageIdentifier ?? '',
         'width': width ?? 640,
         'height': height ?? 400,
       });
