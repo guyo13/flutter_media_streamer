@@ -101,7 +101,8 @@ class _AbstractionExampleState extends State<AbstractionExample> {
                       final res = await FlutterMediaStreamer.instance
                           .streamImageMetadata(
                               batchConvert: true,
-                              batchJsonDecodeFn: computeBatchJson).take(100)
+                              batchJsonDecodeFn: computeBatchJson)
+                          .take(100)
                           .toList();
                       print(
                           "Got ${res.length} image metadata items from platform");

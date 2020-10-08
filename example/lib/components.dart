@@ -24,7 +24,8 @@ class ThumbGridItem extends StatelessWidget {
           case ConnectionState.done:
             if (snapshot.data != null) {
               return Container(
-                  padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
                   child: Image.memory(
                     snapshot.data,
                     width: width,

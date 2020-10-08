@@ -152,38 +152,52 @@ abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
 
   /// The PHObject's localIdentifier
   String get localIdentifier;
+
   /// The PHAsset's Media Type
   IOSMediaType get mediaType;
+
   /// A list of all Media Subtypes this asset is considered to be
   BuiltSet<IOSMediaSubtype> get mediaSubtypes;
+
   /// The source of this asset
   IOSAssetSourceType get sourceType;
+
   /// The width in Pixels of this media
   int get pixelWidth;
+
   /// The height in Pixels of this media
   int get pixelHeight;
+
   /// The date at which the media was created in seconds since Unix epoch, can be multiplied to get milliseconds
   @nullable
   double get creationDate;
+
   /// The date at which the media was last modified in seconds since Unix epoch, can be multiplied to get milliseconds
   @nullable
   double get modificationDate;
+
   /// The location information attached to this media
   @nullable
   IOSLocation get location;
+
   /// The duration of this media in seconds (if video)
   double get duration;
+
   /// Whether the user marked this media as favorite
   bool get isFavorite;
+
   /// Whether the user marked this media as hidden
   bool get isHidden;
   @nullable
   IOSPlaybackStyle get playbackStyle;
+
   /// Whether the this asset represents a collection of burst images
   bool get representsBurst;
+
   /// The Burst Identifier of this asset if it is part of a burst
   @nullable
   String get burstIdentifier;
+
   /// The Burst Selection type if this asset was selected from a collection of burst images
   @nullable
   BuiltSet<IOSBurstSelectionType> get burstSelectionTypes;

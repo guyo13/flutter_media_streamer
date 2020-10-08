@@ -35,42 +35,52 @@ class MediaStreamerType extends EnumClass {
       return image;
     }
     // TODO - other Android types when ready
-    else return unknown;
+    else
+      return unknown;
   }
 }
 
 /// A data class representing an abstraction of information shared by both iOS and Android
-abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMediaItemBuilder> {
-  static Serializer<AbstractMediaItem> get serializer => _$abstractMediaItemSerializer;
+abstract class AbstractMediaItem
+    implements Built<AbstractMediaItem, AbstractMediaItemBuilder> {
+  static Serializer<AbstractMediaItem> get serializer =>
+      _$abstractMediaItemSerializer;
 
   /// The unique ID assigned by the platform to this media
   /// Android - _ID column on the MediaStore API
   /// iOS - The localIdentifier of this PHAsset
   String get id;
+
   /// The identifier used to request the actual media from the underlying platform
   /// On Android corresponds to the Content URI string and on iOS to PHAsset.localIdentifier
   String get mediaQueryIdentifier;
+
   /// The type of this media
   MediaStreamerType get mediaType;
+
   /// The width in Pixels of this media
   @nullable
   int get width;
+
   /// The height in Pixels of this media
   @nullable
   int get height;
+
   /// The date at which the media was modified in Milliseconds since Unix epoch
   @nullable
   int get dateModified;
+
   /// The date at which the media was created in Milliseconds since Unix epoch
   @nullable
   int get dateTaken;
+
   /// The duration in Seconds of this media (when this is a video)
   @nullable
   double get duration;
+
   /// Whether the user marked this media as favorite
   @nullable
   bool get isFavorite;
-
 
   AbstractMediaItem._();
   factory AbstractMediaItem({
@@ -83,17 +93,18 @@ abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMed
     int dateTaken,
     double duration,
     bool isFavorite,
-}) => _$AbstractMediaItem._(
-    id: id,
-    mediaQueryIdentifier: mediaQueryIdentifier,
-    mediaType: mediaType,
-    width: width,
-    height: height,
-    dateModified: dateModified,
-    dateTaken: dateTaken,
-    duration: duration,
-    isFavorite: isFavorite,
-  );
+  }) =>
+      _$AbstractMediaItem._(
+        id: id,
+        mediaQueryIdentifier: mediaQueryIdentifier,
+        mediaType: mediaType,
+        width: width,
+        height: height,
+        dateModified: dateModified,
+        dateTaken: dateTaken,
+        duration: duration,
+        isFavorite: isFavorite,
+      );
 
   /// Creates an [AbstractMediaItem] from an [IOSPHAsset]
   factory AbstractMediaItem.fromIOSPHAsset(IOSPHAsset asset) {
@@ -103,26 +114,30 @@ abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMed
       mediaType: MediaStreamerType.valueOfPlatform(asset.mediaType),
       width: asset.pixelWidth,
       height: asset.pixelHeight,
-      dateModified: (asset.modificationDate*1000).toInt(),
-      dateTaken: (asset.creationDate*1000).toInt(),
+      dateModified: (asset.modificationDate * 1000).toInt(),
+      dateTaken: (asset.creationDate * 1000).toInt(),
       duration: asset.duration,
       isFavorite: asset.isFavorite,
     );
   }
 
   /// Creates an [AbstractMediaItem] from an [AndroidImageMediaData]
-  factory AbstractMediaItem.fromAndroidImageMediaData(AndroidImageMediaData mediaData) {
-   return AbstractMediaItem(
-     id: mediaData.id.toString(),
-     mediaQueryIdentifier: mediaData.contentUri,
-     mediaType: MediaStreamerType.valueOfPlatform(mediaData),
-     width: mediaData.width,
-     height: mediaData.height,
-     dateModified: mediaData.dateModified,
-     dateTaken: mediaData.dateTaken,
-     duration: mediaData.duration != null ? mediaData.duration.toDouble()/1000.0 : null,
-     isFavorite: mediaData.isFavorite != null ? mediaData.isFavorite > 0 : null,
-   );
+  factory AbstractMediaItem.fromAndroidImageMediaData(
+      AndroidImageMediaData mediaData) {
+    return AbstractMediaItem(
+      id: mediaData.id.toString(),
+      mediaQueryIdentifier: mediaData.contentUri,
+      mediaType: MediaStreamerType.valueOfPlatform(mediaData),
+      width: mediaData.width,
+      height: mediaData.height,
+      dateModified: mediaData.dateModified,
+      dateTaken: mediaData.dateTaken,
+      duration: mediaData.duration != null
+          ? mediaData.duration.toDouble() / 1000.0
+          : null,
+      isFavorite:
+          mediaData.isFavorite != null ? mediaData.isFavorite > 0 : null,
+    );
   }
 }
 
@@ -131,6 +146,6 @@ abstract class AbstractMediaItem implements Built<AbstractMediaItem, AbstractMed
   AbstractMediaItem,
 ])
 final Serializers abstractionSerializers = (_$abstractionSerializers.toBuilder()
-  ..add(Iso8601DateTimeSerializer())
-  ..addPlugin(StandardJsonPlugin()))
+      ..add(Iso8601DateTimeSerializer())
+      ..addPlugin(StandardJsonPlugin()))
     .build();

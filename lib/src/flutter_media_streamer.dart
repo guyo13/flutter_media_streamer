@@ -288,14 +288,14 @@ class FlutterMediaStreamer {
               batchJsonDecodeFn: batchJsonDecodeFn);
           currentBatch.clear();
         }
+
         /// Accumulate into batch
         currentBatch.add(item);
       }
       if (currentBatch.isNotEmpty) {
         /// Current batch is not empty because num results % batchLimit != 0
         /// Convert and yield remaining items
-        yield* convertBatch(
-            currentBatch, iosSerializers, IOSPHAsset.serializer,
+        yield* convertBatch(currentBatch, iosSerializers, IOSPHAsset.serializer,
             batchJsonDecodeFn: batchJsonDecodeFn);
       }
     } else {
@@ -379,14 +379,15 @@ class FlutterMediaStreamer {
               batchJsonDecodeFn: batchJsonDecodeFn);
           currentBatch.clear();
         }
+
         /// Accumulate into batch
         currentBatch.add(item);
       }
       if (currentBatch.isNotEmpty) {
         /// Current batch is not empty because num results % batchLimit != 0
         /// Convert and yield remaining items
-        yield* convertBatch(currentBatch, androidSerializers,
-            AndroidImageMediaData.serializer,
+        yield* convertBatch(
+            currentBatch, androidSerializers, AndroidImageMediaData.serializer,
             batchJsonDecodeFn: batchJsonDecodeFn);
       }
     } else {
@@ -421,6 +422,7 @@ class FlutterMediaStreamer {
       millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
+
     /// Using a broadcast stream so that underlying stream will exhaust
     /// itself when applying modifiers such as take(x)
     /// FIXME - Address this issue so that we don't have to use a broadcast stream

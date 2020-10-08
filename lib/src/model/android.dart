@@ -27,6 +27,7 @@ class AndroidBaseColumn extends EnumClass {
 
 /// A workaround for naming the enum value "_ID"
 const AndroidBaseColumn idColumn = AndroidBaseColumn._id;
+
 /// A workaround for naming the enum value "_COUNT"
 const AndroidBaseColumn countColumn = AndroidBaseColumn._count;
 
@@ -305,15 +306,19 @@ abstract class AndroidImageMediaData
   String get compilation;
   @nullable
   String get composer;
+
   /// The time at which the media was added by MediaStore in Milliseconds since Unix epoch
   @nullable
   int get dateAdded;
+
   /// The time at which the media will expire in Milliseconds since Unix epoch
   @nullable
   int get dateExpires;
+
   /// The time at which the media was last modified in Milliseconds since Unix epoch
   @nullable
   int get dateModified;
+
   /// The time at which the media was taken (Exif) in Milliseconds since Unix epoch
   @nullable
   int get dateTaken;
@@ -323,6 +328,7 @@ abstract class AndroidImageMediaData
   String get displayName;
   @nullable
   String get documentId;
+
   /// The duration of the media in Milliseconds
   @nullable
   int get duration;

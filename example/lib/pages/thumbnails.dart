@@ -86,16 +86,17 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3).take(100)
+                            .iOSImagesMetadata(limit: 3)
+                            .take(100)
                             .toList();
                         setState(() {
                           _iOSResponse = res;
                         });
-                        print(
-                            "Got ${res.length} image metadata from iOS");
+                        print("Got ${res.length} image metadata from iOS");
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3).take(100)
+                            .androidImagesMetadata(limit: 3)
+                            .take(100)
                             .toList();
                         setState(() {
                           _androidResponse = res;
@@ -117,8 +118,7 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  if (index >= _androidResponse.length)
-                    return null;
+                  if (index >= _androidResponse.length) return null;
                   return ThumbGridItem(
                     height: 200,
                     future: FlutterMediaStreamer.instance
@@ -136,8 +136,7 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  if (index >= _iOSResponse.length)
-                    return null;
+                  if (index >= _iOSResponse.length) return null;
                   return ThumbGridItem(
                     height: 200,
                     future: FlutterMediaStreamer.instance

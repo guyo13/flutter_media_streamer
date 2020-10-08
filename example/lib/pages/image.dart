@@ -86,16 +86,17 @@ class _GetImageExampleState extends State<GetImageExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3).take(10)
+                            .iOSImagesMetadata(limit: 3)
+                            .take(10)
                             .toList();
-                        print(
-                            "Got ${res.length} image metadata from iOS");
+                        print("Got ${res.length} image metadata from iOS");
                         setState(() {
                           _iOSResponse = res;
                         });
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3).take(10)
+                            .androidImagesMetadata(limit: 3)
+                            .take(10)
                             .toList();
                         setState(() {
                           _androidResponse = res;
@@ -115,12 +116,10 @@ class _GetImageExampleState extends State<GetImageExample> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  if (index >= _androidResponse.length)
-                    return null;
+                  if (index >= _androidResponse.length) return null;
                   return ThumbGridItem(
                     height: 200,
-                    future: FlutterMediaStreamer.instance
-                        .getImage(
+                    future: FlutterMediaStreamer.instance.getImage(
                         _androidResponse[index].contentUri,
                         height: 400,
                         width: 640),
@@ -137,12 +136,10 @@ class _GetImageExampleState extends State<GetImageExample> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  if (index >= _iOSResponse.length)
-                    return null;
+                  if (index >= _iOSResponse.length) return null;
                   return ThumbGridItem(
                     height: 200,
-                    future: FlutterMediaStreamer.instance
-                        .getImage(
+                    future: FlutterMediaStreamer.instance.getImage(
                         _iOSResponse[index].localIdentifier,
                         height: 400,
                         width: 640),
