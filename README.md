@@ -9,6 +9,13 @@ Add Flutter Media Streamer to your project's dependencies:
  `dependencies:`
  `flutter_media_streamer: ^1.0.0`
  
+On iOS add Plist usage description for the Gallery:
+`<key>NSPhotoLibraryUsageDescription</key>
+<string>This app shows photos from your photo library.</string>`
+
+On Android add `READ_EXTERNAL_STORAGE` permission to Manifest:
+`<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>`
+ 
  ## Qureying for images metadata
  
 ### Get the last 100 images added to the gallery using abstraction layer
