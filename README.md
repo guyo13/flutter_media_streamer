@@ -1,7 +1,10 @@
 # Flutter Media Streamer
   
 A Flutter plugin for streaming Media on iOS and Android
-  
+
+## Example Screenshots
+  ![](fms_android.gif)
+  ![](fms_ios.gif)
 ## Getting Started  
   
 Add Flutter Media Streamer to your project's dependencies:  
