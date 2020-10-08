@@ -410,7 +410,7 @@ class FlutterMediaStreamer {
   /// requested columns on Android (see [AndroidMediaColumn],
   /// [AndroidImageColumn], [AndroidBaseColumn])
   /// on iOS all data columns available are returned
-  //TODO - make sure that this lock is abuse-proof
+  //TODO - design better mechanism for stream cancellation and support more than one open cursor
   Stream<String> rawImageMetadata({
     int limit = 10,
     int offset = 0,
@@ -421,11 +421,14 @@ class FlutterMediaStreamer {
       millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
+    /// Using a broadcast stream so that underlying stream will exhaust
+    /// itself when applying modifiers such as take(x)
+    /// FIXME - Address this issue so that we don't have to use a broadcast stream
     yield* _rawImageMetadata(
       limit: limit,
       offset: offset,
       columns: columns,
-    );
+    ).asBroadcastStream();
   }
 
   /// On Android check if Read External Storage permissions granted
