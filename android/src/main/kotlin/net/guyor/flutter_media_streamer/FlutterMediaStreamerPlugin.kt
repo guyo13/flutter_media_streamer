@@ -5,15 +5,14 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.MediaStore.Images.Thumbnails.MINI_KIND
 import android.util.Log
 import android.util.Size
 import android.webkit.URLUtil
 import androidx.annotation.NonNull
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -67,6 +66,8 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
     val ERR_PERMISSIONS = "ERR_PERMISSIONS"
     @JvmStatic
     val ERR_EXCEPTION = "ERR_EXCEPTION"
+    @JvmStatic
+    val ERR_RESOURCE = "ERR_RESOURCE"
     private const val TAG = "FlutterMediaStreamer"
     @JvmStatic
     private val READ_PERMISSIONS = arrayOf(
@@ -82,12 +83,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
               limit = call.argument<Int>("limit") as Int,
               offset = call.argument<Int>("offset") as Int,
       )
-      "getThumbnail" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getThumbnail(
-              result,
-              call.argument<String?>("imageIdentifier") ?: "",
-              width = call.argument<Int?>("width") ?: 640,
-              height = call.argument<Int?>("height") ?: 400)
-      else getImage(
+      "getThumbnail" -> getThumbnail(
               result,
               call.argument<String?>("imageIdentifier") ?: "",
               width = call.argument<Int?>("width") ?: 640,
@@ -195,7 +191,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
       val projection = ImageCursorContainer.getValidProjection(columns)
       //TODO - take from method call
       val selection = "${MediaStore.Images.Media.DATE_ADDED} >= ?"
-      val selectionArgs = arrayOf("1577881609")
+      val selectionArgs = arrayOf("0")
       val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
       val cursor: Cursor? = appContext.contentResolver.query(
@@ -217,21 +213,44 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
 
 
   //TODO - Execute with permissions
-  @RequiresApi(Build.VERSION_CODES.Q)
   private fun getThumbnail(@NonNull result: Result, @NonNull uriString: String, width: Int = 640, height: Int = 480) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getThumbnail"))
-    var res : ByteArray
+    var res : ByteArray? = null
     val uri: Uri = Uri.parse(uriString)
     if (URLUtil.isValidUrl(uriString)) {
       mainScope.launch {
         withContext(Dispatchers.IO) {
-          var thumbnail : Bitmap = appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
+          var thumbnail : Bitmap? =
+                  when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                      appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
+                    }
+                    else -> {
+                      Log.v(TAG, "API < 29 Using MediaStore Thumbnails")
+                      uri.lastPathSegment?.let path@{ lastPath ->
+                        val id = lastPath.toLongOrNull()
+                        id?.let {
+                          return@path MediaStore.Images.Thumbnails.getThumbnail(
+                                  appContext.contentResolver,
+                                  id,
+                                  MINI_KIND,
+                                  null
+                          )
+                        }
+                      }
+                    }
+                  }
           val stream = ByteArrayOutputStream()
-          thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream)
-          res = stream.toByteArray()
-          thumbnail.recycle()
+          thumbnail?.let {
+            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            res = stream.toByteArray()
+            it.recycle()
+          }
         }
-        result.success(res)
+        if (res != null)
+          result.success(res)
+        else
+          result.error(ERR_RESOURCE, "Couldn't get thumbnail for uri $uriString", null)
       }
     } else {
       result.error(INVALID_URI, "Invalid URI $uriString", null)
