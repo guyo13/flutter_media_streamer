@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:built_value/serializer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_media_streamer/model/abstraction.dart';
 import 'package:flutter_media_streamer/model/ios.dart';
 import 'package:flutter_media_streamer/utils/utils.dart';
 
@@ -19,6 +21,23 @@ class FlutterMediaStreamer {
   static const MethodChannel _channel =
       const MethodChannel('flutter_media_streamer');
 
+  /// Asks the underlying platform to generate a thumbnail representation
+  /// of the image and Returns it's bytes.
+  ///
+  /// [imageIdentifier] - The platform identifier used to load the image
+  /// on Android this is a Content URI, and on iOS this is a localIdentifier
+  ///
+  /// [width] - The requested width of the image. Default is 640
+  /// [height] - The requested height of the image. Default is 400
+  /// Both of these parameters are used as a gauge by the platform,
+  /// the resulting thumbnail will keep the original aspect ratio
+  ///
+  /// On Android with SDK level < 29, thumbnail will be generated with
+  /// kind = android.provider.MediaStore.Images.Thumbnails.MINI_KIND
+  /// and [height], [width] will NOT be taken into account
+  ///
+  /// TODO - iOS control the different PHImageRequestOptions and contentMode params
+  /// TODO - format, quality
   Future<Uint8List> getThumbnail(String imageIdentifier,
       {int width = 640, int height = 400}) async {
     try {
@@ -45,7 +64,8 @@ class FlutterMediaStreamer {
   /// memory hog!
   ///
   /// TODO - format, quality, subsample, and ios features
-  Future<Uint8List> getImage(String imageIdentifier, {int width = -1, int height = -1}) async {
+  Future<Uint8List> getImage(String imageIdentifier,
+      {int width = -1, int height = -1}) async {
     try {
       return await _channel.invokeMethod('getImage', <String, dynamic>{
         'imageIdentifier': imageIdentifier ?? '',
@@ -58,19 +78,41 @@ class FlutterMediaStreamer {
     }
   }
 
-  /// This stream consumes [rawImageMetadata] stream
-  /// and transforms the results into model objects
-  /// of type [IOSPHAsset]
+  /// On Android consumes an [androidImagesMetadata] stream
+  /// On iOS consumes an [iOSImagesMetadata] stream
+  /// and returns a stream of [AbstractMediaItem] objects
+  ///
+  /// Currently on any other platforms throws an exception.
+  ///
+  /// On Android takes iterables representing [AndroidBaseColumn],
+  /// [AndroidMediaColumn] and [AndroidImageColumn] strings
+  /// used in the query projection and which will appear in the
+  /// resulting objects if available
+  ///
+  /// On iOS all available information of the underlying PHAsset will
+  /// be included in the result
+  ///
+  /// Arguments:
   /// [limit] - the max number of results per "page"
   /// the platform will send back to flutter
   ///
   /// [offset] - The position from where to start fetching results
   ///
+  /// [baseColumns] - The requested Android base columns. by default -
+  /// [AndroidBaseColumn.id]
+  ///
+  /// [mediaColumns] - The request Android media columns. by default -
+  /// ([AndroidMediaColumn.mime_type], [AndroidMediaColumn.height],
+  /// [AndroidMediaColumn.width])
+  ///
+  /// [imageColumns] - The requested Android image columns. by default -
+  /// [AndroidImageColumn.description]
+  ///
   /// [jsonDecodeFn] - A [JsonCallback] used to convert the String
   /// representations into objects of [Map<String, dynamic>]. by default -
   /// [defaultJsonDecode]
-  /// When working on real Flutter applications prefer to use
-  /// a method based on [compute] (https://api.flutter.dev/flutter/foundation/compute.html)
+  /// Can use a method based on Flutter [compute]
+  /// (https://api.flutter.dev/flutter/foundation/compute.html)
   /// For example, define these functions at the global scope of your app:
   ///
   /// import 'dart:convert';
@@ -82,6 +124,50 @@ class FlutterMediaStreamer {
   ///   return await compute(decode, raw);
   /// }
   /// pass computeJson to [jsonDecodeFn]
+  Stream<AbstractMediaItem> streamImageMetadata({
+    int limit = 10,
+    int offset = 0,
+    JsonCallback jsonDecodeFn = defaultJsonDecode,
+    Iterable<AndroidBaseColumn> baseColumns = const [idColumn],
+    Iterable<AndroidMediaColumn> mediaColumns = const [
+      AndroidMediaColumn.mime_type,
+      AndroidMediaColumn.height,
+      AndroidMediaColumn.width
+    ],
+    Iterable<AndroidImageColumn> imageColumns = const [
+      AndroidImageColumn.description
+    ],
+  }) async* {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await for (var asset in iOSImagesMetadata(
+          limit: limit, offset: offset, jsonDecodeFn: jsonDecodeFn)) {
+        yield AbstractMediaItem.fromIOSPHAsset(asset);
+      }
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      await for (var mediaData in androidImagesMetadata(
+          limit: limit,
+          offset: offset,
+          jsonDecodeFn: jsonDecodeFn,
+          baseColumns: baseColumns,
+          mediaColumns: mediaColumns,
+          imageColumns: imageColumns)) {
+        yield AbstractMediaItem.fromAndroidImageMediaData(mediaData);
+      }
+    } else {
+      throw Exception('Invalid platform. Flutter Media Streamer'
+          ' currently supports only iOS and Android');
+    }
+  }
+
+  /// This stream consumes [rawImageMetadata] stream
+  /// and transforms the results into model objects
+  /// of type [IOSPHAsset]
+  /// [limit] - the max number of results per "page"
+  /// the platform will send back to flutter
+  ///
+  /// [offset] - The position from where to start fetching results
+  ///
+  /// [jsonDecodeFn] - See [streamImageMetadata]
   Stream<IOSPHAsset> iOSImagesMetadata({
     int limit = 10,
     int offset = 0,
@@ -90,13 +176,13 @@ class FlutterMediaStreamer {
     await for (var item in rawImageMetadata(
       limit: limit,
       offset: offset,
-      columns: _empty,)) {
+      columns: _empty,
+    )) {
       final json = await jsonDecodeFn(item);
       yield iosSerializers.deserialize(json,
           specifiedType: const FullType(IOSPHAsset));
     }
   }
-
 
   /// This stream consumes [rawImageMetadata] stream
   /// and transforms the results into model objects
@@ -116,22 +202,7 @@ class FlutterMediaStreamer {
   /// [imageColumns] - The requested Android image columns. by default -
   /// [AndroidImageColumn.description]
   ///
-  /// [jsonDecodeFn] - A [JsonCallback] used to convert the String
-  /// representations into objects of [Map<String, dynamic>]. by default -
-  /// [defaultJsonDecode]
-  /// When working on real Flutter applications prefer to use
-  /// a method based on [compute] (https://api.flutter.dev/flutter/foundation/compute.html)
-  /// For example, define these functions at the global scope of your app:
-  ///
-  /// import 'dart:convert';
-  /// Map<String, dynamic> decode(String raw) {
-  ///   return jsonDecode(raw);
-  /// }
-  ///
-  /// Future<Map<String, dynamic>> computeJson(String raw) async {
-  ///   return await compute(decode, raw);
-  /// }
-  /// pass computeJson to [jsonDecodeFn]
+  /// [jsonDecodeFn] - See [streamImageMetadata]
   Stream<AndroidImageMediaData> androidImagesMetadata({
     int limit = 10,
     int offset = 0,
@@ -151,9 +222,10 @@ class FlutterMediaStreamer {
     columns.addAll(mediaColumns.map((e) => e.name) ?? _empty);
     columns.addAll(imageColumns.map((e) => e.name) ?? _empty);
     await for (var item in rawImageMetadata(
-        limit: limit,
-        offset: offset,
-        columns: columns,)) {
+      limit: limit,
+      offset: offset,
+      columns: columns,
+    )) {
       final json = await jsonDecodeFn(item);
       yield androidSerializers.deserialize(json,
           specifiedType: const FullType(AndroidImageMediaData));
@@ -173,20 +245,21 @@ class FlutterMediaStreamer {
   /// [AndroidImageColumn], [AndroidBaseColumn])
   /// on iOS all data columns available are returned
   //TODO - make sure that this lock is abuse-proof
-  Stream<String> rawImageMetadata(
-      {int limit = 10,
-      int offset = 0,
-      Iterable<String> columns = _empty,
-      }) async* {
+  Stream<String> rawImageMetadata({
+    int limit = 10,
+    int offset = 0,
+    Iterable<String> columns = _empty,
+  }) async* {
     int millis = 400;
     while (_galleryImageMetadataStreamLocked) {
       millis = millis < 2000 ? millis + 100 : millis;
       await Future.delayed(Duration(milliseconds: millis));
     }
     yield* _rawImageMetadata(
-        limit: limit,
-        offset: offset,
-        columns: columns,);
+      limit: limit,
+      offset: offset,
+      columns: columns,
+    );
   }
 
   /// On Android check if Read External Storage permissions granted
@@ -218,11 +291,11 @@ class FlutterMediaStreamer {
   /// and it is protected by locking and backoff mechanism
   /// so that additional streams opened with the public
   /// functions are still valid
-  Stream<String> _rawImageMetadata(
-      {int limit = 10,
-        int offset = 0,
-        Iterable<String> columns = _empty,
-      }) async* {
+  Stream<String> _rawImageMetadata({
+    int limit = 10,
+    int offset = 0,
+    Iterable<String> columns = _empty,
+  }) async* {
     if (!_galleryImageMetadataStreamLocked) {
       _galleryImageMetadataStreamLocked = true;
       List<String> results;

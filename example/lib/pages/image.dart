@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,9 +39,31 @@ class _GetImageExampleState extends State<GetImageExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: ValueKey("GetThumbnailDemo"),
+      key: ValueKey("GetImageDemo"),
       appBar: AppBar(
-        title: const Text('Get Image example'),
+        title: const Text('Image example'),
+      ),
+      drawer: Drawer(
+        child: Builder(
+          builder: (context) {
+            return ListView(
+              children: [
+                ListTile(
+                  title: Text("Get Thumbnails example"),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/getThumbnail');
+                  },
+                ),
+                ListTile(
+                  title: Text("Abstraction example"),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/');
+                  },
+                ),
+              ],
+            );
+          },
+        ),
       ),
       body: Stack(
         children: [

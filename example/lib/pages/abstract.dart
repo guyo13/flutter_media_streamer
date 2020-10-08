@@ -1,21 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_streamer/flutter_media_streamer.dart';
-import 'package:flutter_media_streamer/model/android.dart';
-import 'package:flutter_media_streamer/model/ios.dart';
+import 'package:flutter_media_streamer/model/abstraction.dart';
 
 import '../components.dart';
 
-class ThumbnailsExample extends StatefulWidget {
-  @override
-  _ThumbnailsExampleState createState() => _ThumbnailsExampleState();
+Map<String, dynamic> decode(String raw) {
+  return jsonDecode(raw);
 }
 
-class _ThumbnailsExampleState extends State<ThumbnailsExample> {
+Future<Map<String, dynamic>> computeJson(String raw) async {
+  return await compute(decode, raw);
+}
+
+class AbstractionExample extends StatefulWidget {
+  @override
+  _AbstractionExampleState createState() => _AbstractionExampleState();
+}
+
+class _AbstractionExampleState extends State<AbstractionExample> {
   String _platformVersion = 'Unknown';
-  List<IOSPHAsset> _iOSResponse;
-  List<AndroidImageMediaData> _androidResponse;
+  List<AbstractMediaItem> _response;
 
   @override
   void initState() {
@@ -39,9 +47,9 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: ValueKey("GetThumbnailDemo"),
+      key: ValueKey("AbstractionDemo"),
       appBar: AppBar(
-        title: const Text('Thumbnail example'),
+        title: const Text('Media Streamer'),
       ),
       drawer: Drawer(
         child: Builder(
@@ -55,9 +63,9 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                   },
                 ),
                 ListTile(
-                  title: Text("Abstraction example"),
+                  title: Text("Get Thumbnail example"),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/');
+                    Navigator.of(context).pushNamed('/getThumbnail');
                   },
                 ),
               ],
@@ -82,65 +90,35 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                   child: FlatButton(
                     child: Text("Get thumbnails"),
                     onPressed: () async {
-                      if (defaultTargetPlatform == TargetPlatform.iOS) {
-                        final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3)//.take(10)
-                            .toList();
-                        print(
-                            "Got ${res.length} image metadata from iOS");
-                        setState(() {
-                          _iOSResponse = res;
-                        });
-                      } else {
-                        final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3)//.take(10)
-                            .toList();
-                        setState(() {
-                          _androidResponse = res;
-                        });
-                      }
+                      final res = await FlutterMediaStreamer.instance
+                          .streamImageMetadata()
+                          .toList();
+                      print(
+                          "Got ${res.length} image metadata items from platform");
+                      setState(() {
+                        _response = res;
+                      });
                     },
                   ),
                 ),
               ],
             ),
           ),
-          // FIXME - Android
-          if (_androidResponse != null)
+          if (_response != null)
             Container(
               padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  if (index >= _androidResponse.length)
-                    return null;
+                  if (index >= _response.length) return null;
                   return ThumbGridItem(
                     height: 200,
                     future: FlutterMediaStreamer.instance
-                        .getThumbnail(_androidResponse[index].contentUri),
+                        .getThumbnail(_response[index].mediaQueryIdentifier),
                   );
                 },
-                itemCount: _androidResponse.length,
-              ),
-            ),
-          // FIXME - iOS
-          if (_iOSResponse != null)
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  if (index >= _iOSResponse.length)
-                    return null;
-                  return ThumbGridItem(
-                    height: 200,
-                    future: FlutterMediaStreamer.instance
-                        .getThumbnail(_iOSResponse[index].localIdentifier),
-                  );
-                },
-                itemCount: _iOSResponse.length,
+                itemCount: _response.length,
               ),
             ),
         ],

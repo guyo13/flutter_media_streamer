@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_media_streamer_example/pages/abstract.dart';
 
 import 'package:flutter_media_streamer_example/pages/image.dart';
 
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (BuildContext context) {
+          return AbstractionExample();
+        },
+        '/getThumbnail': (BuildContext context) {
           return ThumbnailsExample();
         },
         '/getImage': (BuildContext context) {
