@@ -64,7 +64,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3).take(10)
+                            .iOSImagesMetadata(limit: 3)//.take(10)
                             .toList();
                         print(
                             "Got ${res.length} image metadata from iOS");
@@ -74,7 +74,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                         for (var i in res) print(i);
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3).take(10)
+                            .androidImagesMetadata(limit: 3)//.take(10)
                             .toList();
                         setState(() {
                           _androidResponse = res;
@@ -90,40 +90,44 @@ class _GetImageExampleState extends State<GetImageExample> {
           if (_androidResponse != null)
             Container(
               padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-              child: GridView(
+              child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
-                children: [
-                  for (var r in _androidResponse)
-                    ThumbGridItem(
-                      height: 200,
-                      future: FlutterMediaStreamer.instance
-                          .getImage(
-                          r.contentUri,
-                          height: 400,
-                          width: 640),
-                    ),
-                ],
+                itemBuilder: (context, index) {
+                  if (index >= _androidResponse.length)
+                    return null;
+                  return ThumbGridItem(
+                    height: 200,
+                    future: FlutterMediaStreamer.instance
+                        .getImage(
+                        _androidResponse[index].contentUri,
+                        height: 400,
+                        width: 640),
+                  );
+                },
+                itemCount: _androidResponse.length,
               ),
             ),
           // FIXME - iOS
           if (_iOSResponse != null)
             Container(
               padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-              child: GridView(
+              child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
-                children: [
-                  for (var r in _iOSResponse)
-                    ThumbGridItem(
-                      height: 200,
-                      future: FlutterMediaStreamer.instance
-                          .getImage(
-                          r.localIdentifier,
-                          height: 400,
-                          width: 640),
-                    ),
-                ],
+                itemBuilder: (context, index) {
+                  if (index >= _iOSResponse.length)
+                    return null;
+                  return ThumbGridItem(
+                    height: 200,
+                    future: FlutterMediaStreamer.instance
+                        .getImage(
+                        _iOSResponse[index].localIdentifier,
+                        height: 400,
+                        width: 640),
+                  );
+                },
+                itemCount: _iOSResponse.length,
               ),
             ),
         ],

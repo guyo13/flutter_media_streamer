@@ -240,6 +240,7 @@ class FlutterMediaStreamer {
           for (var item in results) {
             yield item;
           }
+          columns = _empty;
         } while (results != null && results.isNotEmpty);
       } catch (e) {
         print(e);
