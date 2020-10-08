@@ -3,6 +3,7 @@ package net.guyor.flutter_media_streamer
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.FileDescriptor
+import java.io.InvalidObjectException
 
 /** Taken from https://developer.android.com/topic/performance/graphics/load-bitmap */
 
@@ -61,5 +62,6 @@ fun createScaledBitmap(
         h = if (reqHeight > 0) reqHeight else outHeight
     }
     //TODO - add argument to control this
-    return Bitmap.createScaledBitmap(BitmapFactory.decodeFileDescriptor(fd), w, h, true)
+    val src = BitmapFactory.decodeFileDescriptor(fd) ?: throw InvalidObjectException("Failed decoding Bitmap from file descriptor")
+    return Bitmap.createScaledBitmap(src, w, h, true)
 }

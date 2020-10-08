@@ -65,6 +65,8 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
     val ERR_NULL_CURSOR = "ERR_NULL_CURSOR"
     @JvmStatic
     val ERR_PERMISSIONS = "ERR_PERMISSIONS"
+    @JvmStatic
+    val ERR_EXCEPTION = "ERR_EXCEPTION"
     private const val TAG = "FlutterMediaStreamer"
     @JvmStatic
     private val READ_PERMISSIONS = arrayOf(
@@ -242,26 +244,35 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   private fun getImage(@NonNull result: Result, @NonNull uriString: String, width: Int = -1, height: Int = -1) {
     val appContext = binding?.applicationContext ?: return onError(result, ERR_CONTEXT, String.format(ERR_CONTEXT_MSG, "getImage"))
     var res : ByteArray? = null
+    var error: Throwable? = null
     val uri: Uri = Uri.parse(uriString)
     if (URLUtil.isValidUrl(uriString)) {
       mainScope.launch {
         withContext(Dispatchers.IO) {
-          var bitmap : Bitmap?
+          var bitmap: Bitmap?
 
           val pfd = appContext.contentResolver.openFileDescriptor(uri, "r") ?: return@withContext
           pfd.use {
-            bitmap = createScaledBitmap(pfd.fileDescriptor, width, height)
-            Log.d(TAG, "Got image with size ${bitmap?.width} X ${bitmap?.height}")
-            val stream = ByteArrayOutputStream()
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            res = stream.toByteArray()
-            bitmap?.recycle()
+            try {
+              bitmap = createScaledBitmap(pfd.fileDescriptor, width, height)
+              Log.d(TAG, "Got image with size ${bitmap?.width} X ${bitmap?.height}")
+              val stream = ByteArrayOutputStream()
+              bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+              res = stream.toByteArray()
+              bitmap?.recycle()
+            } catch (t: Throwable) {
+              error = t
+              Log.e(TAG, "Error while generating bitmap for URI $uriString")
+              Log.e(TAG, t.message!!)
+              Log.e(TAG, Log.getStackTraceString(t))
+            }
           }
         }
-        if (res != null)
-          result.success(res)
-        else
-          result.error(ERR_URI_OPEN, "Error opening URI $uriString", "Received null input stream")
+        when {
+            res != null -> result.success(res)
+            error == null -> result.error(ERR_URI_OPEN, "Error opening URI $uriString", "Received null input stream")
+            else -> result.error(ERR_EXCEPTION, "Exception occurred while generating image for URI $uriString", Log.getStackTraceString(error))
+        }
       }
     } else {
       result.error(INVALID_URI, "Invalid URI $uriString", null)
