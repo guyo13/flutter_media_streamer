@@ -12,6 +12,7 @@ part 'android.g.dart';
 
 /// An [EnumClass] representing possible values of Android MediaStore Base Columns
 class AndroidBaseColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidBaseColumn> get serializer =>
       _$androidBaseColumnSerializer;
 
@@ -34,6 +35,7 @@ const AndroidBaseColumn countColumn = AndroidBaseColumn._count;
 /// An [EnumClass] representing possible values of Android MediaStore Media Columns
 /// Not including deprecated fields (_data)
 class AndroidMediaColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidMediaColumn> get serializer =>
       _$androidMediaColumnSerializer;
 
@@ -91,6 +93,7 @@ class AndroidMediaColumn extends EnumClass {
 /// An [EnumClass] representing possible values of Android MediaStore Image Columns
 /// Not including deprecated fields (latitude, longitude, mini_thumb_magic, picasa_id)
 class AndroidImageColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidImageColumn> get serializer =>
       _$androidImageColumnSerializer;
 
@@ -109,6 +112,7 @@ class AndroidImageColumn extends EnumClass {
 /// An [EnumClass] representing possible values of Android MediaStore Audio Columns
 /// Not including deprecated fields (album_key, artist_key, genre_key, title_key)
 class AndroidAudioColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidAudioColumn> get serializer =>
       _$androidAudioColumnSerializer;
 
@@ -135,6 +139,7 @@ class AndroidAudioColumn extends EnumClass {
 /// An [EnumClass] representing possible values of Android MediaStore Artist Columns
 /// Not including deprecated fields (artist_key)
 class AndroidArtistColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidArtistColumn> get serializer =>
       _$androidArtistColumnSerializer;
 
@@ -150,6 +155,7 @@ class AndroidArtistColumn extends EnumClass {
 /// An [EnumClass] representing possible values of Android MediaStore Album Columns
 /// Not including deprecated fields (album_art, album_key, artist_key)
 class AndroidAlbumColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidAlbumColumn> get serializer =>
       _$androidAlbumColumnSerializer;
 
@@ -169,6 +175,7 @@ class AndroidAlbumColumn extends EnumClass {
 
 /// An [EnumClass] representing possible values of Android MediaStore Genre Columns
 class AndroidGenreColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidGenreColumn> get serializer =>
       _$androidGenreColumnSerializer;
 
@@ -183,6 +190,7 @@ class AndroidGenreColumn extends EnumClass {
 /// An [EnumClass] representing possible values of Android MediaStore Playlist Columns
 /// Not including deprecated fields (_data)
 class AndroidPlaylistColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidPlaylistColumn> get serializer =>
       _$androidPlaylistColumnSerializer;
 
@@ -199,6 +207,7 @@ class AndroidPlaylistColumn extends EnumClass {
 
 /// An [EnumClass] representing possible values of Android MediaStore Download Columns
 class AndroidDownloadColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidDownloadColumn> get serializer =>
       _$androidDownloadColumnSerializer;
 
@@ -212,6 +221,7 @@ class AndroidDownloadColumn extends EnumClass {
 
 /// An [EnumClass] representing possible values of Android MediaStore File Columns
 class AndroidFileColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidFileColumn> get serializer =>
       _$androidFileColumnSerializer;
 
@@ -238,6 +248,7 @@ enum FileMediaTypes {
 /// An [EnumClass] representing possible values of Android MediaStore Video Columns
 /// Not including deprecated fields (latitude, longitude, mini_thumb_magic)
 class AndroidVideoColumn extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidVideoColumn> get serializer =>
       _$androidVideoColumnSerializer;
 
@@ -261,6 +272,7 @@ class AndroidVideoColumn extends EnumClass {
 /// and [AndroidImageColumn], depending on availability, the API level of the device and the requested columns
 abstract class AndroidImageMediaData
     implements Built<AndroidImageMediaData, AndroidImageMediaDataBuilder> {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AndroidImageMediaData> get serializer =>
       _$androidImageMediaDataSerializer;
 

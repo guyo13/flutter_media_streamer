@@ -15,6 +15,7 @@ part 'abstraction.g.dart';
 /// An [EnumClass] Representing an abstraction of the possible media types found
 /// on each platform
 class MediaStreamerType extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<MediaStreamerType> get serializer =>
       _$mediaStreamerTypeSerializer;
 
@@ -43,6 +44,7 @@ class MediaStreamerType extends EnumClass {
 /// A data class representing an abstraction of information shared by both iOS and Android
 abstract class AbstractMediaItem
     implements Built<AbstractMediaItem, AbstractMediaItemBuilder> {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<AbstractMediaItem> get serializer =>
       _$abstractMediaItemSerializer;
 

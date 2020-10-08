@@ -12,6 +12,7 @@ part 'ios.g.dart';
 
 /// An [EnumClass] representing the possible Media Types defined by iOS
 class IOSMediaType extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSMediaType> get serializer => _$iOSMediaTypeSerializer;
 
   static const IOSMediaType unknown = _$mediaTypeUnknown;
@@ -26,6 +27,7 @@ class IOSMediaType extends EnumClass {
 
 /// An [EnumClass] representing the possible Media Subtypes defined by iOS
 class IOSMediaSubtype extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSMediaSubtype> get serializer =>
       _$iOSMediaSubtypeSerializer;
 
@@ -47,6 +49,7 @@ class IOSMediaSubtype extends EnumClass {
 
 /// An [EnumClass] representing the possible asset Source Types defined by iOS
 class IOSAssetSourceType extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSAssetSourceType> get serializer =>
       _$iOSAssetSourceTypeSerializer;
 
@@ -65,6 +68,7 @@ class IOSAssetSourceType extends EnumClass {
 
 /// An [EnumClass] representing the possible Playback Styles defined by iOS
 class IOSPlaybackStyle extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSPlaybackStyle> get serializer =>
       _$iOSPlaybackStyleSerializer;
 
@@ -82,6 +86,7 @@ class IOSPlaybackStyle extends EnumClass {
 
 /// An [EnumClass] representing the possible Burst Selection Types defined by iOS
 class IOSBurstSelectionType extends EnumClass {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSBurstSelectionType> get serializer =>
       _$iOSBurstSelectionTypeSerializer;
 
@@ -95,6 +100,7 @@ class IOSBurstSelectionType extends EnumClass {
 
 /// A data class representing an iOS CLLocation object
 abstract class IOSLocation implements Built<IOSLocation, IOSLocationBuilder> {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSLocation> get serializer => _$iOSLocationSerializer;
 
   /// Positive values indicate latitudes north of the equator. Negative values indicate latitudes south of the equator.
@@ -169,6 +175,7 @@ abstract class IOSLocation implements Built<IOSLocation, IOSLocationBuilder> {
 
 /// Data class representing an iOS PHAsset
 abstract class IOSPHAsset implements Built<IOSPHAsset, IOSPHAssetBuilder> {
+  /// The [Serializer] object responsible for (de)serialization of this class' instances
   static Serializer<IOSPHAsset> get serializer => _$iOSPHAssetSerializer;
 
   /// The PHObject's localIdentifier
