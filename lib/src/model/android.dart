@@ -53,7 +53,7 @@ class AndroidMediaColumn extends EnumClass {
   static const AndroidMediaColumn date_modified = _$mediaDateModified;
   static const AndroidMediaColumn datetaken = _$datetaken;
   static const AndroidMediaColumn disc_number = _$disc_number;
-  static AndroidMediaColumn get display_name => _display_name;
+  static AndroidMediaColumn get displayName => _display_name;
   static const AndroidMediaColumn _display_name = _$display_name;
   static const AndroidMediaColumn document_id = _$document_id;
   static const AndroidMediaColumn duration = _$duration;
