@@ -20,19 +20,19 @@ On iOS add usage description for the Gallery inside your `Runner/Info.plist` fil
 
 On Android add `READ_EXTERNAL_STORAGE` permission to Manifest:
 ```xml
-`<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>`
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 ```
  
 ## Qureying for images metadata
  
-### Get the last 100 images added to the gallery using abstraction layer
+### Get the last 100 images added to the gallery using the Abstraction Layer
 ```dart
 final res = await FlutterMediaStreamer.instance  
   .streamImageMetadata()
   .take(100)
   .toList();
 ```
-The abstraction layer is exposed from `streamImageMetadata` and produces objects
+The abstraction layer is used by `streamImageMetadata` and produces objects
 containing data common to both Android's MediaStore Columns and iOS PHAsset.
  
 The entire query is wrapped as a Broadcast Stream so that no further actions are needed once you subscribe to the stream.
