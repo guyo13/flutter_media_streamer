@@ -8,12 +8,17 @@ import 'package:flutter_media_streamer/model/abstraction.dart';
 
 import '../components.dart';
 
-Map<String, dynamic> decode(String raw) {
-  return jsonDecode(raw);
+List<Map<String, dynamic>> decodeBatch(Iterable<String> rawItems) {
+  final results = <Map<String, dynamic>>[];
+  for (var item in rawItems) {
+    results.add(jsonDecode(item) as Map<String, dynamic>);
+  }
+  return results;
 }
 
-Future<Map<String, dynamic>> computeJson(String raw) async {
-  return await compute(decode, raw);
+Future<List<Map<String, dynamic>>> computeBatchJson(
+    Iterable<String> rawItems) async {
+  return await compute(decodeBatch, rawItems);
 }
 
 class AbstractionExample extends StatefulWidget {
@@ -91,7 +96,9 @@ class _AbstractionExampleState extends State<AbstractionExample> {
                     child: Text("Get thumbnails"),
                     onPressed: () async {
                       final res = await FlutterMediaStreamer.instance
-                          .streamImageMetadata()
+                          .streamImageMetadata(
+                              batchConvert: true,
+                              batchJsonDecodeFn: computeBatchJson).take(100)
                           .toList();
                       print(
                           "Got ${res.length} image metadata items from platform");

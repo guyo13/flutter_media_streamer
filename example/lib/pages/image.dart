@@ -84,7 +84,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3)//.take(10)
+                            .iOSImagesMetadata(limit: 3).take(100)
                             .toList();
                         print(
                             "Got ${res.length} image metadata from iOS");
@@ -93,7 +93,7 @@ class _GetImageExampleState extends State<GetImageExample> {
                         });
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3)//.take(10)
+                            .androidImagesMetadata(limit: 3).take(100)
                             .toList();
                         setState(() {
                           _androidResponse = res;

@@ -226,7 +226,7 @@ class FlutterMediaStreamerPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
                       appContext.contentResolver.loadThumbnail(uri, Size(width, height), null)
                     }
                     else -> {
-                      Log.v(TAG, "API < 29 Using MediaStore Thumbnails")
+//                      Log.v(TAG, "API < 29 Using MediaStore Thumbnails")
                       uri.lastPathSegment?.let path@{ lastPath ->
                         val id = lastPath.toLongOrNull()
                         id?.let {

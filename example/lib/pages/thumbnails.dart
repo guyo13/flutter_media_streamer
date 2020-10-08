@@ -84,20 +84,22 @@ class _ThumbnailsExampleState extends State<ThumbnailsExample> {
                     onPressed: () async {
                       if (defaultTargetPlatform == TargetPlatform.iOS) {
                         final res = await FlutterMediaStreamer.instance
-                            .iOSImagesMetadata(limit: 3)//.take(10)
+                            .iOSImagesMetadata(limit: 3).take(100)
                             .toList();
-                        print(
-                            "Got ${res.length} image metadata from iOS");
                         setState(() {
                           _iOSResponse = res;
                         });
+                        print(
+                            "Got ${res.length} image metadata from iOS");
                       } else {
                         final res = await FlutterMediaStreamer.instance
-                            .androidImagesMetadata(limit: 3)//.take(10)
+                            .androidImagesMetadata(limit: 3).take(100)
                             .toList();
                         setState(() {
                           _androidResponse = res;
                         });
+                        print(
+                            "Got ${res.length} image metadata items from Android");
                       }
                     },
                   ),
