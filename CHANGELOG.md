@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Improve docstrings
+
 ## 1.0.0
 
 * Full functionality of getting Image metadata, Thumbnails and resized images from Android and iOS.
